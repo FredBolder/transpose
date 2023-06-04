@@ -64,6 +64,7 @@ class Options {
     this.preferSharps = false;
     this.useSpecial = false;
     this.spaceBetween = true;
+    this.uppercase = false;
     this.outputFormat = "CDE";
   }
 }
@@ -148,13 +149,21 @@ function convertToNormalChars(s) {
 }
 
 function convertTypeToGreek(s) {
+  let convert = true;
   let result = s;
   if (s.startsWith("minor")) {
     result = "-" + s.slice(5);
   } else if (s.startsWith("min")) {
     result = "-" + s.slice(3);
   } else if (s.startsWith("m")) {
-    result = "-" + s.slice(1);
+    if (s.length > 1) {
+      if ("aA".includes(s[1])) {
+        convert = false;
+      }
+    }
+    if (convert) {
+      result = "-" + s.slice(1);
+    }
   } else if (s === "") {
     result = "+";
   }
@@ -214,6 +223,13 @@ function noteIndexToString(index, options) {
       s = s.slice(0, s.indexOf(",")).trim();
     } else {
       s = s.slice(s.indexOf(",") + 1).trim();
+    }
+  }
+  if (options.uppercase) {
+    if (isSharpOrFlat(index)) {
+      s = s.slice(0, s.length - 1).toUpperCase() + s[s.length - 1];
+    } else {
+      s = s.toUpperCase();
     }
   }
   return s;
@@ -280,12 +296,13 @@ function transposeClicked() {
   options.preferSharps = document.getElementById("useSharps").checked;
   options.useSpecial = document.getElementById("useSpecial").checked;
   options.spaceBetween = document.getElementById("spaceBetween").checked;
+  options.uppercase = document.getElementById("uppercase").checked;
   options.outputFormat = document.getElementById("outputFormat").value;
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
   let semitones = parseInt(document.getElementById("semitones").value);
   transpose(semitones, options);
-  document.getElementById("output").innerHTML = outputData.join("\n");
+  document.getElementById("output").value = outputData.join("\n");
 }
 
 function transposeLine(input, semiTones, options) {
@@ -465,7 +482,10 @@ function transposeLine(input, semiTones, options) {
             position = i;
             chord = s[i];
           }
-          if (options.inputFormat === "DOREMI" || options.inputFormat === "GREEK") {
+          if (
+            options.inputFormat === "DOREMI" ||
+            options.inputFormat === "GREEK"
+          ) {
             position = i - 1;
             chord = sNewChord;
           }
@@ -529,31 +549,33 @@ function initTest(
   preferSharps,
   useSpecial,
   spaceBetween,
+  uppercase,
   outputFormat
 ) {
   testOptions.inputFormat = inputFormat;
   testOptions.preferSharps = preferSharps;
   testOptions.useSpecial = useSpecial;
   testOptions.spaceBetween = spaceBetween;
+  testOptions.uppercase = uppercase;
   testOptions.outputFormat = outputFormat;
   inputData = [];
 }
 
 function test() {
   // Test 1
-  initTest("CDE", false, false, true, "CDE");
+  initTest("CDE", false, false, true, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B");
   transpose(-1, testOptions);
   checkResult("Test 1", "B C  Db D Eb E F Gb G Ab A Bb", outputData.join("\n"));
 
   // Test 2
-  initTest("CDE", true, false, true, "CDE");
+  initTest("CDE", true, false, true, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B");
   transpose(1, testOptions);
   checkResult("Test 2", "C# D D# E F F# G G# A A# B C", outputData.join("\n"));
 
   // Test 3
-  initTest("CDE", true, false, true, "DOREMI");
+  initTest("CDE", true, false, true, false, "DOREMI");
   inputData.push("C C# D D# E F F# G G# A A# B");
   transpose(0, testOptions);
   checkResult(
@@ -563,7 +585,7 @@ function test() {
   );
 
   // Test 4
-  initTest("DOREMI", true, false, true, "CDE");
+  initTest("DOREMI", true, false, true, false, "CDE");
   inputData.push("Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si FA SOL SOLb");
   transpose(0, testOptions);
   checkResult(
@@ -573,19 +595,19 @@ function test() {
   );
 
   // Test 5
-  initTest("DOREMI", true, false, false, "CDE");
+  initTest("DOREMI", true, false, false, false, "CDE");
   inputData.push("Rem LaRem SolFa SolbFa");
   transpose(0, testOptions);
   checkResult("Test 5", "Dm  A Dm  G  F  F#  F", outputData.join("\n"));
 
   // Test 6
-  initTest("CDE", false, false, false, "CDE");
+  initTest("CDE", false, false, false, false, "CDE");
   inputData.push("Dm7/A Bb DmF");
   transpose(2, testOptions);
   checkResult("Test 6", "Em7/B C  EmG", outputData.join("\n"));
 
   // Test 7
-  initTest("INLINE", false, false, false, "CDE");
+  initTest("INLINE", false, false, false, false, "CDE");
   inputData.push("This is a [Am]Test with [C/G]inline chords");
   transpose(-1, testOptions);
   checkResult(
@@ -595,16 +617,26 @@ function test() {
   );
 
   // Test 8
-  initTest("CDE", false, false, true, "GREEK");
-  inputData.push("Dm/F C");
+  initTest("CDE", false, false, true, false, "GREEK");
+  inputData.push("Dm/F C Cmaj7");
   transpose(0, testOptions);
-  checkResult("Test 8", "Ρε-/Φα Ντο+", outputData.join("\n"));
+  checkResult("Test 8", "Ρε-/Φα Ντο+ Ντοmaj7", outputData.join("\n"));
 
   // Test 9
-  initTest("GREEK", false, false, true, "CDE");
+  initTest("GREEK", false, false, true, false, "CDE");
   inputData.push("Ρε-/Φα Ντο+ Σολ♭ Σολ7 ΝΤΟΣολb ΣΟΛ");
   transpose(0, testOptions);
-  checkResult("Test 9", "Dm/F   C    Gb   G7   C  Gb   G", outputData.join("\n"));
+  checkResult(
+    "Test 9",
+    "Dm/F   C    Gb   G7   C  Gb   G",
+    outputData.join("\n")
+  );
+
+  // Test 10
+  initTest("CDE", false, false, true, true, "DOREMI");
+  inputData.push("Bbm Ebm7");
+  transpose(-2, testOptions);
+  checkResult("Test 10", "LAbm REbm7", outputData.join("\n"));
 }
 
 if (!useWebsite) {
@@ -613,6 +645,7 @@ if (!useWebsite) {
   testOptions.preferSharps = false;
   testOptions.useSpecial = false;
   testOptions.spaceBetween = true;
+  testOptions.uppercase = false;
   testOptions.outputFormat = "CDE";
   createTestData(3);
   console.log(inputData.join("\n"));
