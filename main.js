@@ -4,34 +4,64 @@ let inputData = [];
 let key = 0;
 let outputData = [];
 
+let bassRomanMajor = [
+  "1",
+  "#1,b2",
+  "2",
+  "#2,b3",
+  "3",
+  "4",
+  "#4,b5",
+  "5",
+  "#5,b6",
+  "6",
+  "#6,b7",
+  "7",
+];
+
+let bassRomanMinor = [
+  "1",
+  "#1,b2",
+  "2",
+  "3",
+  "#3,b4",
+  "4",
+  "#4,b5",
+  "5",
+  "6",
+  "#6,b7",
+  "7",
+  "#7,b1",
+];
+
 let chordsRomanMajor = [
   "I",
-  "",
+  "#I,bII",
   "ii",
-  "",
+  "#II,bIII",
   "iii",
   "IV",
-  "",
+  "#IV,bV",
   "V",
-  "",
+  "#V,bVI",
   "vi",
-  "",
-  "vii0",
+  "#VI,bVII",
+  "vii",
 ];
 
 let chordsRomanMinor = [
   "i",
-  "",
-  "ii0",
+  "#I,bII",
+  "ii",
   "III",
-  "",
+  "#III,bIV",
   "iv",
-  "",
+  "#IV,bV",
   "v",
   "VI",
-  "",
+  "#VI,bVII",
   "VII",
-  "",
+  "#VII,bI",
 ];
 
 let notes = [
@@ -134,9 +164,12 @@ function changeBass(input, semiTones, options) {
     noteIndex = noteToIndex(note, options);
     if (noteIndex >= 0) {
       noteIndex = fixNoteIndex(noteIndex + semiTones);
-      noteStr = noteIndexToString(noteIndex, options);
+      noteStr = noteIndexToString(noteIndex, options, true);
       if (options.outputFormat === "ROMAN") {
         noteStr = noteStr.toUpperCase();
+        if (noteStr.startsWith("B")) {
+          noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
+        }
       }
       result = input.slice(0, p1 + 1) + noteStr;
     } else {
@@ -281,7 +314,7 @@ function isSharpOrFlat(index) {
   return [1, 3, 6, 8, 10].includes(index);
 }
 
-function noteIndexToString(index, options) {
+function noteIndexToString(index, options, bass) {
   let s = "";
 
   if (options.outputFormat === "CDE") {
@@ -294,13 +327,29 @@ function noteIndexToString(index, options) {
     s = notesGreek[index];
   }
   if (options.outputFormat === "ROMAN") {
-    if (key >= 11) {
-      s = chordsRomanMajor[index];
+    if (bass) {
+      if (key >= 11) {
+        s = bassRomanMajor[index];
+      } else {
+        s = bassRomanMinor[index];
+      }
     } else {
-      s = chordsRomanMinor[index];
+      if (key >= 11) {
+        s = chordsRomanMajor[index];
+      } else {
+        s = chordsRomanMinor[index];
+      }
     }
   }
-  if (options.outputFormat !== "ROMAN") {
+  if (options.outputFormat == "ROMAN") {
+    if (s.includes(",")) {
+      if (options.preferSharps) {
+        s = s.slice(0, s.indexOf(",")).trim();
+      } else {
+        s = s.slice(s.indexOf(",") + 1).trim();
+      }
+    }
+  } else {
     if (isSharpOrFlat(index)) {
       if (options.preferSharps) {
         s = s.slice(0, s.indexOf(",")).trim();
@@ -596,7 +645,7 @@ function transposeLine(input, semiTones, options) {
         s += " ";
       }
       n = fixNoteIndex(chords[i].noteIndex + semiTones);
-      noteStr = noteIndexToString(n, options);
+      noteStr = noteIndexToString(n, options, false);
       chordType = changeBass(chords[i].chordType, semiTones, options);
       if (chordType === "ERROR") {
         error = true;
@@ -606,6 +655,9 @@ function transposeLine(input, semiTones, options) {
           noteStr = noteStr.toLowerCase();
         } else {
           noteStr = noteStr.toUpperCase();
+        }
+        if (noteStr.startsWith("B")) {
+          noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
         }
       }
       s += noteStr;
