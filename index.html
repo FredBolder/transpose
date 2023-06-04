@@ -71,6 +71,35 @@
           <label for="uppercase">Uppercase notes</label>
         </div>
         <div>
+          <label for="key">Original key:</label>
+          <select name="key" id="key">
+            <option value="0" selected="selected">C</option>
+            <option value="1">C#/Db</option>
+            <option value="2">D</option>
+            <option value="3">D#/Eb</option>
+            <option value="4">E</option>
+            <option value="5">F</option>
+            <option value="6">F#/Gb</option>
+            <option value="7">G</option>
+            <option value="8">G#/Ab</option>
+            <option value="9">A</option>
+            <option value="10">A#/Bb</option>
+            <option value="11">B</option>
+            <option value="12">Cm</option>
+            <option value="13">C#m/Dbm</option>
+            <option value="14">Dm</option>
+            <option value="15">D#m/Ebm</option>
+            <option value="16">Em</option>
+            <option value="17">Fm</option>
+            <option value="18">F#m/Gbm</option>
+            <option value="19">Gm</option>
+            <option value="20">G#m/Abm</option>
+            <option value="21">Am</option>
+            <option value="22">A#m/Bbm</option>
+            <option value="23">Bm</option>
+          </select>
+        </div>
+        <div>
           <label for="semitones">Semitones:</label>
           <select name="semitones" id="semitones">
             <option value="11">11</option>
@@ -104,10 +133,11 @@
             <option value="CDE" selected="selected">C D E</option>
             <option value="DOREMI">Do Re Mi</option>
             <option value="GREEK">Greek</option>
+            <option value="ROMAN">Roman</option>
           </select>
         </div>
         <div>
-          <button onclick="transposeClicked()">Transpose</button>
+          <button onclick="transposeClicked()">Transpose / Convert</button>
         </div>
       </div>
       <textarea id="output" spellcheck="false"> </textarea>

@@ -1,7 +1,38 @@
 const useWebsite = true;
 
 let inputData = [];
+let key = 0;
 let outputData = [];
+
+let chordsRomanMajor = [
+  "I",
+  "",
+  "ii",
+  "",
+  "iii",
+  "IV",
+  "",
+  "V",
+  "",
+  "vi",
+  "",
+  "vii0",
+];
+
+let chordsRomanMinor = [
+  "i",
+  "",
+  "ii0",
+  "III",
+  "",
+  "iv",
+  "",
+  "v",
+  "VI",
+  "",
+  "VII",
+  "",
+];
 
 let notes = [
   "C",
@@ -104,6 +135,9 @@ function changeBass(input, semiTones, options) {
     if (noteIndex >= 0) {
       noteIndex = fixNoteIndex(noteIndex + semiTones);
       noteStr = noteIndexToString(noteIndex, options);
+      if (options.outputFormat === "ROMAN") {
+        noteStr = noteStr.toUpperCase();
+      }
       result = input.slice(0, p1 + 1) + noteStr;
     } else {
       error = true;
@@ -170,6 +204,26 @@ function convertTypeToGreek(s) {
   return result;
 }
 
+function convertTypeToRoman(s) {
+  let convert = true;
+  let result = s;
+  if (s.startsWith("minor")) {
+    result = s.slice(5);
+  } else if (s.startsWith("min")) {
+    result = s.slice(3);
+  } else if (s.startsWith("m")) {
+    if (s.length > 1) {
+      if ("aA".includes(s[1])) {
+        convert = false;
+      }
+    }
+    if (convert) {
+      result = s.slice(1);
+    }
+  }
+  return result;
+}
+
 function createTestData(n) {
   switch (n) {
     case 1:
@@ -202,6 +256,27 @@ function fixNoteIndex(n) {
   return n;
 }
 
+function isRomanLower(s) {
+  let convert = true;
+  let isLower = false;
+
+  if (s.startsWith("minor")) {
+    isLower = true;
+  } else if (s.startsWith("min")) {
+    isLower = true;
+  } else if (s.startsWith("m")) {
+    if (s.length > 1) {
+      if ("aA".includes(s[1])) {
+        convert = false;
+      }
+    }
+    if (convert) {
+      isLower = true;
+    }
+  }
+  return isLower;
+}
+
 function isSharpOrFlat(index) {
   return [1, 3, 6, 8, 10].includes(index);
 }
@@ -218,18 +293,27 @@ function noteIndexToString(index, options) {
   if (options.outputFormat === "GREEK") {
     s = notesGreek[index];
   }
-  if (isSharpOrFlat(index)) {
-    if (options.preferSharps) {
-      s = s.slice(0, s.indexOf(",")).trim();
+  if (options.outputFormat === "ROMAN") {
+    if (key >= 11) {
+      s = chordsRomanMajor[index];
     } else {
-      s = s.slice(s.indexOf(",") + 1).trim();
+      s = chordsRomanMinor[index];
     }
   }
-  if (options.uppercase) {
+  if (options.outputFormat !== "ROMAN") {
     if (isSharpOrFlat(index)) {
-      s = s.slice(0, s.length - 1).toUpperCase() + s[s.length - 1];
-    } else {
-      s = s.toUpperCase();
+      if (options.preferSharps) {
+        s = s.slice(0, s.indexOf(",")).trim();
+      } else {
+        s = s.slice(s.indexOf(",") + 1).trim();
+      }
+    }
+    if (options.uppercase) {
+      if (isSharpOrFlat(index)) {
+        s = s.slice(0, s.length - 1).toUpperCase() + s[s.length - 1];
+      } else {
+        s = s.toUpperCase();
+      }
     }
   }
   return s;
@@ -300,7 +384,15 @@ function transposeClicked() {
   options.outputFormat = document.getElementById("outputFormat").value;
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
+  let key = parseInt(document.getElementById("key").value);
   let semitones = parseInt(document.getElementById("semitones").value);
+  if (options.outputFormat === "ROMAN") {
+    semitones = key;
+    if (semitones > 11) {
+      semitones -= 12;
+      semitones *= -1;
+    }
+  }
   transpose(semitones, options);
   document.getElementById("output").value = outputData.join("\n");
 }
@@ -505,19 +597,29 @@ function transposeLine(input, semiTones, options) {
       }
       n = fixNoteIndex(chords[i].noteIndex + semiTones);
       noteStr = noteIndexToString(n, options);
-      s += noteStr;
       chordType = changeBass(chords[i].chordType, semiTones, options);
       if (chordType === "ERROR") {
         error = true;
       }
+      if (options.outputFormat === "ROMAN") {
+        if (isRomanLower(chordType)) {
+          noteStr = noteStr.toLowerCase();
+        } else {
+          noteStr = noteStr.toUpperCase();
+        }
+      }
+      s += noteStr;
       if (options.inputFormat === "GREEK") {
         chordType = convertGreekType(chordType);
       }
       if (options.outputFormat === "GREEK") {
         chordType = convertTypeToGreek(chordType);
       }
+      if (options.outputFormat === "ROMAN") {
+        chordType = convertTypeToRoman(chordType);
+      }
       s += chordType;
-      if (options.spaceBetween) {
+      if (options.spaceBetween || options.outputFormat === "ROMAN") {
         s += " ";
       }
     }
