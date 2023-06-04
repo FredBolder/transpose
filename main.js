@@ -19,6 +19,7 @@ let bassRomanMajor = [
   "7",
 ];
 
+// Natural Minor
 let bassRomanMinor = [
   "1",
   "#1,b2",
@@ -49,6 +50,7 @@ let chordsRomanMajor = [
   "vii",
 ];
 
+// Natural Minor
 let chordsRomanMinor = [
   "i",
   "#I,bII",
@@ -314,6 +316,15 @@ function isSharpOrFlat(index) {
   return [1, 3, 6, 8, 10].includes(index);
 }
 
+function keyToSemitones(key) {
+  let semitones = key;
+  if (semitones > 11) {
+    semitones -= 12;
+    semitones *= -1;
+  }
+  return semitones;
+}
+
 function noteIndexToString(index, options, bass) {
   let s = "";
 
@@ -329,15 +340,15 @@ function noteIndexToString(index, options, bass) {
   if (options.outputFormat === "ROMAN") {
     if (bass) {
       if (key >= 11) {
-        s = bassRomanMajor[index];
-      } else {
         s = bassRomanMinor[index];
+      } else {
+        s = bassRomanMajor[index];
       }
     } else {
       if (key >= 11) {
-        s = chordsRomanMajor[index];
-      } else {
         s = chordsRomanMinor[index];
+      } else {
+        s = chordsRomanMajor[index];
       }
     }
   }
@@ -436,11 +447,7 @@ function transposeClicked() {
   let key = parseInt(document.getElementById("key").value);
   let semitones = parseInt(document.getElementById("semitones").value);
   if (options.outputFormat === "ROMAN") {
-    semitones = key;
-    if (semitones > 11) {
-      semitones -= 12;
-      semitones *= -1;
-    }
+    semitones = keyToSemitones(key);
   }
   transpose(semitones, options);
   document.getElementById("output").value = outputData.join("\n");
@@ -649,30 +656,31 @@ function transposeLine(input, semiTones, options) {
       chordType = changeBass(chords[i].chordType, semiTones, options);
       if (chordType === "ERROR") {
         error = true;
-      }
-      if (options.outputFormat === "ROMAN") {
-        if (isRomanLower(chordType)) {
-          noteStr = noteStr.toLowerCase();
-        } else {
-          noteStr = noteStr.toUpperCase();
+      } else {
+        if (options.inputFormat === "GREEK") {
+          chordType = convertGreekType(chordType);
         }
-        if (noteStr.startsWith("B")) {
-          noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
+        if (options.outputFormat === "ROMAN") {
+          if (isRomanLower(chordType)) {
+            noteStr = noteStr.toLowerCase();
+          } else {
+            noteStr = noteStr.toUpperCase();
+          }
+          if (noteStr.startsWith("B")) {
+            noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
+          }
         }
-      }
-      s += noteStr;
-      if (options.inputFormat === "GREEK") {
-        chordType = convertGreekType(chordType);
-      }
-      if (options.outputFormat === "GREEK") {
-        chordType = convertTypeToGreek(chordType);
-      }
-      if (options.outputFormat === "ROMAN") {
-        chordType = convertTypeToRoman(chordType);
-      }
-      s += chordType;
-      if (options.spaceBetween || options.outputFormat === "ROMAN") {
-        s += " ";
+        s += noteStr;
+        if (options.outputFormat === "GREEK") {
+          chordType = convertTypeToGreek(chordType);
+        }
+        if (options.outputFormat === "ROMAN") {
+          chordType = convertTypeToRoman(chordType);
+        }
+        s += chordType;
+        if (options.spaceBetween || options.outputFormat === "ROMAN") {
+          s += " ";
+        }
       }
     }
   }
@@ -716,6 +724,10 @@ function initTest(
 }
 
 function test() {
+  let semitones = 0;
+
+  key = 0;
+
   // Test 1
   initTest("CDE", false, false, true, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B");
@@ -791,6 +803,28 @@ function test() {
   inputData.push("Bbm Ebm7");
   transpose(-2, testOptions);
   checkResult("Test 10", "LAbm REbm7", outputData.join("\n"));
+
+  // Test 11
+  initTest("GREEK", false, false, false, false, "ROMAN");
+  inputData.push("Ρε-/Φα Σολ- ΛΑ7 ΛΑ-7 Ντο+");
+  key = 14; // Dm
+  semitones = keyToSemitones(key);
+  transpose(semitones, testOptions);
+  checkResult("Test 11", "i/3    iv   V7  v7   VII", outputData.join("\n"));
+  key = 0;
+
+  // Test 12
+  initTest("INLINE", false, false, false, false, "ROMAN");
+  inputData.push("[F#]Inline [B]chords to [C#7]Roman notation");
+  key = 6; // F#
+  semitones = keyToSemitones(key);
+  transpose(semitones, testOptions);
+  checkResult(
+    "Test 12",
+    "I      IV        V7\nInline chords to Roman notation",
+    outputData.join("\n")
+  );
+  key = 0;
 }
 
 if (!useWebsite) {
