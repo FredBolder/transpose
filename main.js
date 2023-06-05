@@ -1,4 +1,4 @@
-const useWebsite = false;
+const useWebsite = true;
 
 let inputData = [];
 let key = 0;
@@ -124,7 +124,21 @@ let simpleNotes = [
   "Μι#,Φα",
   "Ντοb,Σι",
   "Φαb,Μι",
-]
+  "Cbb,Bb",
+  "Dbb,C",
+  "Ebb,D",
+  "Fbb,Eb",
+  "Gbb,F",
+  "Abb,G",
+  "Bbb,A",
+  "C##,D",
+  "D##,E",
+  "E##,F#",
+  "F##,G",
+  "G##,A",
+  "A##,B",
+  "B##,C#",
+];
 
 let testOptions;
 
@@ -456,7 +470,7 @@ function simplifyNote(note) {
   let s = "";
   let s1 = "";
   let s2 = "";
-  
+
   let i = 0;
   while (s === "" && i < simpleNotes.length) {
     p = simpleNotes[i].indexOf(",");
@@ -652,6 +666,11 @@ function transposeLine(input, semiTones, options, nextInput) {
           if (chord.length > 1) {
             if (chord[1] === "#" || chord[1] === "b") {
               note += chord[1];
+              if (chord.length > 2) {
+                if (chord[2] === "#" || chord[2] === "b") {
+                  note += chord[2];
+                }
+              }
             }
           }
         }
@@ -846,9 +865,13 @@ function test() {
 
   // Test 1
   initTest("CDE", false, false, true, false, "CDE");
-  inputData.push("C C# D D# E F F# G G# A A# B B# Cb");
+  inputData.push("C C# D D# E F F# G G# A A# B B# Cb Ebb");
   transpose(-1, testOptions);
-  checkResult("Test 1", "B C  Db D Eb E F Gb G Ab A Bb B Bb", outputData.join("\n"));
+  checkResult(
+    "Test 1",
+    "B C  Db D Eb E F Gb G Ab A Bb B Bb Db",
+    outputData.join("\n")
+  );
 
   // Test 2
   initTest("CDE", true, false, true, false, "CDE");
