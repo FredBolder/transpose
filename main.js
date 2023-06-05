@@ -1,4 +1,4 @@
-const useWebsite = true;
+const useWebsite = false;
 
 let inputData = [];
 let key = 0;
@@ -132,27 +132,6 @@ class Options {
   }
 }
 
-function applySpecialChars(s) {
-  let value = "";
-  let result = "";
-
-  for (let i = 0; i < s.length; i++) {
-    switch (s[i]) {
-      case "b":
-        value = "♭"; // 266D
-        break;
-      case "#":
-        value = "♯"; // 266F
-        break;
-      default:
-        value = s[i];
-        break;
-    }
-    result += value;
-  }
-  return result;
-}
-
 function changeBass(input, semiTones, options) {
   let error = false;
   let note = "";
@@ -208,6 +187,33 @@ function convertToNormalChars(s) {
       case "♯":
         value = "#";
         break;
+      case "°":
+        value = "0";
+        break;
+      default:
+        value = s[i];
+        break;
+    }
+    result += value;
+  }
+  return result;
+}
+
+function convertToSpecialChars(s) {
+  let value = "";
+  let result = "";
+
+  for (let i = 0; i < s.length; i++) {
+    switch (s[i]) {
+      case "b":
+        value = "♭"; // 266D
+        break;
+      case "#":
+        value = "♯"; // 266F
+        break;
+      case "0":
+        value = "°";
+        break;
       default:
         value = s[i];
         break;
@@ -242,7 +248,9 @@ function convertTypeToGreek(s) {
 function convertTypeToRoman(s) {
   let convert = true;
   let result = s;
-  if (s.startsWith("minor")) {
+  if (s.startsWith("dim")) {
+    result = "0" + s.slice(3);
+  } else if (s.startsWith("minor")) {
     result = s.slice(5);
   } else if (s.startsWith("min")) {
     result = s.slice(3);
@@ -295,9 +303,7 @@ function isRomanLower(s) {
   let convert = true;
   let isLower = false;
 
-  if (s.startsWith("minor")) {
-    isLower = true;
-  } else if (s.startsWith("min")) {
+  if (s.startsWith("min")) {
     isLower = true;
   } else if (s.startsWith("m")) {
     if (s.length > 1) {
@@ -308,6 +314,8 @@ function isRomanLower(s) {
     if (convert) {
       isLower = true;
     }
+  } else if (s.startsWith("dim") || s.startsWith("0") || s.startsWith("°")) {
+    isLower = true;
   }
   return isLower;
 }
@@ -687,7 +695,7 @@ function transposeLine(input, semiTones, options) {
   if (!error) {
     result = s.trimEnd();
     if (options.useSpecial) {
-      result = applySpecialChars(result);
+      result = convertToSpecialChars(result);
     }
     if (options.inputFormat === "INLINE") {
       result += "\n" + inlineText;
@@ -814,14 +822,15 @@ function test() {
   key = 0;
 
   // Test 12
-  initTest("INLINE", false, false, false, false, "ROMAN");
-  inputData.push("[F#]Inline [B]chords to [C#7]Roman notation");
+  initTest("INLINE", false, true, false, false, "ROMAN");
+  // TODO: E#dim = Fdim
+  inputData.push("[F#]Inline [B]chords [C#7]to [Fdim]Roman notation");
   key = 6; // F#
   semitones = keyToSemitones(key);
   transpose(semitones, testOptions);
   checkResult(
     "Test 12",
-    "I      IV        V7\nInline chords to Roman notation",
+    "I      IV     V7 vii°\nInline chords to Roman notation",
     outputData.join("\n")
   );
   key = 0;
