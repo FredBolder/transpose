@@ -406,9 +406,9 @@ function noteIndexToString(index, options, bass) {
   }
   if (options.outputFormat === "DOREMI") {
     if (options.useTi) {
-       if (index >= 10) {
+      if (index >= 10) {
         index += 2;
-       }
+      }
     }
     s = notesDoReMi[index];
   }
@@ -529,40 +529,64 @@ function simplifyNote(note) {
 
 function transpose(semiTones, options) {
   let skipNext = false;
+  let n = 0;
   let next = "";
+  let nextOptions = new Options();
   let nextResult = "";
   let output = "";
   outputData = [];
-  let nextOptions = new Options();
-  nextOptions.inputFormat = options.inputFormat;
-  if (options.inputFormat === "CDE") {
-    nextOptions.outputFormat = "DOREMI";
-  } else {
-    nextOptions.outputFormat = "CDE";
+
+  let inlineToInline =
+    options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
+
+  n = 1;
+  if (inlineToInline) {
+    n++;
   }
-  skipNext = false;
-  for (let i = 0; i < inputData.length; i++) {
-    if (skipNext) {
-      skipNext = false;
+  for (let j = 0; j < n; j++) {
+    if (inlineToInline) {
+      if (j === 0) {
+        options.inputFormat = "INLINE";
+        options.outputFormat = "CDE";
+      }
+      if (j === 1) {
+        semiTones = 0;
+        options.inputFormat = "CDE";
+        options.outputFormat = "INLINE";
+        inputData = outputData.join("\n").split("\n");
+        outputData = [];
+      }
+    }
+    nextOptions.inputFormat = options.inputFormat;
+    if (options.inputFormat === "CDE") {
+      nextOptions.outputFormat = "DOREMI";
     } else {
-      if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
-        next = inputData[i + 1];
-        nextResult = transposeLine(next, 1, nextOptions, "");
-        if (next !== nextResult || next.trim() === "") {
+      nextOptions.outputFormat = "CDE";
+    }
+    skipNext = false;
+    for (let i = 0; i < inputData.length; i++) {
+      if (skipNext) {
+        skipNext = false;
+      } else {
+        if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
+          next = inputData[i + 1];
+          nextResult = transposeLine(next, 1, nextOptions, "");
+          if (next !== nextResult || next.trim() === "") {
+            next = "";
+          }
+        } else {
           next = "";
         }
-      } else {
-        next = "";
-      }
-      output = transposeLine(inputData[i], semiTones, options, next);
-      outputData.push(output);
-      if (
-        options.outputFormat === "INLINE" &&
-        output !== inputData[i] &&
-        next !== "" &&
-        i < inputData.length - 1
-      ) {
-        skipNext = true;
+        output = transposeLine(inputData[i], semiTones, options, next);
+        outputData.push(output);
+        if (
+          options.outputFormat === "INLINE" &&
+          output !== inputData[i] &&
+          next !== "" &&
+          i < inputData.length - 1
+        ) {
+          skipNext = true;
+        }
       }
     }
   }
@@ -1041,6 +1065,16 @@ function test() {
   checkResult(
     "Test 15",
     "[C][F][G]\n[C]This is a [G7]Test with inline chords",
+    outputData.join("\n")
+  );
+
+  // Test 16
+  initTest("INLINE", false, false, false, false, false, "INLINE");
+  inputData.push("This is a [Am]Test with [C/G]inline chords");
+  transpose(2, testOptions);
+  checkResult(
+    "Test 16",
+    "This is a [Bm]Test with [D/A]inline chords",
     outputData.join("\n")
   );
 }
