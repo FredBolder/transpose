@@ -336,7 +336,7 @@ function keyToSemitones(key) {
 function noteIndexToString(index, options, bass) {
   let s = "";
 
-  if (options.outputFormat === "CDE") {
+  if (options.outputFormat === "CDE" || options.outputFormat === "INLINE") {
     s = notes[index];
   }
   if (options.outputFormat === "DOREMI") {
@@ -436,9 +436,43 @@ function noteToIndex(note, options) {
 }
 
 function transpose(semiTones, options) {
+  let skipNext = false;
+  let next = "";
+  let nextResult = "";
+  let output = "";
   outputData = [];
+  let nextOptions = new Options();
+  nextOptions.inputFormat = options.inputFormat;
+  if (options.inputFormat === "CDE") {
+    nextOptions.outputFormat = "DOREMI";
+  } else {
+    nextOptions.outputFormat = "CDE";
+  }
+  skipNext = false;
   for (let i = 0; i < inputData.length; i++) {
-    outputData[i] = transposeLine(inputData[i], semiTones, options);
+    if (skipNext) {
+      skipNext = false;
+    } else {
+      if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
+        next = inputData[i + 1];
+        nextResult = transposeLine(next, 1, nextOptions, "");
+        if (next !== nextResult || next.trim() === "") {
+          next = "";
+        }
+      } else {
+        next = "";
+      }
+      output = transposeLine(inputData[i], semiTones, options, next);
+      outputData.push(output);
+      if (
+        options.outputFormat === "INLINE" &&
+        output !== inputData[i] &&
+        next !== "" &&
+        i < inputData.length - 1
+      ) {
+        skipNext = true;
+      }
+    }
   }
 }
 
@@ -461,10 +495,11 @@ function transposeClicked() {
   document.getElementById("output").value = outputData.join("\n");
 }
 
-function transposeLine(input, semiTones, options) {
+function transposeLine(input, semiTones, options, nextInput) {
   let chord = "";
   let chords = [];
   let chordType = "";
+  let convertToInline = false;
   let error = false;
   let inlinePos = 0;
   let inlineText = "";
@@ -474,12 +509,16 @@ function transposeLine(input, semiTones, options) {
   let noteIndex = -1;
   let noteStr = "";
   let oneMore = false;
+  let outputInline = "";
   let position = -1;
+  let prevPos = 0;
   let readChord = false;
   let result = "";
   let s = "";
+  let sAdd = "";
   let sNewChord = "";
 
+  convertToInline = nextInput.length > 0 && options.outputFormat === "INLINE";
   s = convertToNormalChars(input);
   if (
     (input.includes(",") || input.includes(".")) &&
@@ -655,9 +694,23 @@ function transposeLine(input, semiTones, options) {
   }
   if (!error) {
     s = "";
+    outputInline = "";
     for (let i = 0; i < chords.length; i++) {
       while (s.length < chords[i].position) {
         s += " ";
+      }
+      if (convertToInline) {
+        if (nextInput.length >= 0) {
+          sAdd = nextInput.slice(0, chords[i].position - prevPos);
+          nextInput = nextInput.slice(chords[i].position - prevPos);
+        } else {
+          sAdd = "";
+        }
+        while (sAdd.length < chords[i].position - prevPos) {
+          sAdd += " ";
+        }
+        outputInline += sAdd;
+        prevPos = chords[i].position;
       }
       n = fixNoteIndex(chords[i].noteIndex + semiTones);
       noteStr = noteIndexToString(n, options, false);
@@ -689,11 +742,20 @@ function transposeLine(input, semiTones, options) {
         if (options.spaceBetween || options.outputFormat === "ROMAN") {
           s += " ";
         }
+        if (convertToInline) {
+          outputInline += "[" + noteStr + chordType + "]";
+        }
       }
     }
   }
   if (!error) {
-    result = s.trimEnd();
+    if (convertToInline) {
+      outputInline += nextInput;
+      result = outputInline;
+    } else {
+      result = s;
+    }
+    result = result.trimEnd();
     if (options.useSpecial) {
       result = convertToSpecialChars(result);
     }
@@ -834,6 +896,17 @@ function test() {
     outputData.join("\n")
   );
   key = 0;
+
+  // Test 13
+  initTest("CDE", false, false, false, false, "INLINE");
+  inputData.push("          Abm       B/Gb");
+  inputData.push("This is a Test with inline chords");
+  transpose(1, testOptions);
+  checkResult(
+    "Test 13",
+    "This is a [Am]Test with [C/G]inline chords",
+    outputData.join("\n")
+  );
 }
 
 if (!useWebsite) {
