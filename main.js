@@ -1,4 +1,4 @@
-const useWebsite = false;
+const useWebsite = true;
 
 let inputData = [];
 let key = 0;
@@ -486,7 +486,7 @@ function transposeClicked() {
   options.outputFormat = document.getElementById("outputFormat").value;
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
-  let key = parseInt(document.getElementById("key").value);
+  key = parseInt(document.getElementById("key").value);
   let semitones = parseInt(document.getElementById("semitones").value);
   if (options.outputFormat === "ROMAN") {
     semitones = keyToSemitones(key);
@@ -499,10 +499,10 @@ function transposeLine(input, semiTones, options, nextInput) {
   let chord = "";
   let chords = [];
   let chordType = "";
-  let convertToInline = false;
   let error = false;
   let inlinePos = 0;
   let inlineText = "";
+  let mergeWithNextLine = false;
   let n1 = 0;
   let newChord = false;
   let note = "";
@@ -518,7 +518,7 @@ function transposeLine(input, semiTones, options, nextInput) {
   let sAdd = "";
   let sNewChord = "";
 
-  convertToInline = nextInput.length > 0 && options.outputFormat === "INLINE";
+  mergeWithNextLine = nextInput.length > 0 && options.outputFormat === "INLINE";
   s = convertToNormalChars(input);
   if (
     (input.includes(",") || input.includes(".")) &&
@@ -699,7 +699,7 @@ function transposeLine(input, semiTones, options, nextInput) {
       while (s.length < chords[i].position) {
         s += " ";
       }
-      if (convertToInline) {
+      if (mergeWithNextLine) {
         if (nextInput.length >= 0) {
           sAdd = nextInput.slice(0, chords[i].position - prevPos);
           nextInput = nextInput.slice(chords[i].position - prevPos);
@@ -731,6 +731,9 @@ function transposeLine(input, semiTones, options, nextInput) {
             noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
           }
         }
+        if (options.outputFormat === "INLINE") {
+          s += "[";
+        }
         s += noteStr;
         if (options.outputFormat === "GREEK") {
           chordType = convertTypeToGreek(chordType);
@@ -739,17 +742,20 @@ function transposeLine(input, semiTones, options, nextInput) {
           chordType = convertTypeToRoman(chordType);
         }
         s += chordType;
+        if (options.outputFormat === "INLINE") {
+          s += "]";
+        }
         if (options.spaceBetween || options.outputFormat === "ROMAN") {
           s += " ";
         }
-        if (convertToInline) {
+        if (mergeWithNextLine) {
           outputInline += "[" + noteStr + chordType + "]";
         }
       }
     }
   }
   if (!error) {
-    if (convertToInline) {
+    if (mergeWithNextLine) {
       outputInline += nextInput;
       result = outputInline;
     } else {
@@ -907,6 +913,28 @@ function test() {
     "This is a [Am]Test with [C/G]inline chords",
     outputData.join("\n")
   );
+
+  // Test 14
+  initTest("CDE", false, false, false, false, "ROMAN");
+  inputData.push("Am B° C Dm Em F G");
+  key = 21; // Am
+  semitones = keyToSemitones(key);
+  transpose(semitones, testOptions);
+  checkResult("Test 14", "i  ii0 III iv v VI VII", outputData.join("\n"));
+  key = 0;
+
+  // Test 15
+  initTest("CDE", false, false, false, false, "INLINE");
+  inputData.push("C  F  G");
+  inputData.push("C         G7");
+  inputData.push("This is a Test with inline chords");
+  transpose(0, testOptions);
+  checkResult(
+    "Test 15",
+    "[C][F][G]\n[C]This is a [G7]Test with inline chords",
+    outputData.join("\n")
+  );
+
 }
 
 if (!useWebsite) {
