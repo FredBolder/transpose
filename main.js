@@ -94,6 +94,8 @@ let notesDoReMi = [
   "La",
   "La#,Sib",
   "Si",
+  "La#,Tib",
+  "Ti",
 ];
 
 let notesGreek = [
@@ -117,6 +119,7 @@ let simpleNotes = [
   "Cb,B",
   "Fb,E",
   "Si#,Do",
+  "Ti#,Do",
   "Mi#,Fa",
   "Dob,Si",
   "Fab,Mi",
@@ -138,6 +141,36 @@ let simpleNotes = [
   "G##,A",
   "A##,B",
   "B##,C#",
+  "Dobb,Sib",
+  "Rebb,Do",
+  "Mibb,Re",
+  "Fabb,Mib",
+  "Solbb,Fa",
+  "Labb,Sol",
+  "Sibb,La",
+  "Tibb,La",
+  "Do##,Re",
+  "Re##,Mi",
+  "Mi##,Fa#",
+  "Fa##,Sol",
+  "Sol##,La",
+  "La##,Si",
+  "Si##,Do#",
+  "Ti##,Do#",
+  "Ντοbb,Σιb",
+  "Ρεbb,Ντο",
+  "Μιbb,Ρε",
+  "Φαbb,Μιb",
+  "Σολbb,Φα",
+  "Λαbb,Σολ",
+  "Σιbb,Λα",
+  "Ντο##,Ρε",
+  "Ρε##,Μι",
+  "Μι##,Φα#",
+  "Φα##,Σολ",
+  "Σολ##,Λα",
+  "Λα##,Σι",
+  "Σι##,Ντο#",
 ];
 
 let testOptions;
@@ -154,6 +187,7 @@ class Options {
   constructor() {
     this.inputFormat = "CDE";
     this.preferSharps = false;
+    this.useTi = false;
     this.useSpecial = false;
     this.spaceBetween = true;
     this.uppercase = false;
@@ -364,13 +398,21 @@ function keyToSemitones(key) {
 
 function noteIndexToString(index, options, bass) {
   let s = "";
+  let save_index = 0;
 
+  save_index = index;
   if (options.outputFormat === "CDE" || options.outputFormat === "INLINE") {
     s = notes[index];
   }
   if (options.outputFormat === "DOREMI") {
+    if (options.useTi) {
+       if (index >= 10) {
+        index += 2;
+       }
+    }
     s = notesDoReMi[index];
   }
+  index = save_index;
   if (options.outputFormat === "GREEK") {
     s = notesGreek[index];
   }
@@ -432,14 +474,7 @@ function noteToIndex(note, options) {
       arr = notesDoReMi;
     }
     if (note.length > 1) {
-      if (note.endsWith("b")) {
-        note =
-          note[0] +
-          note.slice(1, note.length - 1).toLowerCase() +
-          note[note.length - 1];
-      } else {
-        note = note[0] + note.slice(1).toLowerCase();
-      }
+      note = note[0] + note.slice(1).toLowerCase();
     }
   }
   note = simplifyNote(note);
@@ -462,6 +497,9 @@ function noteToIndex(note, options) {
     }
     return acc;
   }, -1);
+  if (idx > 11) {
+    idx -= 2; // Ti -> Si
+  }
   return idx;
 }
 
@@ -534,6 +572,7 @@ function transposeClicked() {
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
   options.preferSharps = document.getElementById("useSharps").checked;
+  options.useTi = document.getElementById("useTi").checked;
   options.useSpecial = document.getElementById("useSpecial").checked;
   options.spaceBetween = document.getElementById("spaceBetween").checked;
   options.uppercase = document.getElementById("uppercase").checked;
@@ -686,9 +725,11 @@ function transposeLine(input, semiTones, options, nextInput) {
               note += chord[2];
             }
           }
-          if (chord.length > note.length) {
-            if (chord[note.length] === "#" || chord[note.length] === "b") {
-              note += chord[note.length];
+          for (let j = 0; j < 2; j++) {
+            if (chord.length > note.length) {
+              if (chord[note.length] === "#" || chord[note.length] === "b") {
+                note += chord[note.length];
+              }
             }
           }
         }
@@ -710,9 +751,11 @@ function transposeLine(input, semiTones, options, nextInput) {
               note += chord[2];
             }
           }
-          if (chord.length > note.length) {
-            if (chord[note.length] === "#" || chord[note.length] === "b") {
-              note += chord[note.length];
+          for (let j = 0; j < 2; j++) {
+            if (chord.length > note.length) {
+              if (chord[note.length] === "#" || chord[note.length] === "b") {
+                note += chord[note.length];
+              }
             }
           }
         }
@@ -844,6 +887,7 @@ function checkResult(testName, expected, result) {
 function initTest(
   inputFormat,
   preferSharps,
+  useTi,
   useSpecial,
   spaceBetween,
   uppercase,
@@ -851,6 +895,7 @@ function initTest(
 ) {
   testOptions.inputFormat = inputFormat;
   testOptions.preferSharps = preferSharps;
+  testOptions.useTi = useTi;
   testOptions.useSpecial = useSpecial;
   testOptions.spaceBetween = spaceBetween;
   testOptions.uppercase = uppercase;
@@ -864,7 +909,7 @@ function test() {
   key = 0;
 
   // Test 1
-  initTest("CDE", false, false, true, false, "CDE");
+  initTest("CDE", false, false, false, true, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B B# Cb Ebb");
   transpose(-1, testOptions);
   checkResult(
@@ -874,13 +919,13 @@ function test() {
   );
 
   // Test 2
-  initTest("CDE", true, false, true, false, "CDE");
+  initTest("CDE", true, false, false, true, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B");
   transpose(1, testOptions);
   checkResult("Test 2", "C# D D# E F F# G G# A A# B C", outputData.join("\n"));
 
   // Test 3
-  initTest("CDE", true, false, true, false, "DOREMI");
+  initTest("CDE", true, false, false, true, false, "DOREMI");
   inputData.push("C C# D D# E F F# G G# A A# B");
   transpose(0, testOptions);
   checkResult(
@@ -890,29 +935,31 @@ function test() {
   );
 
   // Test 4
-  initTest("DOREMI", true, false, true, false, "CDE");
-  inputData.push("Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si FA SOL SOLb Mi#");
+  initTest("DOREMI", true, false, false, true, false, "CDE");
+  inputData.push(
+    "Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si FA SOL SOLb Mi# Mibb TI"
+  );
   transpose(0, testOptions);
   checkResult(
     "Test 4",
-    "C  C#  D  D#  E  F  F#  G   G#   A  A#  B  F  G   F#   F",
+    "C  C#  D  D#  E  F  F#  G   G#   A  A#  B  F  G   F#   F   D    B",
     outputData.join("\n")
   );
 
   // Test 5
-  initTest("DOREMI", true, false, false, false, "CDE");
+  initTest("DOREMI", true, false, false, false, false, "CDE");
   inputData.push("Rem LaRem SolFa SolbFa");
   transpose(0, testOptions);
   checkResult("Test 5", "Dm  A Dm  G  F  F#  F", outputData.join("\n"));
 
   // Test 6
-  initTest("CDE", false, false, false, false, "CDE");
+  initTest("CDE", false, false, false, false, false, "CDE");
   inputData.push("Dm7/A Bb DmF");
   transpose(2, testOptions);
   checkResult("Test 6", "Em7/B C  EmG", outputData.join("\n"));
 
   // Test 7
-  initTest("INLINE", false, false, false, false, "CDE");
+  initTest("INLINE", false, false, false, false, false, "CDE");
   inputData.push("This is a [Am]Test with [C/G]inline chords");
   transpose(-1, testOptions);
   checkResult(
@@ -922,29 +969,29 @@ function test() {
   );
 
   // Test 8
-  initTest("CDE", false, false, true, false, "GREEK");
+  initTest("CDE", false, false, false, true, false, "GREEK");
   inputData.push("Dm/F C Cmaj7");
   transpose(0, testOptions);
   checkResult("Test 8", "Ρε-/Φα Ντο+ Ντοmaj7", outputData.join("\n"));
 
   // Test 9
-  initTest("GREEK", false, false, true, false, "CDE");
-  inputData.push("Ρε-/Φα Ντο+ Σολ♭ Σολ7 ΝΤΟΣολb ΣΟΛ");
+  initTest("GREEK", false, false, false, true, false, "CDE");
+  inputData.push("Ρε-/Φα Ντο+ Σολ♭ Σολ7 ΝΤΟΣολb ΣΟΛ Ρεbb");
   transpose(0, testOptions);
   checkResult(
     "Test 9",
-    "Dm/F   C    Gb   G7   C  Gb   G",
+    "Dm/F   C    Gb   G7   C  Gb   G   C",
     outputData.join("\n")
   );
 
   // Test 10
-  initTest("CDE", false, false, true, true, "DOREMI");
+  initTest("CDE", false, false, false, true, true, "DOREMI");
   inputData.push("Bbm Ebm7");
   transpose(-2, testOptions);
   checkResult("Test 10", "LAbm REbm7", outputData.join("\n"));
 
   // Test 11
-  initTest("GREEK", false, false, false, false, "ROMAN");
+  initTest("GREEK", false, false, false, false, false, "ROMAN");
   inputData.push("Ρε-/Φα Σολ- ΛΑ7 ΛΑ-7 Ντο+");
   key = 14; // Dm
   semitones = keyToSemitones(key);
@@ -953,7 +1000,7 @@ function test() {
   key = 0;
 
   // Test 12
-  initTest("INLINE", false, true, false, false, "ROMAN");
+  initTest("INLINE", false, false, true, false, false, "ROMAN");
   inputData.push("[F#]Inline [B]chords [C#7]to [Fdim]Roman [E#dim]notation");
   key = 6; // F#
   semitones = keyToSemitones(key);
@@ -966,7 +1013,7 @@ function test() {
   key = 0;
 
   // Test 13
-  initTest("CDE", false, false, false, false, "INLINE");
+  initTest("CDE", false, false, false, false, false, "INLINE");
   inputData.push("          Abm       B/Gb");
   inputData.push("This is a Test with inline chords");
   transpose(1, testOptions);
@@ -977,7 +1024,7 @@ function test() {
   );
 
   // Test 14
-  initTest("CDE", false, false, false, false, "ROMAN");
+  initTest("CDE", false, false, false, false, false, "ROMAN");
   inputData.push("Am B° C Dm Em F G");
   key = 21; // Am
   semitones = keyToSemitones(key);
@@ -986,7 +1033,7 @@ function test() {
   key = 0;
 
   // Test 15
-  initTest("CDE", false, false, false, false, "INLINE");
+  initTest("CDE", false, false, false, false, false, "INLINE");
   inputData.push("C  F  G");
   inputData.push("C         G7");
   inputData.push("This is a Test with inline chords");
@@ -1002,6 +1049,7 @@ if (!useWebsite) {
   testOptions = new Options();
   testOptions.inputFormat = "DOREMI";
   testOptions.preferSharps = false;
+  testOptions.useTi = false;
   testOptions.useSpecial = false;
   testOptions.spaceBetween = true;
   testOptions.uppercase = false;
