@@ -191,6 +191,7 @@ class Chord {
 class Options {
   constructor() {
     this.inputFormat = "CDE";
+    this.brackets = "SQUARE";
     this.preferSharps = false;
     this.useTi = false;
     this.useSpecial = false;
@@ -629,6 +630,7 @@ function transpose(semiTones, options) {
 function transposeClicked() {
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
+  options.brackets = document.getElementById("brackets").value;
   options.preferSharps = document.getElementById("useSharps").checked;
   options.useTi = document.getElementById("useTi").checked;
   options.useSpecial = document.getElementById("useSpecial").checked;
@@ -694,7 +696,11 @@ function transposeLine(input, semiTones, options, nextInput) {
         position = i;
         chord = "";
       }
-      if (options.inputFormat === "INLINE" && s[i] === "[") {
+      if (
+        options.inputFormat === "INLINE" &&
+        ((s[i] === "[" && options.brackets === "SQUARE") ||
+          (s[i] === "(" && options.brackets === "ROUND"))
+      ) {
         readChord = true;
         position = inlinePos;
         chord = "";
@@ -743,7 +749,7 @@ function transposeLine(input, semiTones, options, nextInput) {
         }
       }
       if (options.inputFormat === "INLINE") {
-        if (" []".includes(s[i]) === false) {
+        if (((" []".includes(s[i]) && options.brackets === "SQUARE") || (" ()".includes(s[i]) && options.brackets === "ROUND")) === false) {
           chord += s[i];
         }
       } else {
@@ -755,7 +761,8 @@ function transposeLine(input, semiTones, options, nextInput) {
       if (
         ((s[i] === " " || i === s.length - 1 || newChord) &&
           options.inputFormat !== "INLINE") ||
-        (s[i] === "]" && options.inputFormat === "INLINE")
+        (s[i] === "]" && options.inputFormat === "INLINE" && options.brackets === "SQUARE") ||
+        (s[i] === ")" && options.inputFormat === "INLINE" && options.brackets === "ROUND")
       ) {
         note = "";
         readChord = false;
@@ -954,6 +961,7 @@ function initTest(
   uppercase,
   outputFormat
 ) {
+  testOptions.brackets = "SQUARE";
   testOptions.inputFormat = inputFormat;
   testOptions.preferSharps = preferSharps;
   testOptions.useTi = useTi;
@@ -1120,12 +1128,7 @@ function test() {
   initTest("CDE", false, false, false, true, true, false, "CDE");
   inputData.push("Cdim Fmaj7 Aminor Aaug7");
   transpose(0, testOptions);
-  checkResult(
-    "Test 17",
-    "C°   FM7   Am     A+7",
-    outputData.join("\n")
-  );
-
+  checkResult("Test 17", "C°   FM7   Am     A+7", outputData.join("\n"));
 }
 
 if (!useWebsite) {
