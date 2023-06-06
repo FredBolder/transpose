@@ -256,6 +256,9 @@ function convertToNormalChars(s) {
       case "♯":
         value = "#";
         break;
+      case "Δ":
+        value = "M7";
+        break;
       default:
         value = s[i];
         break;
@@ -291,13 +294,14 @@ function convertTypeToCompact(s, options) {
   if (options.compact) {
     if (s.startsWith("aug") && options.outputFormat != "GREEK") {
       result = "+" + s.slice(3);
-    }
-    if (s.startsWith("maj7")) {
+    } else if (s.startsWith("maj7")) {
       if (options.useSpecial) {
         result = "Δ" + s.slice(4);
       } else {
         result = "M7" + s.slice(4);
       }
+    } else if (s.startsWith("M7") && options.useSpecial) {
+      result = "Δ" + s.slice(2);
     }
   }
   return result;
