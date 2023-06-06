@@ -171,6 +171,11 @@ let simpleNotes = [
   "Σολ##,Λα",
   "Λα##,Σι",
   "Σι##,Ντο#",
+  "So,Sol",
+  "Sob,Solb",
+  "So#,Sol#",
+  "Sobb,Fa",
+  "So##,La",
 ];
 
 let testOptions;
@@ -281,6 +286,23 @@ function convertToSpecialChars(s) {
   return result;
 }
 
+function convertTypeToCompact(s, options) {
+  let result = s;
+  if (options.compact) {
+    if (s.startsWith("aug") && options.outputFormat != "GREEK") {
+      result = "+" + s.slice(3);
+    }
+    if (s.startsWith("maj7")) {
+      if (options.useSpecial) {
+        result = "Δ" + s.slice(4);
+      } else {
+        result = "M7" + s.slice(4);
+      }
+    }
+  }
+  return result;
+}
+
 function convertTypeToGreek(s, options) {
   let convert = true;
   let result = s;
@@ -308,6 +330,8 @@ function convertTypeToRoman(s) {
   let result = s;
   if (s.startsWith("dim")) {
     result = "°" + s.slice(3);
+  } else if (s.startsWith("aug")) {
+    result = "+" + s.slice(3);
   } else if (s.startsWith("minor")) {
     result = s.slice(5);
   } else if (s.startsWith("min")) {
@@ -323,6 +347,11 @@ function convertTypeToRoman(s) {
     }
   }
   return result;
+}
+
+function copyClicked() {
+  let data = document.getElementById("output").value;
+  navigator.clipboard.writeText(data);
 }
 
 function createTestData(n) {
@@ -863,6 +892,7 @@ function transposeLine(input, semiTones, options, nextInput) {
         if (options.outputFormat === "ROMAN") {
           chordType = convertTypeToRoman(chordType);
         }
+        chordType = convertTypeToCompact(chordType, options);
         s += chordType;
         if (options.outputFormat === "INLINE") {
           s += "]";
