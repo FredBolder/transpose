@@ -36,6 +36,16 @@ h2 {
   margin-bottom: 1rem;
 }
 
+table {
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px solid cornflowerblue;
+  padding: 0.5rem;
+  text-align: left;
+}
+
 .settings {
   margin-top: 1rem;
   margin-bottom: 1rem;
