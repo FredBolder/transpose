@@ -302,6 +302,12 @@ function convertTypeToCompact(s, options) {
       }
     } else if (s.startsWith("M7") && options.useSpecial) {
       result = "Δ" + s.slice(2);
+    } else if (s.startsWith("minor")) {
+      result = "m" + s.slice(5);
+    } else if (s.startsWith("min")) {
+      result = "m" + s.slice(3);
+    } else if (s.startsWith("dim")) {
+      result = "°" + s.slice(3);
     }
   }
   return result;
@@ -405,7 +411,7 @@ function isRomanLower(s) {
     if (convert) {
       isLower = true;
     }
-  } else if (s.startsWith("dim") || s.startsWith("0") || s.startsWith("°")) {
+  } else if (s.startsWith("dim") || s.startsWith("°")) {
     isLower = true;
   }
   return isLower;
@@ -1109,6 +1115,17 @@ function test() {
     "This is a [Bm]Test with [D/A]inline chords",
     outputData.join("\n")
   );
+
+  // Test 17
+  initTest("CDE", false, false, false, true, true, false, "CDE");
+  inputData.push("Cdim Fmaj7 Aminor Aaug7");
+  transpose(0, testOptions);
+  checkResult(
+    "Test 17",
+    "C°   FM7   Am     A+7",
+    outputData.join("\n")
+  );
+
 }
 
 if (!useWebsite) {

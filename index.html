@@ -9,174 +9,191 @@
     <script type="text/javascript" src="./main.js"></script>
   </head>
   <body>
-    <header>
-      <h1>Transpose by Fred Bolder</h1>
-    </header>
-    <main>
-      <p>
-        Paste lyrics including chords in the first text area. Change the
-        settings and click the "Transpose / Convert" button. The result will
-        appear in the second text area. The "Original key" setting is only used
-        for the Output format Roman. When the Output format is set to Roman, the
-        Semitones setting is ignored.
-      </p>
-      <p>
-        Feel free to contact me by
-        <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
-        (fgh.bolder@gmail.com).
-      </p>
-      <textarea id="input" spellcheck="false"> </textarea>
-      <div class="settings">
-        <div>
-          <label for="inputFormat">Input format:</label>
-          <select name="inputFormat" id="inputFormat">
-            <option value="CDE" selected="selected">C D E</option>
-            <option value="DOREMI">Do Re Mi</option>
-            <option value="GREEK">Greek</option>
-            <option value="INLINE">[C] Inline</option>
-          </select>
+    <div class="container">
+      <header>
+        <h1>Transpose by Fred Bolder</h1>
+      </header>
+      <main>
+        <p>
+          Paste lyrics including chords in the first text area. Change the
+          settings and click the "Transpose / Convert" button. The result will
+          appear in the second text area. If the result is not what you expect,
+          click
+          <a href="./info.html">here</a> for more information.
+        </p>
+        <p>
+          Feel free to contact me by
+          <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
+          (fgh.bolder@gmail.com).
+        </p>
+        <textarea id="input" spellcheck="false"> </textarea>
+        <div class="settings">
+          <div>
+            <label for="inputFormat">Input format:</label>
+            <select name="inputFormat" id="inputFormat">
+              <option value="CDE" selected="selected">C D E</option>
+              <option value="DOREMI">Do Re Mi</option>
+              <option value="GREEK">Greek</option>
+              <option value="INLINE">[C] Inline</option>
+            </select>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="useSharps"
+              name="useSharps"
+              value="sharps"
+            />
+            <label for="useSharps">Use sharps (#)</label>
+          </div>
+          <div>
+            <input type="checkbox" id="useTi" name="useTi" value="ti" />
+            <label for="useTi">Use Ti</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="useSpecial"
+              name="useSpecial"
+              value="special"
+            />
+            <label for="useSpecial">Special chars</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="spaceBetween"
+              name="spaceBetween"
+              value="space"
+            />
+            <label for="spaceBetween">Space between chords</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="compact"
+              name="compact"
+              value="compact"
+            />
+            <label for="compact">Compact</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="uppercase"
+              name="uppercase"
+              value="upper"
+            />
+            <label for="uppercase">Uppercase notes</label>
+          </div>
+          <div>
+            <label for="key">Original key:</label>
+            <select name="key" id="key">
+              <option value="0" selected="selected">C</option>
+              <option value="1">C#/Db</option>
+              <option value="2">D</option>
+              <option value="3">D#/Eb</option>
+              <option value="4">E</option>
+              <option value="5">F</option>
+              <option value="6">F#/Gb</option>
+              <option value="7">G</option>
+              <option value="8">G#/Ab</option>
+              <option value="9">A</option>
+              <option value="10">A#/Bb</option>
+              <option value="11">B</option>
+              <option value="12">Cm</option>
+              <option value="13">C#m/Dbm</option>
+              <option value="14">Dm</option>
+              <option value="15">D#m/Ebm</option>
+              <option value="16">Em</option>
+              <option value="17">Fm</option>
+              <option value="18">F#m/Gbm</option>
+              <option value="19">Gm</option>
+              <option value="20">G#m/Abm</option>
+              <option value="21">Am</option>
+              <option value="22">A#m/Bbm</option>
+              <option value="23">Bm</option>
+            </select>
+          </div>
+          <div>
+            <label for="semitones">Semitones:</label>
+            <select name="semitones" id="semitones">
+              <option value="11">11</option>
+              <option value="10">10</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+              <option value="0">0</option>
+              <option value="-1">-1</option>
+              <option value="-2" selected="selected">-2</option>
+              <option value="-3">-3</option>
+              <option value="-4">-4</option>
+              <option value="-5">-5</option>
+              <option value="-6">-6</option>
+              <option value="-7">-7</option>
+              <option value="-8">-8</option>
+              <option value="-9">-9</option>
+              <option value="-10">-10</option>
+              <option value="-11">-11</option>
+            </select>
+          </div>
+          <div>
+            <label for="outputFormat">Output format:</label>
+            <select name="outputFormat" id="outputFormat">
+              <option value="CDE" selected="selected">C D E</option>
+              <option value="DOREMI">Do Re Mi</option>
+              <option value="GREEK">Greek</option>
+              <option value="INLINE">[C] Inline</option>
+              <option value="ROMAN">Roman</option>
+            </select>
+          </div>
+          <div>
+            <button onclick="transposeClicked()">Transpose / Convert</button>
+          </div>
+          <div>
+            <button onclick="copyClicked()">Copy</button>
+          </div>
         </div>
-        <div>
-          <input
-            type="checkbox"
-            id="useSharps"
-            name="useSharps"
-            value="sharps"
-          />
-          <label for="useSharps">Use sharps (#)</label>
-        </div>
-        <div>
-          <input type="checkbox" id="useTi" name="useTi" value="ti" />
-          <label for="useTi">Use Ti</label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="useSpecial"
-            name="useSpecial"
-            value="special"
-          />
-          <label for="useSpecial">Special chars</label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="spaceBetween"
-            name="spaceBetween"
-            value="space"
-          />
-          <label for="spaceBetween">Space between chords</label>
-        </div>
-        <div>
-          <input type="checkbox" id="compact" name="compact" value="compact" />
-          <label for="compact">Compact</label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="uppercase"
-            name="uppercase"
-            value="upper"
-          />
-          <label for="uppercase">Uppercase notes</label>
-        </div>
-        <div>
-          <label for="key">Original key:</label>
-          <select name="key" id="key">
-            <option value="0" selected="selected">C</option>
-            <option value="1">C#/Db</option>
-            <option value="2">D</option>
-            <option value="3">D#/Eb</option>
-            <option value="4">E</option>
-            <option value="5">F</option>
-            <option value="6">F#/Gb</option>
-            <option value="7">G</option>
-            <option value="8">G#/Ab</option>
-            <option value="9">A</option>
-            <option value="10">A#/Bb</option>
-            <option value="11">B</option>
-            <option value="12">Cm</option>
-            <option value="13">C#m/Dbm</option>
-            <option value="14">Dm</option>
-            <option value="15">D#m/Ebm</option>
-            <option value="16">Em</option>
-            <option value="17">Fm</option>
-            <option value="18">F#m/Gbm</option>
-            <option value="19">Gm</option>
-            <option value="20">G#m/Abm</option>
-            <option value="21">Am</option>
-            <option value="22">A#m/Bbm</option>
-            <option value="23">Bm</option>
-          </select>
-        </div>
-        <div>
-          <label for="semitones">Semitones:</label>
-          <select name="semitones" id="semitones">
-            <option value="11">11</option>
-            <option value="10">10</option>
-            <option value="9">9</option>
-            <option value="8">8</option>
-            <option value="7">7</option>
-            <option value="6">6</option>
-            <option value="5">5</option>
-            <option value="4">4</option>
-            <option value="3">3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
-            <option value="0">0</option>
-            <option value="-1">-1</option>
-            <option value="-2" selected="selected">-2</option>
-            <option value="-3">-3</option>
-            <option value="-4">-4</option>
-            <option value="-5">-5</option>
-            <option value="-6">-6</option>
-            <option value="-7">-7</option>
-            <option value="-8">-8</option>
-            <option value="-9">-9</option>
-            <option value="-10">-10</option>
-            <option value="-11">-11</option>
-          </select>
-        </div>
-        <div>
-          <label for="outputFormat">Output format:</label>
-          <select name="outputFormat" id="outputFormat">
-            <option value="CDE" selected="selected">C D E</option>
-            <option value="DOREMI">Do Re Mi</option>
-            <option value="GREEK">Greek</option>
-            <option value="INLINE">[C] Inline</option>
-            <option value="ROMAN">Roman</option>
-          </select>
-        </div>
-        <div>
-          <button onclick="transposeClicked()">Transpose / Convert</button>
-        </div>
-        <div>
-          <button onclick="copyClicked()">Copy</button>
-        </div>
-      </div>
-      <textarea id="output" spellcheck="false"> </textarea>
-    </main>
-    <section>
-      <h2>Links</h2>
-      <p>
+        <textarea id="output" spellcheck="false"> </textarea>
+      </main>
+      <section>
+        <h2>Links</h2>
+        <p></p>
         <table>
-        <tr>
-          <td><a href="https://fredbolder.github.io/portfolio/" target="_blank">Fred Bolder's Portfolio</a><br /></td>
-          <td>Music software and music books</td>
-        </tr>
-        <tr>
-          <td><a href="https://www.ultimate-guitar.com/" target="_blank">Ultimate-Guitar.com</a><br /></td>
-          <td>Lyrics including chords</td>
-        </tr>
-        <tr>
-          <td><a href="https://kithara.to/" target="_blank">kithara.to</a><br /></td>
-          <td>Greek lyrics including chords</td>
-        </tr>
-        <tr>
-          <td><a href="https://tabsy.gr/" target="_blank">tabsy</a><br /></td>
-          <td>Greek lyrics including chords</td>
-        </tr>
-      </table>
-    </section>
+          <tr>
+            <td>
+              <a href="https://fredbolder.github.io/portfolio/" target="_blank"
+                >Fred Bolder's Portfolio</a
+              ><br />
+            </td>
+            <td>Music software and music books</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://www.ultimate-guitar.com/" target="_blank"
+                >Ultimate-Guitar.com</a
+              ><br />
+            </td>
+            <td>Lyrics including chords</td>
+          </tr>
+          <tr>
+            <td>
+              <a href="https://kithara.to/" target="_blank">kithara.to</a><br />
+            </td>
+            <td>Greek lyrics including chords</td>
+          </tr>
+          <tr>
+            <td><a href="https://tabsy.gr/" target="_blank">tabsy</a><br /></td>
+            <td>Greek lyrics including chords</td>
+          </tr>
+        </table>
+      </section>
+    </div>
   </body>
 </html>
