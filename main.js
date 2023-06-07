@@ -1,4 +1,4 @@
-const useWebsite = false;
+const useWebsite = true;
 
 let inputData = [];
 let key = 0;
@@ -68,51 +68,52 @@ let chordsRomanMinor = [
 
 let chordTypes = [
   "",
+  "2",
   "5",
   "6",
+  "6b5",
+  "69",
   "7",
+  "7b5",
+  "7b9",
+  "7#9",
   "9",
   "11",
+  "11omit3",
+  "11omit5",
   "13",
-  "m",
-  "m6",
-  "m7",
-  "m9",
-  "m11",
-  "m11b9",
-  "m13",
-  "min",
-  "min6",
-  "min7",
-  "min9",
-  "min11",
-  "min11b9",
-  "min13",
   "minor",
+  "minor2",
+  "minoradd2",
+  "minoradd4",
   "minor6",
+  "minor69",
   "minor7",
+  "minor7b5",
+  "minor7b9",
+  "minor7#9",
   "minor9",
   "minor11",
+  "minor11omit5",
   "minor11b9",
   "minor13",
+  "minoradd9",
   "maj7",
-  "M7",
   "Δ",
-  "Δ7",
+  "maj7b5",
+  "Δb5",
+  "maj7#9",
+  "Δ#9",
   "maj9",
-  "M9",
-  "Δ9",
   "maj11",
-  "M11",
-  "Δ11",
   "maj13",
-  "M13",
-  "Δ13",
-  "-",
-  "-7",
+  "minmaj7",
+  "-Δ",
+  "minmaj9",
   "+",
   "+7",
   "aug",
+  "aug6",
   "aug7",
   "dim",
   "°",
@@ -122,10 +123,23 @@ let chordTypes = [
   "sus4",
   "sus24",
   "sus42",
+  "6sus2",
+  "6sus4",
+  "69sus4",
   "7sus2",
   "7sus4",
   "7sus24",
   "7sus42",
+  "9sus4",
+  "maj7sus2",
+  "maj7sus4",
+  "maj7sus24",
+  "maj7sus42",
+  "Δsus2",
+  "Δsus4",
+  "Δsus24",
+  "Δsus42",
+  "maj9sus4",
   "add2",
   "add4",
   "add9",
@@ -304,6 +318,9 @@ function changeBass(input, semiTones, options) {
 }
 
 function checkChordType(s) {
+  let arrType = [];
+  let ct1 = "";
+  let ct2 = "";
   let found = false;
   let p = s.indexOf("/");
   if (p >= 0) {
@@ -311,8 +328,25 @@ function checkChordType(s) {
   }
   let i = 0;
   while (i < chordTypes.length && !found) {
-    if (s === chordTypes[i]) {
-      found = true;
+    ct1 = chordTypes[i];
+    ct2 = "";
+    if (ct1.startsWith("minor")) {
+      arrType = ["minor", "min", "mi", "m", "-"];
+      ct2 = ct1.slice(5);
+    } else if (ct1.startsWith("maj")) {
+      arrType = ["maj", "M", "Δ"];
+      ct2 = ct1.slice(3);
+    } else if (ct1.startsWith("minmaj")) {
+      arrType = ["minmaj", "mM", "-M", "-Δ"];
+      ct2 = ct1.slice(6);
+    } else {
+      arrType = [];
+      arrType.push(ct1);
+    }
+    for (let j = 0; j < arrType.length; j++) {
+      if (s === arrType[j] + ct2) {
+        found = true;
+      }
     }
     i++;
   }
@@ -342,7 +376,14 @@ function convertToNormalChars(s) {
         value = "#";
         break;
       case "Δ":
-        value = "M7";
+        if (i + 1 < s.length) {
+          if (s[i + 1] === "7" || s[i + 1] === "9" || s[i + 1] === "1") {
+            // 1 for 11 and 13
+            value = "M";
+          }
+        } else {
+          value = "M7";
+        }
         break;
       default:
         value = s[i];
@@ -387,6 +428,24 @@ function convertTypeToCompact(s, options) {
       }
     } else if (s.startsWith("M7") && options.useSpecial) {
       result = "Δ" + s.slice(2);
+    } else if (s.startsWith("maj9")) {
+      if (options.useSpecial) {
+        result = "Δ9" + s.slice(4);
+      } else {
+        result = "M9" + s.slice(4);
+      }
+    } else if (s.startsWith("maj11")) {
+      if (options.useSpecial) {
+        result = "Δ11" + s.slice(5);
+      } else {
+        result = "M11" + s.slice(5);
+      }
+    } else if (s.startsWith("maj13")) {
+      if (options.useSpecial) {
+        result = "Δ13" + s.slice(5);
+      } else {
+        result = "M13" + s.slice(5);
+      }
     } else if (s.startsWith("minor")) {
       result = "m" + s.slice(5);
     } else if (s.startsWith("min")) {
