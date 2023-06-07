@@ -191,7 +191,8 @@ class Chord {
 class Options {
   constructor() {
     this.inputFormat = "CDE";
-    this.brackets = "SQUARE";
+    this.bracketsInput = "SQUARE";
+    this.bracketsOutput = "SQUARE";
     this.preferSharps = false;
     this.useTi = false;
     this.useSpecial = false;
@@ -293,7 +294,7 @@ function convertToSpecialChars(s) {
 function convertTypeToCompact(s, options) {
   let result = s;
   if (options.compact) {
-    if (s.startsWith("aug") && options.outputFormat != "GREEK") {
+    if (s.startsWith("aug") && options.outputFormat !== "GREEK") {
       result = "+" + s.slice(3);
     } else if (s.startsWith("maj7")) {
       if (options.useSpecial) {
@@ -382,6 +383,9 @@ function createTestData(n) {
       inputData.push("          Rem          Do    Sib/Fa");
       inputData.push("This is a test with Do Re Mi notation");
       break;
+    case 4:
+      inputData.push("[C]This is a [F]test with [G]inline chords");
+      break;
     default:
       break;
   }
@@ -466,7 +470,7 @@ function noteIndexToString(index, options, bass) {
       }
     }
   }
-  if (options.outputFormat == "ROMAN") {
+  if (options.outputFormat === "ROMAN") {
     if (s.includes(",")) {
       if (options.preferSharps) {
         s = s.slice(0, s.indexOf(",")).trim();
@@ -630,7 +634,8 @@ function transpose(semiTones, options) {
 function transposeClicked() {
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
-  options.brackets = document.getElementById("brackets").value;
+  options.bracketsInput = document.getElementById("bracketsInput").value;
+  options.bracketsOutput = document.getElementById("bracketsOutput").value;
   options.preferSharps = document.getElementById("useSharps").checked;
   options.useTi = document.getElementById("useTi").checked;
   options.useSpecial = document.getElementById("useSpecial").checked;
@@ -698,8 +703,8 @@ function transposeLine(input, semiTones, options, nextInput) {
       }
       if (
         options.inputFormat === "INLINE" &&
-        ((s[i] === "[" && options.brackets === "SQUARE") ||
-          (s[i] === "(" && options.brackets === "ROUND"))
+        ((s[i] === "[" && options.bracketsInput === "SQUARE") ||
+          (s[i] === "(" && options.bracketsInput === "ROUND"))
       ) {
         readChord = true;
         position = inlinePos;
@@ -749,7 +754,11 @@ function transposeLine(input, semiTones, options, nextInput) {
         }
       }
       if (options.inputFormat === "INLINE") {
-        if (((" []".includes(s[i]) && options.brackets === "SQUARE") || (" ()".includes(s[i]) && options.brackets === "ROUND")) === false) {
+        if (
+          ((" []".includes(s[i]) && options.bracketsInput === "SQUARE") ||
+            (" ()".includes(s[i]) && options.bracketsInput === "ROUND")) ===
+          false
+        ) {
           chord += s[i];
         }
       } else {
@@ -761,8 +770,12 @@ function transposeLine(input, semiTones, options, nextInput) {
       if (
         ((s[i] === " " || i === s.length - 1 || newChord) &&
           options.inputFormat !== "INLINE") ||
-        (s[i] === "]" && options.inputFormat === "INLINE" && options.brackets === "SQUARE") ||
-        (s[i] === ")" && options.inputFormat === "INLINE" && options.brackets === "ROUND")
+        (s[i] === "]" &&
+          options.inputFormat === "INLINE" &&
+          options.bracketsInput === "SQUARE") ||
+        (s[i] === ")" &&
+          options.inputFormat === "INLINE" &&
+          options.bracketsInput === "ROUND")
       ) {
         note = "";
         readChord = false;
@@ -825,7 +838,7 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
-        if (note == "") {
+        if (note === "") {
           error = true;
         } else {
           noteIndex = noteToIndex(note, options);
@@ -900,7 +913,12 @@ function transposeLine(input, semiTones, options, nextInput) {
           }
         }
         if (options.outputFormat === "INLINE") {
-          s += "[";
+          if (options.bracketsOutput === "SQUARE") {
+            s += "[";
+          }
+          if (options.bracketsOutput === "ROUND") {
+            s += "(";
+          }
         }
         s += noteStr;
         if (options.outputFormat === "GREEK") {
@@ -912,13 +930,24 @@ function transposeLine(input, semiTones, options, nextInput) {
         chordType = convertTypeToCompact(chordType, options);
         s += chordType;
         if (options.outputFormat === "INLINE") {
-          s += "]";
+          if (options.bracketsOutput === "SQUARE") {
+            s += "]";
+          }
+          if (options.bracketsOutput === "ROUND") {
+            s += ")";
+          }
         }
+
         if (options.spaceBetween || options.outputFormat === "ROMAN") {
           s += " ";
         }
         if (mergeWithNextLine) {
-          outputInline += "[" + noteStr + chordType + "]";
+          if (options.bracketsOutput === "SQUARE") {
+            outputInline += "[" + noteStr + chordType + "]";
+          }
+          if (options.bracketsOutput === "ROUND") {
+            outputInline += "(" + noteStr + chordType + ")";
+          }
         }
       }
     }
@@ -961,7 +990,8 @@ function initTest(
   uppercase,
   outputFormat
 ) {
-  testOptions.brackets = "SQUARE";
+  testOptions.bracketsInput = "SQUARE";
+  testOptions.bracketsOutput = "SQUARE";
   testOptions.inputFormat = inputFormat;
   testOptions.preferSharps = preferSharps;
   testOptions.useTi = useTi;
@@ -1129,11 +1159,37 @@ function test() {
   inputData.push("Cdim Fmaj7 Aminor Aaug7");
   transpose(0, testOptions);
   checkResult("Test 17", "C°   FM7   Am     A+7", outputData.join("\n"));
+
+  // Test 18
+  initTest("INLINE", false, false, false, false, false, false, "INLINE");
+  testOptions.bracketsInput = "ROUND";
+  testOptions.bracketsOutput = "SQUARE";
+  inputData.push("This is a (Am)Test with (C/G)inline chords");
+  transpose(3, testOptions);
+  checkResult(
+    "Test 18",
+    "This is a [Cm]Test with [Eb/Bb]inline chords",
+    outputData.join("\n")
+  );
+
+  // Test 19
+  initTest("INLINE", false, false, false, false, true, false, "INLINE");
+  testOptions.bracketsInput = "SQUARE";
+  testOptions.bracketsOutput = "ROUND";
+  inputData.push("This is a [Cmin]Test with [Eb/Bb]inline chords");
+  transpose(-3, testOptions);
+  checkResult(
+    "Test 19",
+    "This is a (Am)Test with (C/G)inline chords",
+    outputData.join("\n")
+  );
 }
 
 if (!useWebsite) {
   testOptions = new Options();
-  testOptions.inputFormat = "DOREMI";
+  testOptions.inputFormat = "INLINE";
+  testOptions.bracketsInput = "SQUARE";
+  testOptions.bracketsOutput = "SQUARE";
   testOptions.preferSharps = false;
   testOptions.useTi = false;
   testOptions.useSpecial = false;
@@ -1141,9 +1197,9 @@ if (!useWebsite) {
   testOptions.compact = false;
   testOptions.uppercase = false;
   testOptions.outputFormat = "CDE";
-  createTestData(3);
+  createTestData(4);
   console.log(inputData.join("\n"));
-  transpose(0, testOptions);
+  transpose(2, testOptions);
   console.log(outputData.join("\n"));
   test();
 }
