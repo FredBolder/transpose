@@ -1,4 +1,4 @@
-const useWebsite = true;
+const useWebsite = false;
 
 let inputData = [];
 let key = 0;
@@ -64,6 +64,72 @@ let chordsRomanMinor = [
   "#VI,bVII",
   "VII",
   "#VII,bI",
+];
+
+let chordTypes = [
+  "",
+  "5",
+  "6",
+  "7",
+  "9",
+  "11",
+  "13",
+  "m",
+  "m6",
+  "m7",
+  "m9",
+  "m11",
+  "m11b9",
+  "m13",
+  "min",
+  "min6",
+  "min7",
+  "min9",
+  "min11",
+  "min11b9",
+  "min13",
+  "minor",
+  "minor6",
+  "minor7",
+  "minor9",
+  "minor11",
+  "minor11b9",
+  "minor13",
+  "maj7",
+  "M7",
+  "Δ",
+  "Δ7",
+  "maj9",
+  "M9",
+  "Δ9",
+  "maj11",
+  "M11",
+  "Δ11",
+  "maj13",
+  "M13",
+  "Δ13",
+  "-",
+  "-7",
+  "+",
+  "+7",
+  "aug",
+  "aug7",
+  "dim",
+  "°",
+  "dim7",
+  "°7",
+  "sus2",
+  "sus4",
+  "sus24",
+  "sus42",
+  "7sus2",
+  "7sus4",
+  "7sus24",
+  "7sus42",
+  "add2",
+  "add4",
+  "add9",
+  "add11",
 ];
 
 let notes = [
@@ -191,6 +257,7 @@ class Chord {
 class Options {
   constructor() {
     this.inputFormat = "CDE";
+    this.strict = true;
     this.bracketsInput = "SQUARE";
     this.bracketsOutput = "SQUARE";
     this.preferSharps = false;
@@ -234,6 +301,22 @@ function changeBass(input, semiTones, options) {
     result = "ERROR";
   }
   return result;
+}
+
+function checkChordType(s) {
+  let found = false;
+  let p = s.indexOf("/");
+  if (p >= 0) {
+    s = s.slice(0, p);
+  }
+  let i = 0;
+  while (i < chordTypes.length && !found) {
+    if (s === chordTypes[i]) {
+      found = true;
+    }
+    i++;
+  }
+  return found;
 }
 
 function convertGreekType(s) {
@@ -634,6 +717,7 @@ function transpose(semiTones, options) {
 function transposeClicked() {
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
+  options.strict = document.getElementById("strict").checked;
   options.bracketsInput = document.getElementById("bracketsInput").value;
   options.bracketsOutput = document.getElementById("bracketsOutput").value;
   options.preferSharps = document.getElementById("useSharps").checked;
@@ -895,10 +979,19 @@ function transposeLine(input, semiTones, options, nextInput) {
       }
       n = fixNoteIndex(chords[i].noteIndex + semiTones);
       noteStr = noteIndexToString(n, options, false);
-      chordType = changeBass(chords[i].chordType, semiTones, options);
-      if (chordType === "ERROR") {
-        error = true;
-      } else {
+      chordType = chords[i].chordType;
+      if (options.strict) {
+        if (!checkChordType(chordType)) {
+          error = true;
+        }
+      }
+      if (!error) {
+        chordType = changeBass(chordType, semiTones, options);
+        if (chordType === "ERROR") {
+          error = true;
+        }
+      }
+      if (!error) {
         if (options.inputFormat === "GREEK") {
           chordType = convertGreekType(chordType);
         }
@@ -990,6 +1083,7 @@ function initTest(
   uppercase,
   outputFormat
 ) {
+  testOptions.strict = true;
   testOptions.bracketsInput = "SQUARE";
   testOptions.bracketsOutput = "SQUARE";
   testOptions.inputFormat = inputFormat;
@@ -1188,6 +1282,7 @@ function test() {
 if (!useWebsite) {
   testOptions = new Options();
   testOptions.inputFormat = "INLINE";
+  testOptions.strict = true;
   testOptions.bracketsInput = "SQUARE";
   testOptions.bracketsOutput = "SQUARE";
   testOptions.preferSharps = false;
