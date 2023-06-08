@@ -1,4 +1,4 @@
-const useWebsite = false;
+const useWebsite = true;
 
 let inputData = [];
 let key = 0;
@@ -184,7 +184,7 @@ let notesDoReMi = [
   "Ti",
 ];
 
-let notesGerman = [
+let notesGerman1 = [
   "C",
   "Cis,Des",
   "D",
@@ -196,6 +196,21 @@ let notesGerman = [
   "Gis,As",
   "A",
   "Ais,B",
+  "H",
+];
+
+let notesGerman2 = [
+  "C",
+  "C#,Db",
+  "D",
+  "D#,Eb",
+  "E",
+  "F",
+  "F#,Gb",
+  "G",
+  "G#,Ab",
+  "A",
+  "A#,B",
   "H",
 ];
 
@@ -625,8 +640,11 @@ function noteIndexToString(index, options, bass) {
     s = notesDoReMi[index];
   }
   index = save_index;
-  if (options.outputFormat === "GERMAN") {
-    s = notesGerman[index];
+  if (options.outputFormat === "GERMAN1") {
+    s = notesGerman1[index];
+  }
+  if (options.outputFormat === "GERMAN2") {
+    s = notesGerman2[index];
   }
   if (options.outputFormat === "GREEK") {
     s = notesGreek[index];
@@ -646,23 +664,19 @@ function noteIndexToString(index, options, bass) {
       }
     }
   }
-  if (options.outputFormat === "ROMAN" && options.outputFormat === "GERMAN") {
-    if (s.includes(",")) {
-      if (options.preferSharps) {
-        s = s.slice(0, s.indexOf(",")).trim();
-      } else {
-        s = s.slice(s.indexOf(",") + 1).trim();
-      }
+  if (s.includes(",")) {
+    if (options.preferSharps) {
+      s = s.slice(0, s.indexOf(",")).trim();
+    } else {
+      s = s.slice(s.indexOf(",") + 1).trim();
     }
-  } else {
-    if (isSharpOrFlat(index)) {
-      if (options.preferSharps) {
-        s = s.slice(0, s.indexOf(",")).trim();
-      } else {
-        s = s.slice(s.indexOf(",") + 1).trim();
-      }
-    }
-    if (options.uppercase) {
+  }
+  if (options.uppercase) {
+    if (
+      options.outputFormat !== "ROMAN" &&
+      options.outputFormat !== "GERMAN1" &&
+      options.outputFormat !== "GERMAN2"
+    ) {
       if (isSharpOrFlat(index)) {
         s = s.slice(0, s.length - 1).toUpperCase() + s[s.length - 1];
       } else {
@@ -685,8 +699,11 @@ function noteToIndex(note, options, start) {
   if (options.inputFormat === "CDE" || options.inputFormat === "INLINE") {
     arr = notes;
   }
-  if (options.inputFormat === "GERMAN") {
-    arr = notesGerman;
+  if (options.inputFormat === "GERMAN1") {
+    arr = notesGerman1;
+  }
+  if (options.inputFormat === "GERMAN2") {
+    arr = notesGerman2;
   }
   if (options.inputFormat === "DOREMI" || options.inputFormat === "GREEK") {
     if (options.inputFormat === "GREEK") {
@@ -883,7 +900,7 @@ function transposeLine(input, semiTones, options, nextInput) {
     newChord = false;
     sNewChord = "";
     if (!readChord) {
-      if (options.inputFormat !== "INLINE" && s[i] !== " ") {
+      if (options.inputFormat !== "INLINE" && s[i] !== " " && s[i] !== "|") {
         readChord = true;
         position = i;
         chord = "";
@@ -924,7 +941,10 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
-        if (options.inputFormat === "GERMAN") {
+        if (
+          options.inputFormat === "GERMAN1" ||
+          options.inputFormat === "GERMAN2"
+        ) {
           if (chord[chord.length - 1] !== "/") {
             if (noteToIndex(s[i], options, true) >= 0) {
               newChord = true;
@@ -956,7 +976,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           chord += s[i];
         }
       } else {
-        if (s[i] !== " " && !newChord && !oneMore) {
+        if (s[i] !== " " && s[i] !== "|" && !newChord && !oneMore) {
           chord += s[i];
         }
       }
@@ -973,7 +993,11 @@ function transposeLine(input, semiTones, options, nextInput) {
       ) {
         note = "";
         readChord = false;
-        if (options.inputFormat === "CDE" || options.inputFormat === "INLINE") {
+        if (
+          options.inputFormat === "CDE" ||
+          options.inputFormat === "INLINE" ||
+          options.inputFormat === "GERMAN2"
+        ) {
           note = chord[0];
           if (chord.length > 1) {
             if (chord[1] === "#" || chord[1] === "b") {
@@ -986,7 +1010,7 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
-        if (options.inputFormat === "GERMAN") {
+        if (options.inputFormat === "GERMAN1") {
           note = chord[0];
           if (chord.length > 1) {
             if (chord[1] === "i" || chord[1] === "e") {
@@ -1070,7 +1094,8 @@ function transposeLine(input, semiTones, options, nextInput) {
           readChord = true;
           if (
             options.inputFormat === "CDE" ||
-            options.inputFormat === "GERMAN"
+            options.inputFormat === "GERMAN1" ||
+            options.inputFormat === "GERMAN2"
           ) {
             position = i;
             chord = s[i];
@@ -1412,14 +1437,24 @@ function test() {
   );
 
   // Test 20
-  initTest("GERMAN", false, false, false, true, false, false, "CDE");
+  initTest("GERMAN1", false, false, false, true, false, false, "CDE");
   inputData.push(
-    "C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis"
+    "C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis Gm/B"
   );
   transpose(0, testOptions);
   checkResult(
     "Test 20",
-    "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E   Db Db D Eb",
+    "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E   Db Db D Eb Gm/Bb",
+    outputData.join("\n")
+  );
+
+  // Test 21
+  initTest("GERMAN2", true, false, false, true, false, false, "CDE");
+  inputData.push("C C# Db D D# Eb E F F# Gb G G# Ab A A# B H");
+  transpose(0, testOptions);
+  checkResult(
+    "Test 21",
+    "C C# C# D D# D# E F F# F# G G# G# A A# A# B",
     outputData.join("\n")
   );
 }
