@@ -75,8 +75,10 @@ let chordTypes = [
   "69",
   "7",
   "7b5",
+  "7#5",
   "7b9",
   "7#9",
+  "7#9#11",
   "9",
   "11",
   "11omit3",
@@ -90,14 +92,16 @@ let chordTypes = [
   "minor69",
   "minor7",
   "minor7b5",
+  "minor7#5",
   "minor7b9",
   "minor7#9",
   "minor9",
+  "minoradd9",
   "minor11",
   "minor11omit5",
+  "minor11b5b9",
   "minor11b9",
   "minor13",
-  "minoradd9",
   "maj7",
   "Δ",
   "maj7b5",
@@ -119,6 +123,8 @@ let chordTypes = [
   "°",
   "dim7",
   "°7",
+  "dim9",
+  "°9",
   "sus2",
   "sus4",
   "sus24",
@@ -176,6 +182,21 @@ let notesDoReMi = [
   "Si",
   "La#,Tib",
   "Ti",
+];
+
+let notesGerman = [
+  "C",
+  "Cis,Des",
+  "D",
+  "Dis,Es",
+  "E",
+  "F",
+  "Fis,Ges",
+  "G",
+  "Gis,As",
+  "A",
+  "Ais,B",
+  "H",
 ];
 
 let notesGreek = [
@@ -256,6 +277,10 @@ let simpleNotes = [
   "So#,Sol#",
   "Sobb,Fa",
   "So##,La",
+  "Ces,H",
+  "His,C",
+  "Eis,F",
+  "Fes,E",
 ];
 
 let testOptions;
@@ -294,7 +319,7 @@ function changeBass(input, semiTones, options) {
   let p2 = input.lastIndexOf("/");
   if (p1 >= 0 && p1 === p2 && p1 < input.length - 1) {
     note = input.slice(p1 + 1);
-    noteIndex = noteToIndex(note, options);
+    noteIndex = noteToIndex(note, options, false);
     if (noteIndex >= 0) {
       noteIndex = fixNoteIndex(noteIndex + semiTones);
       noteStr = noteIndexToString(noteIndex, options, true);
@@ -325,6 +350,8 @@ function checkChordType(s) {
   let p = s.indexOf("/");
   if (p >= 0) {
     s = s.slice(0, p);
+  }
+  if (!s.startsWith("-")) {
   }
   let i = 0;
   while (i < chordTypes.length && !found) {
@@ -450,6 +477,8 @@ function convertTypeToCompact(s, options) {
       result = "m" + s.slice(5);
     } else if (s.startsWith("min")) {
       result = "m" + s.slice(3);
+    } else if (s.startsWith("mi")) {
+      result = "m" + s.slice(2);
     } else if (s.startsWith("dim")) {
       result = "°" + s.slice(3);
     }
@@ -464,6 +493,8 @@ function convertTypeToGreek(s, options) {
     result = "-" + s.slice(5);
   } else if (s.startsWith("min")) {
     result = "-" + s.slice(3);
+  } else if (s.startsWith("mi")) {
+    result = "-" + s.slice(2);
   } else if (s.startsWith("m")) {
     if (s.length > 1) {
       if ("aA".includes(s[1])) {
@@ -490,6 +521,8 @@ function convertTypeToRoman(s) {
     result = s.slice(5);
   } else if (s.startsWith("min")) {
     result = s.slice(3);
+  } else if (s.startsWith("mi")) {
+    result = s.slice(2);
   } else if (s.startsWith("m")) {
     if (s.length > 1) {
       if ("aA".includes(s[1])) {
@@ -547,9 +580,7 @@ function isRomanLower(s) {
   let convert = true;
   let isLower = false;
 
-  if (s.startsWith("min")) {
-    isLower = true;
-  } else if (s.startsWith("m")) {
+  if (s.startsWith("m")) {
     if (s.length > 1) {
       if ("aA".includes(s[1])) {
         convert = false;
@@ -594,6 +625,9 @@ function noteIndexToString(index, options, bass) {
     s = notesDoReMi[index];
   }
   index = save_index;
+  if (options.outputFormat === "GERMAN") {
+    s = notesGerman[index];
+  }
   if (options.outputFormat === "GREEK") {
     s = notesGreek[index];
   }
@@ -612,7 +646,7 @@ function noteIndexToString(index, options, bass) {
       }
     }
   }
-  if (options.outputFormat === "ROMAN") {
+  if (options.outputFormat === "ROMAN" && options.outputFormat === "GERMAN") {
     if (s.includes(",")) {
       if (options.preferSharps) {
         s = s.slice(0, s.indexOf(",")).trim();
@@ -639,14 +673,20 @@ function noteIndexToString(index, options, bass) {
   return s;
 }
 
-function noteToIndex(note, options) {
+function noteToIndex(note, options, start) {
   let arr = [];
   found = false;
   let idx = -1;
   let n = -1;
+  let p = -1;
+  let s1 = "";
+  let s2 = "";
 
   if (options.inputFormat === "CDE" || options.inputFormat === "INLINE") {
     arr = notes;
+  }
+  if (options.inputFormat === "GERMAN") {
+    arr = notesGerman;
   }
   if (options.inputFormat === "DOREMI" || options.inputFormat === "GREEK") {
     if (options.inputFormat === "GREEK") {
@@ -661,16 +701,20 @@ function noteToIndex(note, options) {
   note = simplifyNote(note);
   idx = arr.reduce((acc, current, currentIdx) => {
     found = false;
-    n = current.indexOf(note);
-    if (n >= 0 && !note.includes(",")) {
-      if (note.includes("#") || note.includes("b")) {
-        if (current.includes(",") && note.length > 1) {
-          found = true;
-        }
-      } else {
-        if (!current.includes(",")) {
-          found = true;
-        }
+    s1 = current.trim();
+    s2 = s1;
+    p = s1.indexOf(",");
+    if (p >= 0) {
+      s2 = s1.slice(p + 1).trim();
+      s1 = s1.slice(0, p).trim();
+    }
+    if (start) {
+      if (s1.startsWith(note) || s2.startsWith(note)) {
+        found = true;
+      }
+    } else {
+      if (note === s1 || note === s2) {
+        found = true;
       }
     }
     if (found) {
@@ -862,7 +906,7 @@ function transposeLine(input, semiTones, options, nextInput) {
       if (chord.length > 0 && !oneMore && options.inputFormat !== "INLINE") {
         if (options.inputFormat === "CDE") {
           if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options) >= 0) {
+            if (noteToIndex(s[i], options, true) >= 0) {
               newChord = true;
             }
           }
@@ -871,7 +915,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
             if (
-              noteToIndex(sNewChord, options) >= 0 ||
+              noteToIndex(sNewChord, options, true) >= 0 ||
               sNewChord === "So" ||
               sNewChord === "SO"
             ) {
@@ -884,7 +928,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
             if (
-              noteToIndex(sNewChord, options) >= 0 ||
+              noteToIndex(sNewChord, options, true) >= 0 ||
               sNewChord === "Ντο" ||
               sNewChord === "ΝΤΟ" ||
               sNewChord === "Σολ" ||
@@ -931,6 +975,26 @@ function transposeLine(input, semiTones, options, nextInput) {
                 if (chord[2] === "#" || chord[2] === "b") {
                   note += chord[2];
                 }
+              }
+            }
+          }
+        }
+        if (options.inputFormat === "GERMAN") {
+          note = chord[0];
+          if (chord.length > 1) {
+            if (chord[1] === "i" || chord[1] === "e") {
+              note += chord[1];
+            }
+          }
+          if (chord.length > note.length) {
+            if (chord[note.length] === "s") {
+              if (chord.length > note.length + 1) {
+                // In case of sus chord
+                if (chord[note.length + 1] !== "u") {
+                  note += "s";
+                }
+              } else {
+                note += "s";
               }
             }
           }
@@ -984,7 +1048,7 @@ function transposeLine(input, semiTones, options, nextInput) {
         if (note === "") {
           error = true;
         } else {
-          noteIndex = noteToIndex(note, options);
+          noteIndex = noteToIndex(note, options, false);
           if (noteIndex === -1) {
             error = true;
           }
@@ -1309,9 +1373,9 @@ function test() {
 
   // Test 17
   initTest("CDE", false, false, false, true, true, false, "CDE");
-  inputData.push("Cdim Fmaj7 Aminor Aaug7");
+  inputData.push("Cdim Fmaj7 Aminor Dmi7 Aaug7");
   transpose(0, testOptions);
-  checkResult("Test 17", "C°   FM7   Am     A+7", outputData.join("\n"));
+  checkResult("Test 17", "C°   FM7   Am     Dm7  A+7", outputData.join("\n"));
 
   // Test 18
   initTest("INLINE", false, false, false, false, false, false, "INLINE");
@@ -1334,6 +1398,16 @@ function test() {
   checkResult(
     "Test 19",
     "This is a (Am)Test with (C/G)inline chords",
+    outputData.join("\n")
+  );
+
+  // Test 20
+  initTest("GERMAN", false, false, false, true, false, false, "CDE");
+  inputData.push("C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes");
+  transpose(0, testOptions);
+  checkResult(
+    "Test 20",
+    "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E",
     outputData.join("\n")
   );
 }
