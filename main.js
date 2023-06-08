@@ -1068,7 +1068,10 @@ function transposeLine(input, semiTones, options, nextInput) {
         }
         if (newChord) {
           readChord = true;
-          if (options.inputFormat === "CDE" || options.inputFormat === "GERMAN") {
+          if (
+            options.inputFormat === "CDE" ||
+            options.inputFormat === "GERMAN"
+          ) {
             position = i;
             chord = s[i];
           }
@@ -1410,7 +1413,9 @@ function test() {
 
   // Test 20
   initTest("GERMAN", false, false, false, true, false, false, "CDE");
-  inputData.push("C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis");
+  inputData.push(
+    "C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis"
+  );
   transpose(0, testOptions);
   checkResult(
     "Test 20",
@@ -1436,5 +1441,6 @@ if (!useWebsite) {
   console.log(inputData.join("\n"));
   transpose(2, testOptions);
   console.log(outputData.join("\n"));
+
   test();
 }
