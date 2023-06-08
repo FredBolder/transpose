@@ -1,4 +1,4 @@
-const useWebsite = true;
+const useWebsite = false;
 
 let inputData = [];
 let key = 0;
@@ -924,6 +924,13 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
+        if (options.inputFormat === "GERMAN") {
+          if (chord[chord.length - 1] !== "/") {
+            if (noteToIndex(s[i], options, true) >= 0) {
+              newChord = true;
+            }
+          }
+        }
         if (options.inputFormat === "GREEK" && chord.length > 2) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
@@ -1061,7 +1068,7 @@ function transposeLine(input, semiTones, options, nextInput) {
         }
         if (newChord) {
           readChord = true;
-          if (options.inputFormat === "CDE") {
+          if (options.inputFormat === "CDE" || options.inputFormat === "GERMAN") {
             position = i;
             chord = s[i];
           }
@@ -1403,11 +1410,11 @@ function test() {
 
   // Test 20
   initTest("GERMAN", false, false, false, true, false, false, "CDE");
-  inputData.push("C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes");
+  inputData.push("C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis");
   transpose(0, testOptions);
   checkResult(
     "Test 20",
-    "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E",
+    "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E   Db Db D Eb",
     outputData.join("\n")
   );
 }
