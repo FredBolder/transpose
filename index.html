@@ -88,6 +88,7 @@
               id="spaceBetween"
               name="spaceBetween"
               value="space"
+              checked
             />
             <label for="spaceBetween">Space between chords</label>
           </div>
@@ -182,7 +183,18 @@
             <button onclick="transposeClicked()">Transpose / Convert</button>
           </div>
           <div>
+            <button onclick="downClicked()">Down</button>
+            <button onclick="upClicked()">Up</button>
+          </div>
+          <div>
             <button onclick="copyClicked()">Copy</button>
+          </div>
+          <div>
+            <input
+              type="button"
+              onclick="window.location.href='./info.html';"
+              value="Help"
+            />
           </div>
         </div>
         <textarea id="output" spellcheck="false"> </textarea>

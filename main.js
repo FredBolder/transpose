@@ -834,6 +834,24 @@ function transpose(semiTones, options) {
   }
 }
 
+function downClicked() {
+  let semitones = parseInt(document.getElementById("semitones").value);
+  if (semitones > -11) {
+    semitones--;
+    document.getElementById("semitones").value = semitones.toString();
+    transposeClicked();
+  }
+}
+
+function upClicked() {
+  let semitones = parseInt(document.getElementById("semitones").value);
+  if (semitones < 11) {
+    semitones++;
+    document.getElementById("semitones").value = semitones.toString();
+    transposeClicked();
+  }
+}
+
 function transposeClicked() {
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
