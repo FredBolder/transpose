@@ -125,6 +125,7 @@ let chordTypes = [
   "°7",
   "dim9",
   "°9",
+  "sus",
   "sus2",
   "sus4",
   "sus24",
@@ -132,10 +133,12 @@ let chordTypes = [
   "6sus2",
   "6sus4",
   "69sus4",
+  "7sus",
   "7sus2",
   "7sus4",
   "7sus24",
   "7sus42",
+  "9sus",
   "9sus4",
   "maj7sus2",
   "maj7sus4",
@@ -366,7 +369,17 @@ function checkChordType(s) {
   if (p >= 0) {
     s = s.slice(0, p);
   }
-  if (!s.startsWith("-")) {
+  if (s.endsWith("(b5)") || s.endsWith("(5-)") || s.endsWith("(-5)")) {
+    s = s.slice(0, s.length - 4) + "b5";
+  }
+  if (s.endsWith("(#5)") || s.endsWith("(5+)") || s.endsWith("(+5)")) {
+    s = s.slice(0, s.length - 4) + "#5";
+  }
+  if (s.endsWith("(b9)") || s.endsWith("(9-)") || s.endsWith("(-9)")) {
+    s = s.slice(0, s.length - 4) + "b9";
+  }
+  if (s.endsWith("(#9)") || s.endsWith("(9+)") || s.endsWith("(+9)")) {
+    s = s.slice(0, s.length - 4) + "#9";
   }
   let i = 0;
   while (i < chordTypes.length && !found) {
@@ -1280,11 +1293,11 @@ function test() {
 
   // Test 1
   initTest("CDE", false, false, false, true, false, false, "CDE");
-  inputData.push("C C# D D# E F F# G G# A A# B B# Cb Ebb");
+  inputData.push("C C# D D# E F F# G G# A A# B B# Cb Ebb C7b5");
   transpose(-1, testOptions);
   checkResult(
     "Test 1",
-    "B C  Db D Eb E F Gb G Ab A Bb B Bb Db",
+    "B C  Db D Eb E F Gb G Ab A Bb B Bb Db  B7b5",
     outputData.join("\n")
   );
 

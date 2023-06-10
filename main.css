@@ -40,10 +40,15 @@ table {
   border-collapse: collapse;
 }
 
-td {
+td, th {
   border: 1px solid cornflowerblue;
   padding: 0.5rem;
   text-align: left;
+}
+
+th {
+  /* 100, 148, 237 */
+  background-color: rgb(50, 74, 153);
 }
 
 .container {
