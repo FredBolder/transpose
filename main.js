@@ -1,8 +1,31 @@
-const useWebsite = true;
+const useWebsite = false;
 
 let inputData = [];
 let key = 0;
 let outputData = [];
+
+function greekToNormal(s) {
+  let c = "";
+  let result = "";
+  for (let i = 0; i < s.length; i++) {
+    c = s[i];
+    switch (c) {
+      case "Α":
+        c = "A";
+        break;
+      case "Β":
+        c = "B";
+        break;
+      case "Ε":
+        c = "E";
+        break;
+      default:
+        break;
+    }
+    result += c;
+  }
+  return result;
+}
 
 let bassRomanMajor = [
   "1",
@@ -315,6 +338,7 @@ class Options {
   constructor() {
     this.inputFormat = "CDE";
     this.strict = true;
+    this.lowerIsMinor = false;
     this.bracketsInput = "SQUARE";
     this.bracketsOutput = "SQUARE";
     this.preferSharps = false;
@@ -709,6 +733,15 @@ function noteToIndex(note, options, start) {
   let s1 = "";
   let s2 = "";
 
+  if (options.inputFormat !== "GREEK") {
+    note = greekToNormal(note);
+  }
+  if (start && options.lowerIsMinor) {
+    if (note === note.toLowerCase() && note !== "b") {
+      note = note[0].toUpperCase() + note.slice(1);
+    }
+  }
+
   if (options.inputFormat === "CDE" || options.inputFormat === "INLINE") {
     arr = notes;
   }
@@ -869,6 +902,7 @@ function transposeClicked() {
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
+  options.lowerIsMinor = document.getElementById("lowerIsMinor").checked;
   options.bracketsInput = document.getElementById("bracketsInput").value;
   options.bracketsOutput = document.getElementById("bracketsOutput").value;
   options.preferSharps = document.getElementById("useSharps").checked;
@@ -890,6 +924,7 @@ function transposeClicked() {
 }
 
 function transposeLine(input, semiTones, options, nextInput) {
+  let addMinor = "";
   let chord = "";
   let chords = [];
   let chordType = "";
@@ -1107,16 +1142,25 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
+        addMinor = "";
         if (note === "") {
           error = true;
         } else {
+          if (options.lowerIsMinor) {
+            if (note === note.toLowerCase()) {
+              note = note[0].toUpperCase() + note.slice(1);
+              addMinor = "m";
+            }
+          }
           noteIndex = noteToIndex(note, options, false);
           if (noteIndex === -1) {
             error = true;
           }
         }
         if (!error) {
-          chords.push(new Chord(position, noteIndex, chord.slice(note.length)));
+          chords.push(
+            new Chord(position, noteIndex, addMinor + chord.slice(note.length))
+          );
           if (!useWebsite) {
             //console.log(chords[chords.length - 1]);
           }
@@ -1273,6 +1317,7 @@ function initTest(
   outputFormat
 ) {
   testOptions.strict = true;
+  testOptions.lowerIsMinor = false;
   testOptions.bracketsInput = "SQUARE";
   testOptions.bracketsOutput = "SQUARE";
   testOptions.inputFormat = inputFormat;
@@ -1486,6 +1531,17 @@ function test() {
   checkResult(
     "Test 21",
     "C C# C# D D# D# E F F# F# G G# G# A A# A# B",
+    outputData.join("\n")
+  );
+
+  // Test 22
+  initTest("CDE", false, false, false, true, false, false, "CDE");
+  testOptions.lowerIsMinor = true;
+  inputData.push("C c bb def F f7 Csus4");
+  transpose(-1, testOptions);
+  checkResult(
+    "Test 22",
+    "B Bm Am Dbm Ebm Em E Em7 Bsus4",
     outputData.join("\n")
   );
 }

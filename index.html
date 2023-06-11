@@ -26,7 +26,7 @@
           <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
           (fgh.bolder@gmail.com).
         </p>
-        <textarea id="input" spellcheck="false"> </textarea>
+        <textarea id="input" spellcheck="false" placeholder="Paste lyrics including chords here"></textarea>
         <div class="settings">
           <div>
             <label for="inputFormat">Input format:</label>
@@ -48,6 +48,15 @@
               checked
             />
             <label for="strict">Strict</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="lowerIsMinor"
+              name="lowerIsMinor"
+              value="lowerIsMinor"
+            />
+            <label for="lowerIsMinor">Lowercase=minor</label>
           </div>
           <div>
             <label for="bracketsInput">Brackets:</label>
@@ -197,7 +206,7 @@
             />
           </div>
         </div>
-        <textarea id="output" spellcheck="false"> </textarea>
+        <textarea id="output" spellcheck="false"></textarea>
       </main>
       <section>
         <h2>Links</h2>
