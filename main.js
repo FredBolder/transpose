@@ -3,6 +3,7 @@ const useWebsite = true;
 let inputData = [];
 let key = 0;
 let outputData = [];
+let testOptions;
 
 function greekToNormal(s) {
   let c = "";
@@ -27,7 +28,7 @@ function greekToNormal(s) {
   return result;
 }
 
-let bassRomanMajor = [
+const bassRomanMajor = [
   "1",
   "#1,b2",
   "2",
@@ -43,7 +44,7 @@ let bassRomanMajor = [
 ];
 
 // Natural Minor
-let bassRomanMinor = [
+const bassRomanMinor = [
   "1",
   "#1,b2",
   "2",
@@ -58,7 +59,7 @@ let bassRomanMinor = [
   "#7,b1",
 ];
 
-let chordsRomanMajor = [
+const chordsRomanMajor = [
   "I",
   "#I,bII",
   "ii",
@@ -74,7 +75,7 @@ let chordsRomanMajor = [
 ];
 
 // Natural Minor
-let chordsRomanMinor = [
+const chordsRomanMinor = [
   "i",
   "#I,bII",
   "ii",
@@ -89,7 +90,7 @@ let chordsRomanMinor = [
   "#VII,bI",
 ];
 
-let chordTypes = [
+const chordTypes = [
   "",
   "2",
   "5",
@@ -178,7 +179,7 @@ let chordTypes = [
   "add11",
 ];
 
-let notes = [
+const notes = [
   "C",
   "C#,Db",
   "D",
@@ -193,7 +194,7 @@ let notes = [
   "B",
 ];
 
-let notesDoReMi = [
+const notesDoReMi = [
   "Do",
   "Do#,Reb",
   "Re",
@@ -210,7 +211,7 @@ let notesDoReMi = [
   "Ti",
 ];
 
-let notesGerman1 = [
+const notesGerman1 = [
   "C",
   "Cis,Des",
   "D",
@@ -225,7 +226,7 @@ let notesGerman1 = [
   "H",
 ];
 
-let notesGerman2 = [
+const notesGerman2 = [
   "C",
   "C#,Db",
   "D",
@@ -240,7 +241,7 @@ let notesGerman2 = [
   "H",
 ];
 
-let notesGreek = [
+const notesGreek = [
   "Ντο",
   "Ντο#,Ρεb",
   "Ρε",
@@ -255,7 +256,7 @@ let notesGreek = [
   "Σι",
 ];
 
-let simpleNotes = [
+const simpleNotes = [
   "B#,C",
   "E#,F",
   "Cb,B",
@@ -323,8 +324,6 @@ let simpleNotes = [
   "Eis,F",
   "Fes,E",
 ];
-
-let testOptions;
 
 class Chord {
   constructor(position, noteIndex, chordType) {
@@ -655,8 +654,8 @@ function keyToSemitones(key) {
   let semitones = key;
   if (semitones > 11) {
     semitones -= 12;
-    semitones *= -1;
   }
+  semitones *= -1;
   return semitones;
 }
 
@@ -741,6 +740,9 @@ function noteToIndex(note, options, start) {
       note = note[0].toUpperCase() + note.slice(1);
     }
   }
+  if (options.inputFormat === "ROMAN") {
+    note = note.toLowerCase();
+  }
 
   if (options.inputFormat === "CDE" || options.inputFormat === "INLINE") {
     arr = notes;
@@ -761,10 +763,20 @@ function noteToIndex(note, options, start) {
       note = note[0] + note.slice(1).toLowerCase();
     }
   }
+  if (options.inputFormat === "ROMAN") {
+    if (key >= 11) {
+      arr = chordsRomanMinor;
+    } else {
+      arr = chordsRomanMajor;
+    }
+  }
   note = simplifyNote(note);
   idx = arr.reduce((acc, current, currentIdx) => {
     found = false;
     s1 = current.trim();
+    if (options.inputFormat === "ROMAN") {
+      s1 = s1.toLowerCase();
+    }
     s2 = s1;
     p = s1.indexOf(",");
     if (p >= 0) {
@@ -918,6 +930,12 @@ function transposeClicked() {
   let semitones = parseInt(document.getElementById("semitones").value);
   if (options.outputFormat === "ROMAN") {
     semitones = keyToSemitones(key);
+  }
+  if (options.inputFormat === "ROMAN") {
+    semitones = -keyToSemitones(key);
+  }
+  if (options.outputFormat === "ROMAN" && options.inputFormat === "ROMAN") {
+    semitones = 0;
   }
   transpose(semitones, options);
   document.getElementById("output").value = outputData.join("\n");
@@ -1096,6 +1114,19 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
+        if (options.inputFormat === "ROMAN") {
+          note = chord[0];
+          for (let j = 0; j < 3; j++) {
+            if (chord.length > note.length) {
+              if (
+                chord[note.length].toLowerCase() === "i" ||
+                chord[note.length].toLowerCase() === "v"
+              ) {
+                note += chord[note.length];
+              }
+            }
+          }
+        }
         if (options.inputFormat === "DOREMI") {
           if (chord.length > 1) {
             note = chord.slice(0, 2);
@@ -1149,6 +1180,11 @@ function transposeLine(input, semiTones, options, nextInput) {
           if (options.lowerIsMinor) {
             if (note === note.toLowerCase()) {
               note = note[0].toUpperCase() + note.slice(1);
+              addMinor = "m";
+            }
+          }
+          if (options.inputFormat === "ROMAN") {
+            if (note === note.toLowerCase()) {
               addMinor = "m";
             }
           }
@@ -1544,6 +1580,15 @@ function test() {
     "B Bm Am Dbm Ebm Em E Em7 Bsus4",
     outputData.join("\n")
   );
+
+  // Test 23
+  initTest("ROMAN", true, false, false, true, false, false, "CDE");
+  inputData.push("I ii IV iii III");
+  key = 2; // D
+  semitones = -keyToSemitones(key);
+  transpose(semitones, testOptions);
+  checkResult("Test 23", "D Em G  F#m F#", outputData.join("\n"));
+  key = 0;
 }
 
 if (!useWebsite) {
