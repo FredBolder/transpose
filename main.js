@@ -354,7 +354,7 @@ function changeBass(input, semiTones, options) {
   let p2 = input.lastIndexOf("/");
   if (p1 >= 0 && p1 === p2 && p1 < input.length - 1) {
     note = input.slice(p1 + 1);
-    noteIndex = noteToIndex(note, options, false);
+    noteIndex = noteToIndex(note, options, false, true);
     if (noteIndex >= 0) {
       noteIndex = fixNoteIndex(noteIndex + semiTones);
       noteStr = noteIndexToString(noteIndex, options, true);
@@ -719,7 +719,7 @@ function noteIndexToString(index, options, bass) {
   return s;
 }
 
-function noteToIndex(note, options, start) {
+function noteToIndex(note, options, start, bass) {
   let arr = [];
   found = false;
   let idx = -1;
@@ -760,10 +760,18 @@ function noteToIndex(note, options, start) {
     }
   }
   if (options.inputFormat === "ROMAN") {
-    if (options.key >= 11) {
-      arr = chordsRomanMinor;
+    if (bass) {
+      if (options.key >= 11) {
+        arr = bassRomanMinor;
+      } else {
+        arr = bassRomanMajor;
+      }
     } else {
-      arr = chordsRomanMajor;
+      if (options.key >= 11) {
+        arr = chordsRomanMinor;
+      } else {
+        arr = chordsRomanMajor;
+      }
     }
   }
   note = simplifyNote(note);
@@ -1005,7 +1013,7 @@ function transposeLine(input, semiTones, options, nextInput) {
       if (chord.length > 0 && !oneMore && options.inputFormat !== "INLINE") {
         if (options.inputFormat === "CDE") {
           if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options, true) >= 0) {
+            if (noteToIndex(s[i], options, true, false) >= 0) {
               newChord = true;
             }
           }
@@ -1014,7 +1022,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
             if (
-              noteToIndex(sNewChord, options, true) >= 0 ||
+              noteToIndex(sNewChord, options, true, false) >= 0 ||
               sNewChord === "So" ||
               sNewChord === "SO"
             ) {
@@ -1028,7 +1036,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           options.inputFormat === "GERMAN2"
         ) {
           if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options, true) >= 0) {
+            if (noteToIndex(s[i], options, true, false) >= 0) {
               newChord = true;
             }
           }
@@ -1037,7 +1045,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
             if (
-              noteToIndex(sNewChord, options, true) >= 0 ||
+              noteToIndex(sNewChord, options, true, false) >= 0 ||
               sNewChord === "Ντο" ||
               sNewChord === "ΝΤΟ" ||
               sNewChord === "Σολ" ||
@@ -1186,7 +1194,7 @@ function transposeLine(input, semiTones, options, nextInput) {
               addMinor = "m";
             }
           }
-          noteIndex = noteToIndex(note, options, false);
+          noteIndex = noteToIndex(note, options, false, false);
           if (noteIndex === -1) {
             error = true;
           }
@@ -1577,12 +1585,13 @@ function test() {
   );
 
   // Test 23
+  // https://music.stackexchange.com/questions/73537/using-roman-numeral-notation-with-notes-in-the-bass-not-figured-bass
   initTest("ROMAN", true, false, false, true, false, false, "CDE");
-  inputData.push("I ii IV iii III");
+  inputData.push("I ii IV iii III I/3 i/5");
   testOptions.key = 2; // D
   semitones = -keyToSemitones(testOptions.key);
   outputData = transpose(inputData, semitones, testOptions);
-  checkResult("Test 23", "D Em G  F#m F#", outputData.join("\n"));
+  checkResult("Test 23", "D Em G  F#m F#  D/F# Dm/A", outputData.join("\n"));
 
   // Extra test
   testOptions.key = 0;
