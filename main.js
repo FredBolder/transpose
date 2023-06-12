@@ -1,10 +1,3 @@
-const useWebsite = true;
-
-let inputData = [];
-let key = 0;
-let outputData = [];
-let testOptions;
-
 function greekToNormal(s) {
   let c = "";
   let result = "";
@@ -336,6 +329,7 @@ class Chord {
 class Options {
   constructor() {
     this.inputFormat = "CDE";
+    this.key = 0;
     this.strict = true;
     this.lowerIsMinor = false;
     this.bracketsInput = "SQUARE";
@@ -593,6 +587,7 @@ function copyClicked() {
 }
 
 function createTestData(n) {
+  let inputData = [];
   switch (n) {
     case 1:
       inputData.push("         Bb");
@@ -615,6 +610,7 @@ function createTestData(n) {
     default:
       break;
   }
+  return inputData;
 }
 
 function fixNoteIndex(n) {
@@ -687,13 +683,13 @@ function noteIndexToString(index, options, bass) {
   }
   if (options.outputFormat === "ROMAN") {
     if (bass) {
-      if (key >= 11) {
+      if (options.key >= 11) {
         s = bassRomanMinor[index];
       } else {
         s = bassRomanMajor[index];
       }
     } else {
-      if (key >= 11) {
+      if (options.key >= 11) {
         s = chordsRomanMinor[index];
       } else {
         s = chordsRomanMajor[index];
@@ -764,7 +760,7 @@ function noteToIndex(note, options, start) {
     }
   }
   if (options.inputFormat === "ROMAN") {
-    if (key >= 11) {
+    if (options.key >= 11) {
       arr = chordsRomanMinor;
     } else {
       arr = chordsRomanMajor;
@@ -827,14 +823,14 @@ function simplifyNote(note) {
   return s;
 }
 
-function transpose(semiTones, options) {
+function transpose(inputData, semiTones, options) {
   let skipNext = false;
   let n = 0;
   let next = "";
   let nextOptions = new Options();
   let nextResult = "";
   let output = "";
-  outputData = [];
+  let outputData = [];
 
   let inlineToInline =
     options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
@@ -890,6 +886,7 @@ function transpose(semiTones, options) {
       }
     }
   }
+  return outputData;
 }
 
 function downClicked() {
@@ -911,6 +908,7 @@ function upClicked() {
 }
 
 function transposeClicked() {
+  let inputData = [];
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
@@ -926,18 +924,18 @@ function transposeClicked() {
   options.outputFormat = document.getElementById("outputFormat").value;
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
-  key = parseInt(document.getElementById("key").value);
+  options.key = parseInt(document.getElementById("key").value);
   let semitones = parseInt(document.getElementById("semitones").value);
   if (options.outputFormat === "ROMAN") {
-    semitones = keyToSemitones(key);
+    semitones = keyToSemitones(options.key);
   }
   if (options.inputFormat === "ROMAN") {
-    semitones = -keyToSemitones(key);
+    semitones = -keyToSemitones(options.key);
   }
   if (options.outputFormat === "ROMAN" && options.inputFormat === "ROMAN") {
     semitones = 0;
   }
-  transpose(semitones, options);
+  outputData = transpose(inputData, semitones, options);
   document.getElementById("output").value = outputData.join("\n");
 }
 
@@ -1197,9 +1195,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           chords.push(
             new Chord(position, noteIndex, addMinor + chord.slice(note.length))
           );
-          if (!useWebsite) {
-            //console.log(chords[chords.length - 1]);
-          }
+          //console.log(chords[chords.length - 1]);
         }
         if (newChord) {
           readChord = true;
@@ -1342,40 +1338,42 @@ function checkResult(testName, expected, result) {
   }
 }
 
-function initTest(
-  inputFormat,
-  preferSharps,
-  useTi,
-  useSpecial,
-  spaceBetween,
-  compact,
-  uppercase,
-  outputFormat
-) {
-  testOptions.strict = true;
-  testOptions.lowerIsMinor = false;
-  testOptions.bracketsInput = "SQUARE";
-  testOptions.bracketsOutput = "SQUARE";
-  testOptions.inputFormat = inputFormat;
-  testOptions.preferSharps = preferSharps;
-  testOptions.useTi = useTi;
-  testOptions.useSpecial = useSpecial;
-  testOptions.spaceBetween = spaceBetween;
-  testOptions.compact = compact;
-  testOptions.uppercase = uppercase;
-  testOptions.outputFormat = outputFormat;
-  inputData = [];
-}
-
 function test() {
+  let inputData = [];
+  let outputData = [];
   let semitones = 0;
+  testOptions = new Options();
 
-  key = 0;
+  function initTest(
+    inputFormat,
+    preferSharps,
+    useTi,
+    useSpecial,
+    spaceBetween,
+    compact,
+    uppercase,
+    outputFormat
+  ) {
+    testOptions.key = 0;
+    testOptions.strict = true;
+    testOptions.lowerIsMinor = false;
+    testOptions.bracketsInput = "SQUARE";
+    testOptions.bracketsOutput = "SQUARE";
+    testOptions.inputFormat = inputFormat;
+    testOptions.preferSharps = preferSharps;
+    testOptions.useTi = useTi;
+    testOptions.useSpecial = useSpecial;
+    testOptions.spaceBetween = spaceBetween;
+    testOptions.compact = compact;
+    testOptions.uppercase = uppercase;
+    testOptions.outputFormat = outputFormat;
+    inputData = [];
+  }
 
   // Test 1
   initTest("CDE", false, false, false, true, false, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B B# Cb Ebb C7b5");
-  transpose(-1, testOptions);
+  outputData = transpose(inputData, -1, testOptions);
   checkResult(
     "Test 1",
     "B C  Db D Eb E F Gb G Ab A Bb B Bb Db  B7b5",
@@ -1385,13 +1383,13 @@ function test() {
   // Test 2
   initTest("CDE", true, false, false, true, false, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B");
-  transpose(1, testOptions);
+  outputData = transpose(inputData, 1, testOptions);
   checkResult("Test 2", "C# D D# E F F# G G# A A# B C", outputData.join("\n"));
 
   // Test 3
   initTest("CDE", true, false, false, true, false, false, "DOREMI");
   inputData.push("C C# D D# E F F# G G# A A# B");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult(
     "Test 3",
     "Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si",
@@ -1403,7 +1401,7 @@ function test() {
   inputData.push(
     "Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si FA SOL SOLb Mi# Mibb TI"
   );
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult(
     "Test 4",
     "C  C#  D  D#  E  F  F#  G   G#   A  A#  B  F  G   F#   F   D    B",
@@ -1413,19 +1411,19 @@ function test() {
   // Test 5
   initTest("DOREMI", true, false, false, false, false, false, "CDE");
   inputData.push("Rem LaRem SolFa SolbFa");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult("Test 5", "Dm  A Dm  G  F  F#  F", outputData.join("\n"));
 
   // Test 6
   initTest("CDE", false, false, false, false, false, false, "CDE");
   inputData.push("Dm7/A Bb DmF");
-  transpose(2, testOptions);
+  outputData = transpose(inputData, 2, testOptions);
   checkResult("Test 6", "Em7/B C  EmG", outputData.join("\n"));
 
   // Test 7
   initTest("INLINE", false, false, false, false, false, false, "CDE");
   inputData.push("This is a [Am]Test with [C/G]inline chords");
-  transpose(-1, testOptions);
+  outputData = transpose(inputData, -1, testOptions);
   checkResult(
     "Test 7",
     "          Abm       B/Gb\nThis is a Test with inline chords",
@@ -1435,13 +1433,13 @@ function test() {
   // Test 8
   initTest("CDE", false, false, false, true, false, false, "GREEK");
   inputData.push("Dm/F C Cmaj7");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult("Test 8", "Ρε-/Φα Ντο+ Ντοmaj7", outputData.join("\n"));
 
   // Test 9
   initTest("GREEK", false, false, false, true, false, false, "CDE");
   inputData.push("Ρε-/Φα Ντο+ Σολ♭ Σολ7 ΝΤΟΣολb ΣΟΛ Ρεbb");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult(
     "Test 9",
     "Dm/F   C    Gb   G7   C  Gb   G   C",
@@ -1451,36 +1449,34 @@ function test() {
   // Test 10
   initTest("CDE", false, false, false, true, false, true, "DOREMI");
   inputData.push("Bbm Ebm7");
-  transpose(-2, testOptions);
+  outputData = transpose(inputData, -2, testOptions);
   checkResult("Test 10", "LAbm REbm7", outputData.join("\n"));
 
   // Test 11
   initTest("GREEK", false, false, false, false, false, false, "ROMAN");
   inputData.push("Ρε-/Φα Σολ- ΛΑ7 ΛΑ-7 Ντο+");
-  key = 14; // Dm
-  semitones = keyToSemitones(key);
-  transpose(semitones, testOptions);
+  testOptions.key = 14; // Dm
+  semitones = keyToSemitones(testOptions.key);
+  outputData = transpose(inputData, semitones, testOptions);
   checkResult("Test 11", "i/3    iv   V7  v7   VII", outputData.join("\n"));
-  key = 0;
 
   // Test 12
   initTest("INLINE", false, false, true, false, false, false, "ROMAN");
   inputData.push("[F#]Inline [B]chords [C#7]to [Fdim]Roman [E#dim]notation");
-  key = 6; // F#
-  semitones = keyToSemitones(key);
-  transpose(semitones, testOptions);
+  testOptions.key = 6; // F#
+  semitones = keyToSemitones(testOptions.key);
+  outputData = transpose(inputData, semitones, testOptions);
   checkResult(
     "Test 12",
     "I      IV     V7 vii°  vii°\nInline chords to Roman notation",
     outputData.join("\n")
   );
-  key = 0;
 
   // Test 13
   initTest("CDE", false, false, false, false, false, false, "INLINE");
   inputData.push("          Abm       B/Gb");
   inputData.push("This is a Test with inline chords");
-  transpose(1, testOptions);
+  outputData = transpose(inputData, 1, testOptions);
   checkResult(
     "Test 13",
     "This is a [Am]Test with [C/G]inline chords",
@@ -1490,18 +1486,17 @@ function test() {
   // Test 14
   initTest("CDE", false, false, false, false, false, false, "ROMAN");
   inputData.push("Am Bdim C Dm Em F G");
-  key = 21; // Am
-  semitones = keyToSemitones(key);
-  transpose(semitones, testOptions);
+  testOptions.key = 21; // Am
+  semitones = keyToSemitones(testOptions.key);
+  outputData = transpose(inputData, semitones, testOptions);
   checkResult("Test 14", "i  ii°  III iv v VI VII", outputData.join("\n"));
-  key = 0;
 
   // Test 15
   initTest("CDE", false, false, false, false, false, false, "INLINE");
   inputData.push("C  F  G");
   inputData.push("C         G7");
   inputData.push("This is a Test with inline chords");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult(
     "Test 15",
     "[C][F][G]\n[C]This is a [G7]Test with inline chords",
@@ -1511,7 +1506,7 @@ function test() {
   // Test 16
   initTest("INLINE", false, false, false, false, false, false, "INLINE");
   inputData.push("This is a [Am]Test with [C/G]inline chords");
-  transpose(2, testOptions);
+  outputData = transpose(inputData, 2, testOptions);
   checkResult(
     "Test 16",
     "This is a [Bm]Test with [D/A]inline chords",
@@ -1521,7 +1516,7 @@ function test() {
   // Test 17
   initTest("CDE", false, false, false, true, true, false, "CDE");
   inputData.push("Cdim Fmaj7 Aminor Dmi7 Aaug7");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult("Test 17", "C°   FM7   Am     Dm7  A+7", outputData.join("\n"));
 
   // Test 18
@@ -1529,7 +1524,7 @@ function test() {
   testOptions.bracketsInput = "ROUND";
   testOptions.bracketsOutput = "SQUARE";
   inputData.push("This is a (Am)Test with (C/G)inline chords");
-  transpose(3, testOptions);
+  outputData = transpose(inputData, 3, testOptions);
   checkResult(
     "Test 18",
     "This is a [Cm]Test with [Eb/Bb]inline chords",
@@ -1541,7 +1536,7 @@ function test() {
   testOptions.bracketsInput = "SQUARE";
   testOptions.bracketsOutput = "ROUND";
   inputData.push("This is a [Cmin]Test with [Eb/Bb]inline chords");
-  transpose(-3, testOptions);
+  outputData = transpose(inputData, -3, testOptions);
   checkResult(
     "Test 19",
     "This is a (Am)Test with (C/G)inline chords",
@@ -1553,7 +1548,7 @@ function test() {
   inputData.push(
     "C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis Gm/B"
   );
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult(
     "Test 20",
     "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E   Db Db D Eb Gm/Bb",
@@ -1563,7 +1558,7 @@ function test() {
   // Test 21
   initTest("GERMAN2", true, false, false, true, false, false, "CDE");
   inputData.push("C C# Db D D# Eb E F F# Gb G G# Ab A A# B H");
-  transpose(0, testOptions);
+  outputData = transpose(inputData, 0, testOptions);
   checkResult(
     "Test 21",
     "C C# C# D D# D# E F F# F# G G# G# A A# A# B",
@@ -1574,7 +1569,7 @@ function test() {
   initTest("CDE", false, false, false, true, false, false, "CDE");
   testOptions.lowerIsMinor = true;
   inputData.push("C c bb def F f7 Csus4");
-  transpose(-1, testOptions);
+  outputData = transpose(inputData, -1, testOptions);
   checkResult(
     "Test 22",
     "B Bm Am Dbm Ebm Em E Em7 Bsus4",
@@ -1584,17 +1579,16 @@ function test() {
   // Test 23
   initTest("ROMAN", true, false, false, true, false, false, "CDE");
   inputData.push("I ii IV iii III");
-  key = 2; // D
-  semitones = -keyToSemitones(key);
-  transpose(semitones, testOptions);
+  testOptions.key = 2; // D
+  semitones = -keyToSemitones(testOptions.key);
+  outputData = transpose(inputData, semitones, testOptions);
   checkResult("Test 23", "D Em G  F#m F#", outputData.join("\n"));
-  key = 0;
-}
 
-if (!useWebsite) {
-  testOptions = new Options();
+  // Extra test
+  testOptions.key = 0;
   testOptions.inputFormat = "INLINE";
   testOptions.strict = true;
+  testOptions.lowerIsMinor = false;
   testOptions.bracketsInput = "SQUARE";
   testOptions.bracketsOutput = "SQUARE";
   testOptions.preferSharps = false;
@@ -1604,10 +1598,11 @@ if (!useWebsite) {
   testOptions.compact = false;
   testOptions.uppercase = false;
   testOptions.outputFormat = "CDE";
-  createTestData(4);
-  console.log(inputData.join("\n"));
-  transpose(2, testOptions);
-  console.log(outputData.join("\n"));
-
-  test();
+  inputData = createTestData(4);
+  //console.log(inputData.join("\n"));
+  outputData = transpose(inputData, 2, testOptions);
+  //console.log(outputData.join("\n"));
 }
+
+// Disable when using online!
+//test();
