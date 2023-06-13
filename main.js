@@ -708,9 +708,9 @@ function keyToSemitones(key) {
 
 function noteIndexToString(index, options, bass) {
   let s = "";
-  let save_index = 0;
+  let saveIndex = 0;
 
-  save_index = index;
+  saveIndex = index;
   if (options.outputFormat === "CDE" || options.outputFormat === "INLINE") {
     s = notes[index];
   }
@@ -722,7 +722,7 @@ function noteIndexToString(index, options, bass) {
     }
     s = notesDoReMi[index];
   }
-  index = save_index;
+  index = saveIndex;
   if (options.outputFormat === "GERMAN1") {
     s = notesGerman1[index];
   }
@@ -780,12 +780,7 @@ function noteIndexToString(index, options, bass) {
 
 function noteToIndex(note, options, start, bass) {
   let arr = [];
-  found = false;
   let idx = -1;
-  let n = -1;
-  let p = -1;
-  let s1 = "";
-  let s2 = "";
 
   if (options.inputFormat !== "GREEK") {
     note = greekToNormal(note);
@@ -842,7 +837,10 @@ function noteToIndex(note, options, start, bass) {
   }
   note = simplifyNote(note);
   idx = arr.reduce((acc, current, currentIdx) => {
-    found = false;
+    let found = false;
+    let p = -1;
+    let s1 = "";
+    let s2 = "";
     s1 = current.trim();
     if (options.inputFormat === "ROMAN") {
       s1 = s1.toLowerCase();
@@ -983,6 +981,7 @@ function upClicked() {
 
 function transposeClicked() {
   let inputData = [];
+  let outputData = [];
   let options = new Options();
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
@@ -1388,7 +1387,11 @@ function transposeLine(input, semiTones, options, nextInput) {
           }
         }
 
-        if (options.spaceBetween || options.outputFormat === "ROMAN" || options.outputFormat === "NASHVILLE") {
+        if (
+          options.spaceBetween ||
+          options.outputFormat === "ROMAN" ||
+          options.outputFormat === "NASHVILLE"
+        ) {
           s += " ";
         }
         if (mergeWithNextLine) {
@@ -1434,7 +1437,7 @@ function test() {
   let inputData = [];
   let outputData = [];
   let semitones = 0;
-  testOptions = new Options();
+  let testOptions = new Options();
 
   function initTest(
     inputFormat,
