@@ -249,6 +249,37 @@ const notesGreek = [
   "Σι",
 ];
 
+const notesNashvilleMajor = [
+  "1",
+  "#1,b2",
+  "2",
+  "#2,b3",
+  "3",
+  "4",
+  "#4,5",
+  "5",
+  "#5,b6",
+  "6",
+  "#6,b7",
+  "7",
+];
+
+// Natural Minor
+const notesNashvilleMinor = [
+  "1",
+  "#1,b2",
+  "2",
+  "3",
+  "#3,b4",
+  "4",
+  "#4,b5",
+  "5",
+  "6",
+  "#6,b7",
+  "7",
+  "#7,b1",
+];
+
 const simpleNotes = [
   "B#,C",
   "E#,F",
@@ -358,7 +389,10 @@ function changeBass(input, semiTones, options) {
     if (noteIndex >= 0) {
       noteIndex = fixNoteIndex(noteIndex + semiTones);
       noteStr = noteIndexToString(noteIndex, options, true);
-      if (options.outputFormat === "ROMAN") {
+      if (
+        options.outputFormat === "ROMAN" ||
+        options.outputFormat === "NASHVILLE"
+      ) {
         noteStr = noteStr.toUpperCase();
         if (noteStr.startsWith("B")) {
           noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
@@ -555,6 +589,23 @@ function convertTypeToGreek(s, options) {
   return result;
 }
 
+function convertTypeToNashville(s) {
+  let convert = true;
+  let result = s;
+  if (s.startsWith("dim")) {
+    result = "°" + s.slice(3);
+  } else if (s.startsWith("aug")) {
+    result = "+" + s.slice(3);
+  } else if (s.startsWith("minor")) {
+    result = "m" + s.slice(5);
+  } else if (s.startsWith("min")) {
+    result = "m" + s.slice(3);
+  } else if (s.startsWith("mi")) {
+    result = "m" + s.slice(2);
+  }
+  return result;
+}
+
 function convertTypeToRoman(s) {
   let convert = true;
   let result = s;
@@ -696,6 +747,13 @@ function noteIndexToString(index, options, bass) {
       }
     }
   }
+  if (options.outputFormat === "NASHVILLE") {
+    if (options.key >= 11) {
+      s = notesNashvilleMinor[index];
+    } else {
+      s = notesNashvilleMajor[index];
+    }
+  }
   if (s.includes(",")) {
     if (options.preferSharps) {
       s = s.slice(0, s.indexOf(",")).trim();
@@ -706,6 +764,7 @@ function noteIndexToString(index, options, bass) {
   if (options.uppercase) {
     if (
       options.outputFormat !== "ROMAN" &&
+      options.outputFormat !== "NASHVILLE" &&
       options.outputFormat !== "GERMAN1" &&
       options.outputFormat !== "GERMAN2"
     ) {
@@ -757,6 +816,13 @@ function noteToIndex(note, options, start, bass) {
     }
     if (note.length > 1) {
       note = note[0] + note.slice(1).toLowerCase();
+    }
+  }
+  if (options.inputFormat === "NASHVILLE") {
+    if (options.key >= 11) {
+      arr = notesNashvilleMinor;
+    } else {
+      arr = notesNashvilleMajor;
     }
   }
   if (options.inputFormat === "ROMAN") {
@@ -934,13 +1000,20 @@ function transposeClicked() {
   inputData = data.split("\n");
   options.key = parseInt(document.getElementById("key").value);
   let semitones = parseInt(document.getElementById("semitones").value);
-  if (options.outputFormat === "ROMAN") {
+  if (
+    options.outputFormat === "ROMAN" ||
+    options.outputFormat === "NASHVILLE"
+  ) {
     semitones = keyToSemitones(options.key);
   }
-  if (options.inputFormat === "ROMAN") {
+  if (options.inputFormat === "ROMAN" || options.inputFormat === "NASHVILLE") {
     semitones = -keyToSemitones(options.key);
   }
-  if (options.outputFormat === "ROMAN" && options.inputFormat === "ROMAN") {
+  if (
+    (options.outputFormat === "ROMAN" ||
+      options.outputFormat === "NASHVILLE") &&
+    (options.inputFormat === "ROMAN" || options.inputFormat === "NASHVILLE")
+  ) {
     semitones = 0;
   }
   outputData = transpose(inputData, semitones, options);
@@ -1133,6 +1206,14 @@ function transposeLine(input, semiTones, options, nextInput) {
             }
           }
         }
+        if (options.inputFormat === "NASHVILLE") {
+          note = chord[0];
+          if (chord.length > note.length) {
+            if ("1234567".includes(chord[note.length])) {
+              note += chord[note.length];
+            }
+          }
+        }
         if (options.inputFormat === "DOREMI") {
           if (chord.length > 1) {
             note = chord.slice(0, 2);
@@ -1293,6 +1374,9 @@ function transposeLine(input, semiTones, options, nextInput) {
         if (options.outputFormat === "ROMAN") {
           chordType = convertTypeToRoman(chordType);
         }
+        if (options.outputFormat === "NASHVILLE") {
+          chordType = convertTypeToNashville(chordType);
+        }
         chordType = convertTypeToCompact(chordType, options);
         s += chordType;
         if (options.outputFormat === "INLINE") {
@@ -1304,7 +1388,7 @@ function transposeLine(input, semiTones, options, nextInput) {
           }
         }
 
-        if (options.spaceBetween || options.outputFormat === "ROMAN") {
+        if (options.spaceBetween || options.outputFormat === "ROMAN" || options.outputFormat === "NASHVILLE") {
           s += " ";
         }
         if (mergeWithNextLine) {
@@ -1341,8 +1425,8 @@ function transposeLine(input, semiTones, options, nextInput) {
 function checkResult(testName, expected, result) {
   if (result !== expected) {
     console.log(`*** ${testName} failed!!! ***`);
-    console.log(expected);
-    console.log(result);
+    console.log(`Expected : ${expected}`);
+    console.log(`Result   : ${result}`);
   }
 }
 
@@ -1592,6 +1676,30 @@ function test() {
   semitones = -keyToSemitones(testOptions.key);
   outputData = transpose(inputData, semitones, testOptions);
   checkResult("Test 23", "D Em G  F#m F#  D/F# Dm/A", outputData.join("\n"));
+
+  // Test 24
+  initTest("CDE", false, false, false, false, false, false, "NASHVILLE");
+  inputData.push("Am Bdim C Dm Em F G Am/C");
+  testOptions.key = 21; // Am
+  semitones = keyToSemitones(testOptions.key);
+  outputData = transpose(inputData, semitones, testOptions);
+  checkResult("Test 24", "1m 2°   3 4m 5m 6 7 1m/3", outputData.join("\n"));
+
+  // Test 25
+  initTest("NASHVILLE", true, false, false, true, false, false, "CDE");
+  inputData.push("1 2m 4 3m 3 1/3 1m/5 b3");
+  testOptions.key = 2; // D
+  semitones = -keyToSemitones(testOptions.key);
+  outputData = transpose(inputData, semitones, testOptions);
+  checkResult("Test 25", "D Em G F#m F# D/F# Dm/A F", outputData.join("\n"));
+
+  // Test 26
+  initTest("NASHVILLE", false, false, false, true, false, false, "ROMAN");
+  inputData.push("1 2m 4 3m 3 1/3 1m/5 b3");
+  testOptions.key = 2; // D
+  semitones = 0;
+  outputData = transpose(inputData, semitones, testOptions);
+  checkResult("Test 26", "I ii IV iii III I/3 i/5 bIII", outputData.join("\n"));
 
   // Extra test
   testOptions.key = 0;
