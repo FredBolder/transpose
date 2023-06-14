@@ -962,24 +962,26 @@ function transpose(inputData, semiTones, options) {
 }
 
 function downClicked() {
-  let semitones = parseInt(document.getElementById("semitones").value);
+  const semitonesElement = document.getElementById("semitones");
+  let semitones = parseInt(semitonesElement.value);
   if (semitones > -11) {
     semitones--;
-    document.getElementById("semitones").value = semitones.toString();
-    transposeClicked();
+    semitonesElement.value = semitones.toString();
+    transposeClicked(semitones);
   }
 }
 
 function upClicked() {
-  let semitones = parseInt(document.getElementById("semitones").value);
+  const semitonesElement = document.getElementById("semitones");
+  let semitones = parseInt(semitonesElement.value);
   if (semitones < 11) {
     semitones++;
-    document.getElementById("semitones").value = semitones.toString();
-    transposeClicked();
+    semitonesElement.value = semitones.toString();
+    transposeClicked(semitones);
   }
 }
 
-function transposeClicked() {
+function transposeClicked(semitones = null) {
   let inputData = [];
   let outputData = [];
   let options = new Options();
@@ -998,7 +1000,9 @@ function transposeClicked() {
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
   options.key = parseInt(document.getElementById("key").value);
-  let semitones = parseInt(document.getElementById("semitones").value);
+  if (semitones === null) {
+    semitones = parseInt(document.getElementById("semitones").value);
+  }
   if (
     options.outputFormat === "ROMAN" ||
     options.outputFormat === "NASHVILLE"
