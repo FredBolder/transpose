@@ -1336,5 +1336,5 @@ function transposeLine(input, semiTones, options, nextInput) {
 }
 
 
-export { Options, keyToSemitones, transpose }
+export { Options, keyToSemitones, transpose };
 

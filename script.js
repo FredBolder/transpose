@@ -67,4 +67,4 @@ function upClicked() {
   }
 }
 
-
+export { copyClicked, transposeClicked, downClicked, upClicked };
