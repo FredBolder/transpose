@@ -1,3 +1,205 @@
+class CDE {
+  readNote(s) {
+    let result = "";
+    if (s.length > 0) {
+      result = s[0];
+      if (s.length > 1) {
+        if (s[1] === "#" || s[1] === "b") {
+          result += s[1];
+          if (s.length > 2) {
+            if (s[2] === "#" || s[2] === "b") {
+              result += s[2];
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class DoReMi {
+  readNote(s) {
+    let result = "";
+    if (s.length > 1) {
+      result = s.slice(0, 2);
+    }
+    if (s.length > 2) {
+      if (s[2].toLowerCase() === "l" && (result === "So" || result === "SO")) {
+        result += s[2];
+      }
+    }
+    for (let j = 0; j < 2; j++) {
+      if (s.length > result.length) {
+        if (s[result.length] === "#" || s[result.length] === "b") {
+          result += s[result.length];
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class German1 {
+  readNote(s) {
+    let result = "";
+    if (s.length > 0) {
+      result = s[0];
+      if (s.length > 1) {
+        if (s[1] === "i" || s[1] === "e") {
+          result += s[1];
+        }
+      }
+      if (s.length > result.length) {
+        if (s[result.length] === "s") {
+          if (s.length > result.length + 1) {
+            // In case of sus chord
+            if (s[result.length + 1] !== "u") {
+              result += "s";
+            }
+          } else {
+            result += "s";
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class German2 {
+  readNote(s) {
+    let result = "";
+    if (s.length > 0) {
+      result = s[0];
+      if (s.length > 1) {
+        if (s[1] === "#" || s[1] === "b") {
+          result += s[1];
+          if (s.length > 2) {
+            if (s[2] === "#" || s[2] === "b") {
+              result += s[2];
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class Greek {
+  readNote(s) {
+    let result = "";
+    if (s.length > 1) {
+      result = s.slice(0, 2);
+    }
+    if (s.length > 2) {
+      if (s[2].toLowerCase() === "λ" && (result === "Σο" || result === "ΣΟ")) {
+        result += s[2];
+      }
+      if (s[2].toLowerCase() === "ο" && (result === "Ντ" || result === "ΝΤ")) {
+        result += s[2];
+      }
+    }
+    for (let j = 0; j < 2; j++) {
+      if (s.length > result.length) {
+        if (s[result.length] === "#" || s[result.length] === "b") {
+          result += s[result.length];
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class Inline {
+  readNote(s) {
+    let result = "";
+    if (s.length > 0) {
+      result = s[0];
+      if (s.length > 1) {
+        if (s[1] === "#" || s[1] === "b") {
+          result += s[1];
+          if (s.length > 2) {
+            if (s[2] === "#" || s[2] === "b") {
+              result += s[2];
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class Nashville {
+  readNote(s) {
+    let result = "";
+    if (s.length > 0) {
+      result = s[0];
+      if (s.length > result.length) {
+        if ("1234567".includes(s[result.length])) {
+          result += s[result.length];
+        }
+      }
+    }
+    return result;
+  }
+}
+
+class Roman {
+  readNote(s) {
+    let result = "";
+    if (s.length > 0) {
+      result = s[0];
+      for (let j = 0; j < 3; j++) {
+        if (s.length > result.length) {
+          if (
+            s[result.length].toLowerCase() === "i" ||
+            s[result.length].toLowerCase() === "v"
+          ) {
+            result += s[result.length];
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+function createInputOrOutputObject(ChordSystem) {
+  let result = null;
+  switch (ChordSystem) {
+    case "CDE":
+      result = new CDE();
+      break;
+    case "DOREMI":
+      result = new DoReMi();
+      break;
+    case "GERMAN1":
+      result = new German1();
+      break;
+    case "GERMAN2":
+      result = new German2();
+      break;
+    case "GREEK":
+      result = new Greek();
+      break;
+    case "INLINE":
+      result = new Inline();
+      break;
+    case "ROMAN":
+      result = new Roman();
+      break;
+    case "NASHVILLE":
+      result = new Nashville();
+      break;
+    default:
+      break;
+  }
+  return result;
+}
+
 function greekToNormal(s) {
   let c = "";
   let result = "";
@@ -903,6 +1105,7 @@ function transpose(inputData, semiTones, options) {
   let nextResult = "";
   let output = "";
   let outputData = [];
+  const inputObj = createInputOrOutputObject(options.inputFormat);
 
   let inlineToInline =
     options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
@@ -938,14 +1141,14 @@ function transpose(inputData, semiTones, options) {
       } else {
         if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
           next = inputData[i + 1];
-          nextResult = transposeLine(next, 1, nextOptions, "");
+          nextResult = transposeLine(next, 1, nextOptions, "", inputObj);
           if (next !== nextResult || next.trim() === "") {
             next = "";
           }
         } else {
           next = "";
         }
-        output = transposeLine(inputData[i], semiTones, options, next);
+        output = transposeLine(inputData[i], semiTones, options, next, inputObj);
         outputData.push(output);
         if (
           options.outputFormat === "INLINE" &&
@@ -1023,7 +1226,7 @@ function transposeClicked(semitones = null) {
   document.getElementById("output").value = outputData.join("\n");
 }
 
-function transposeLine(input, semiTones, options, nextInput) {
+function transposeLine(input, semiTones, options, nextInput, inputObj) {
   let addMinor = "";
   let chord = "";
   let chords = [];
@@ -1159,110 +1362,7 @@ function transposeLine(input, semiTones, options, nextInput) {
       ) {
         note = "";
         readChord = false;
-        if (
-          options.inputFormat === "CDE" ||
-          options.inputFormat === "INLINE" ||
-          options.inputFormat === "GERMAN2"
-        ) {
-          note = chord[0];
-          if (chord.length > 1) {
-            if (chord[1] === "#" || chord[1] === "b") {
-              note += chord[1];
-              if (chord.length > 2) {
-                if (chord[2] === "#" || chord[2] === "b") {
-                  note += chord[2];
-                }
-              }
-            }
-          }
-        }
-        if (options.inputFormat === "GERMAN1") {
-          note = chord[0];
-          if (chord.length > 1) {
-            if (chord[1] === "i" || chord[1] === "e") {
-              note += chord[1];
-            }
-          }
-          if (chord.length > note.length) {
-            if (chord[note.length] === "s") {
-              if (chord.length > note.length + 1) {
-                // In case of sus chord
-                if (chord[note.length + 1] !== "u") {
-                  note += "s";
-                }
-              } else {
-                note += "s";
-              }
-            }
-          }
-        }
-        if (options.inputFormat === "ROMAN") {
-          note = chord[0];
-          for (let j = 0; j < 3; j++) {
-            if (chord.length > note.length) {
-              if (
-                chord[note.length].toLowerCase() === "i" ||
-                chord[note.length].toLowerCase() === "v"
-              ) {
-                note += chord[note.length];
-              }
-            }
-          }
-        }
-        if (options.inputFormat === "NASHVILLE") {
-          note = chord[0];
-          if (chord.length > note.length) {
-            if ("1234567".includes(chord[note.length])) {
-              note += chord[note.length];
-            }
-          }
-        }
-        if (options.inputFormat === "DOREMI") {
-          if (chord.length > 1) {
-            note = chord.slice(0, 2);
-          }
-          if (chord.length > 2) {
-            if (
-              chord[2].toLowerCase() === "l" &&
-              (note === "So" || note === "SO")
-            ) {
-              note += chord[2];
-            }
-          }
-          for (let j = 0; j < 2; j++) {
-            if (chord.length > note.length) {
-              if (chord[note.length] === "#" || chord[note.length] === "b") {
-                note += chord[note.length];
-              }
-            }
-          }
-        }
-        if (options.inputFormat === "GREEK") {
-          if (chord.length > 1) {
-            note = chord.slice(0, 2);
-          }
-          if (chord.length > 2) {
-            if (
-              chord[2].toLowerCase() === "λ" &&
-              (note === "Σο" || note === "ΣΟ")
-            ) {
-              note += chord[2];
-            }
-            if (
-              chord[2].toLowerCase() === "ο" &&
-              (note === "Ντ" || note === "ΝΤ")
-            ) {
-              note += chord[2];
-            }
-          }
-          for (let j = 0; j < 2; j++) {
-            if (chord.length > note.length) {
-              if (chord[note.length] === "#" || chord[note.length] === "b") {
-                note += chord[note.length];
-              }
-            }
-          }
-        }
+        note = inputObj.readNote(chord);
         addMinor = "";
         if (note === "") {
           error = true;
@@ -1468,6 +1568,8 @@ function test() {
     testOptions.outputFormat = outputFormat;
     inputData = [];
   }
+
+
 
   // Test 1
   initTest("CDE", false, false, false, true, false, false, "CDE");
