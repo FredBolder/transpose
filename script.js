@@ -1,4 +1,23 @@
 class CDE {
+  noteList = [
+    "C",
+    "C#,Db",
+    "D",
+    "D#,Eb",
+    "E",
+    "F",
+    "F#,Gb",
+    "G",
+    "G#,Ab",
+    "A",
+    "A#,Bb",
+    "B",
+  ];
+
+  notes(minor, bass) {
+    return this.noteList;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 0) {
@@ -19,6 +38,27 @@ class CDE {
 }
 
 class DoReMi {
+  noteList = [
+    "Do",
+    "Do#,Reb",
+    "Re",
+    "Re#,Mib",
+    "Mi",
+    "Fa",
+    "Fa#,Solb",
+    "Sol",
+    "Sol#,Lab",
+    "La",
+    "La#,Sib",
+    "Si",
+    "La#,Tib",
+    "Ti",
+  ];
+
+  notes(minor, bass) {
+    return this.noteList;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 1) {
@@ -41,6 +81,25 @@ class DoReMi {
 }
 
 class German1 {
+  noteList = [
+    "C",
+    "Cis,Des",
+    "D",
+    "Dis,Es",
+    "E",
+    "F",
+    "Fis,Ges",
+    "G",
+    "Gis,As",
+    "A",
+    "Ais,B",
+    "H",
+  ];
+
+  notes(minor, bass) {
+    return this.noteList;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 0) {
@@ -68,6 +127,25 @@ class German1 {
 }
 
 class German2 {
+  noteList = [
+    "C",
+    "C#,Db",
+    "D",
+    "D#,Eb",
+    "E",
+    "F",
+    "F#,Gb",
+    "G",
+    "G#,Ab",
+    "A",
+    "A#,B",
+    "H",
+  ];
+
+  notes(minor, bass) {
+    return this.noteList;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 0) {
@@ -88,6 +166,25 @@ class German2 {
 }
 
 class Greek {
+  noteList = [
+    "Ντο",
+    "Ντο#,Ρεb",
+    "Ρε",
+    "Ρε#,Μιb",
+    "Μι",
+    "Φα",
+    "Φα#,Σολb",
+    "Σολ",
+    "Σολ#,Λαb",
+    "Λα",
+    "Λα#,Σιb",
+    "Σι",
+  ];
+
+  notes(minor, bass) {
+    return this.noteList;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 1) {
@@ -113,6 +210,25 @@ class Greek {
 }
 
 class Inline {
+  noteList = [
+    "C",
+    "C#,Db",
+    "D",
+    "D#,Eb",
+    "E",
+    "F",
+    "F#,Gb",
+    "G",
+    "G#,Ab",
+    "A",
+    "A#,Bb",
+    "B",
+  ];
+
+  notes(minor, bass) {
+    return this.noteList;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 0) {
@@ -133,6 +249,48 @@ class Inline {
 }
 
 class Nashville {
+  notesMajor = [
+    "1",
+    "#1,b2",
+    "2",
+    "#2,b3",
+    "3",
+    "4",
+    "#4,5",
+    "5",
+    "#5,b6",
+    "6",
+    "#6,b7",
+    "7",
+  ];
+
+  // Natural Minor
+  notesMinor = [
+    "1",
+    "#1,b2",
+    "2",
+    "3",
+    "#3,b4",
+    "4",
+    "#4,b5",
+    "5",
+    "6",
+    "#6,b7",
+    "7",
+    "#7,b1",
+  ];
+
+  notes(minor, bass) {
+    let result = [];
+
+    if (minor) {
+      result = this.notesMinor;
+    } else {
+      result = this.notesMajor;
+    }
+    return result;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 0) {
@@ -148,6 +306,87 @@ class Nashville {
 }
 
 class Roman {
+  bassMajor = [
+    "1",
+    "#1,b2",
+    "2",
+    "#2,b3",
+    "3",
+    "4",
+    "#4,b5",
+    "5",
+    "#5,b6",
+    "6",
+    "#6,b7",
+    "7",
+  ];
+
+  // Natural Minor
+  bassMinor = [
+    "1",
+    "#1,b2",
+    "2",
+    "3",
+    "#3,b4",
+    "4",
+    "#4,b5",
+    "5",
+    "6",
+    "#6,b7",
+    "7",
+    "#7,b1",
+  ];
+
+  chordsMajor = [
+    "I",
+    "#I,bII",
+    "ii",
+    "#II,bIII",
+    "iii",
+    "IV",
+    "#IV,bV",
+    "V",
+    "#V,bVI",
+    "vi",
+    "#VI,bVII",
+    "vii",
+  ];
+
+  // Natural Minor
+  chordsMinor = [
+    "i",
+    "#I,bII",
+    "ii",
+    "III",
+    "#III,bIV",
+    "iv",
+    "#IV,bV",
+    "v",
+    "VI",
+    "#VI,bVII",
+    "VII",
+    "#VII,bI",
+  ];
+
+  notes(minor, bass) {
+    let result = [];
+
+    if (minor) {
+      if (bass) {
+        result = this.bassMinor;
+      } else {
+        result = this.chordsMinor;
+      }
+    } else {
+      if (bass) {
+        result = this.bassMajor;
+      } else {
+        result = this.chordsMajor;
+      }
+    }
+    return result;
+  }
+
   readNote(s) {
     let result = "";
     if (s.length > 0) {
@@ -222,68 +461,6 @@ function greekToNormal(s) {
   }
   return result;
 }
-
-const bassRomanMajor = [
-  "1",
-  "#1,b2",
-  "2",
-  "#2,b3",
-  "3",
-  "4",
-  "#4,b5",
-  "5",
-  "#5,b6",
-  "6",
-  "#6,b7",
-  "7",
-];
-
-// Natural Minor
-const bassRomanMinor = [
-  "1",
-  "#1,b2",
-  "2",
-  "3",
-  "#3,b4",
-  "4",
-  "#4,b5",
-  "5",
-  "6",
-  "#6,b7",
-  "7",
-  "#7,b1",
-];
-
-const chordsRomanMajor = [
-  "I",
-  "#I,bII",
-  "ii",
-  "#II,bIII",
-  "iii",
-  "IV",
-  "#IV,bV",
-  "V",
-  "#V,bVI",
-  "vi",
-  "#VI,bVII",
-  "vii",
-];
-
-// Natural Minor
-const chordsRomanMinor = [
-  "i",
-  "#I,bII",
-  "ii",
-  "III",
-  "#III,bIV",
-  "iv",
-  "#IV,bV",
-  "v",
-  "VI",
-  "#VI,bVII",
-  "VII",
-  "#VII,bI",
-];
 
 const chordTypes = [
   "",
@@ -372,114 +549,6 @@ const chordTypes = [
   "add4",
   "add9",
   "add11",
-];
-
-const notes = [
-  "C",
-  "C#,Db",
-  "D",
-  "D#,Eb",
-  "E",
-  "F",
-  "F#,Gb",
-  "G",
-  "G#,Ab",
-  "A",
-  "A#,Bb",
-  "B",
-];
-
-const notesDoReMi = [
-  "Do",
-  "Do#,Reb",
-  "Re",
-  "Re#,Mib",
-  "Mi",
-  "Fa",
-  "Fa#,Solb",
-  "Sol",
-  "Sol#,Lab",
-  "La",
-  "La#,Sib",
-  "Si",
-  "La#,Tib",
-  "Ti",
-];
-
-const notesGerman1 = [
-  "C",
-  "Cis,Des",
-  "D",
-  "Dis,Es",
-  "E",
-  "F",
-  "Fis,Ges",
-  "G",
-  "Gis,As",
-  "A",
-  "Ais,B",
-  "H",
-];
-
-const notesGerman2 = [
-  "C",
-  "C#,Db",
-  "D",
-  "D#,Eb",
-  "E",
-  "F",
-  "F#,Gb",
-  "G",
-  "G#,Ab",
-  "A",
-  "A#,B",
-  "H",
-];
-
-const notesGreek = [
-  "Ντο",
-  "Ντο#,Ρεb",
-  "Ρε",
-  "Ρε#,Μιb",
-  "Μι",
-  "Φα",
-  "Φα#,Σολb",
-  "Σολ",
-  "Σολ#,Λαb",
-  "Λα",
-  "Λα#,Σιb",
-  "Σι",
-];
-
-const notesNashvilleMajor = [
-  "1",
-  "#1,b2",
-  "2",
-  "#2,b3",
-  "3",
-  "4",
-  "#4,5",
-  "5",
-  "#5,b6",
-  "6",
-  "#6,b7",
-  "7",
-];
-
-// Natural Minor
-const notesNashvilleMinor = [
-  "1",
-  "#1,b2",
-  "2",
-  "3",
-  "#3,b4",
-  "4",
-  "#4,b5",
-  "5",
-  "6",
-  "#6,b7",
-  "7",
-  "#7,b1",
 ];
 
 const simpleNotes = [
@@ -577,7 +646,7 @@ class Options {
   }
 }
 
-function changeBass(input, semiTones, options) {
+function changeBass(input, semiTones, options, inputObj, outputObj) {
   let error = false;
   let note = "";
   let noteIndex = -1;
@@ -587,10 +656,10 @@ function changeBass(input, semiTones, options) {
   let p2 = input.lastIndexOf("/");
   if (p1 >= 0 && p1 === p2 && p1 < input.length - 1) {
     note = input.slice(p1 + 1);
-    noteIndex = noteToIndex(note, options, false, true);
+    noteIndex = noteToIndex(note, options, false, true, inputObj);
     if (noteIndex >= 0) {
       noteIndex = fixNoteIndex(noteIndex + semiTones);
-      noteStr = noteIndexToString(noteIndex, options, true);
+      noteStr = noteIndexToString(noteIndex, options, true, outputObj);
       if (
         options.outputFormat === "ROMAN" ||
         options.outputFormat === "NASHVILLE"
@@ -908,54 +977,19 @@ function keyToSemitones(key) {
   return semitones;
 }
 
-function noteIndexToString(index, options, bass) {
+function noteIndexToString(index, options, bass, outputObj) {
+  let minor = false;
   let s = "";
-  let saveIndex = 0;
 
-  saveIndex = index;
-  if (options.outputFormat === "CDE" || options.outputFormat === "INLINE") {
-    s = notes[index];
-  }
+  minor = options.key >= 11;
   if (options.outputFormat === "DOREMI") {
     if (options.useTi) {
       if (index >= 10) {
         index += 2;
       }
     }
-    s = notesDoReMi[index];
   }
-  index = saveIndex;
-  if (options.outputFormat === "GERMAN1") {
-    s = notesGerman1[index];
-  }
-  if (options.outputFormat === "GERMAN2") {
-    s = notesGerman2[index];
-  }
-  if (options.outputFormat === "GREEK") {
-    s = notesGreek[index];
-  }
-  if (options.outputFormat === "ROMAN") {
-    if (bass) {
-      if (options.key >= 11) {
-        s = bassRomanMinor[index];
-      } else {
-        s = bassRomanMajor[index];
-      }
-    } else {
-      if (options.key >= 11) {
-        s = chordsRomanMinor[index];
-      } else {
-        s = chordsRomanMajor[index];
-      }
-    }
-  }
-  if (options.outputFormat === "NASHVILLE") {
-    if (options.key >= 11) {
-      s = notesNashvilleMinor[index];
-    } else {
-      s = notesNashvilleMajor[index];
-    }
-  }
+  s = outputObj.notes(minor, bass)[index];
   if (s.includes(",")) {
     if (options.preferSharps) {
       s = s.slice(0, s.indexOf(",")).trim();
@@ -980,10 +1014,12 @@ function noteIndexToString(index, options, bass) {
   return s;
 }
 
-function noteToIndex(note, options, start, bass) {
+function noteToIndex(note, options, start, bass, inputObj) {
+  let minor = false;
   let arr = [];
   let idx = -1;
 
+  minor = options.key >= 11;
   if (options.inputFormat !== "GREEK") {
     note = greekToNormal(note);
   }
@@ -996,45 +1032,10 @@ function noteToIndex(note, options, start, bass) {
     note = note.toLowerCase();
   }
 
-  if (options.inputFormat === "CDE" || options.inputFormat === "INLINE") {
-    arr = notes;
-  }
-  if (options.inputFormat === "GERMAN1") {
-    arr = notesGerman1;
-  }
-  if (options.inputFormat === "GERMAN2") {
-    arr = notesGerman2;
-  }
+  arr = inputObj.notes(minor, bass);
   if (options.inputFormat === "DOREMI" || options.inputFormat === "GREEK") {
-    if (options.inputFormat === "GREEK") {
-      arr = notesGreek;
-    } else {
-      arr = notesDoReMi;
-    }
     if (note.length > 1) {
       note = note[0] + note.slice(1).toLowerCase();
-    }
-  }
-  if (options.inputFormat === "NASHVILLE") {
-    if (options.key >= 11) {
-      arr = notesNashvilleMinor;
-    } else {
-      arr = notesNashvilleMajor;
-    }
-  }
-  if (options.inputFormat === "ROMAN") {
-    if (bass) {
-      if (options.key >= 11) {
-        arr = bassRomanMinor;
-      } else {
-        arr = bassRomanMajor;
-      }
-    } else {
-      if (options.key >= 11) {
-        arr = chordsRomanMinor;
-      } else {
-        arr = chordsRomanMajor;
-      }
     }
   }
   note = simplifyNote(note);
@@ -1106,6 +1107,7 @@ function transpose(inputData, semiTones, options) {
   let output = "";
   let outputData = [];
   const inputObj = createInputOrOutputObject(options.inputFormat);
+  const outputObj = createInputOrOutputObject(options.outputFormat);
 
   let inlineToInline =
     options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
@@ -1141,14 +1143,28 @@ function transpose(inputData, semiTones, options) {
       } else {
         if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
           next = inputData[i + 1];
-          nextResult = transposeLine(next, 1, nextOptions, "", inputObj);
+          nextResult = transposeLine(
+            next,
+            1,
+            nextOptions,
+            "",
+            inputObj,
+            outputObj
+          );
           if (next !== nextResult || next.trim() === "") {
             next = "";
           }
         } else {
           next = "";
         }
-        output = transposeLine(inputData[i], semiTones, options, next, inputObj);
+        output = transposeLine(
+          inputData[i],
+          semiTones,
+          options,
+          next,
+          inputObj,
+          outputObj
+        );
         outputData.push(output);
         if (
           options.outputFormat === "INLINE" &&
@@ -1226,7 +1242,14 @@ function transposeClicked(semitones = null) {
   document.getElementById("output").value = outputData.join("\n");
 }
 
-function transposeLine(input, semiTones, options, nextInput, inputObj) {
+function transposeLine(
+  input,
+  semiTones,
+  options,
+  nextInput,
+  inputObj,
+  outputObj
+) {
   let addMinor = "";
   let chord = "";
   let chords = [];
@@ -1292,7 +1315,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
       if (chord.length > 0 && !oneMore && options.inputFormat !== "INLINE") {
         if (options.inputFormat === "CDE") {
           if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options, true, false) >= 0) {
+            if (noteToIndex(s[i], options, true, false, inputObj) >= 0) {
               newChord = true;
             }
           }
@@ -1301,7 +1324,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
             if (
-              noteToIndex(sNewChord, options, true, false) >= 0 ||
+              noteToIndex(sNewChord, options, true, false, inputObj) >= 0 ||
               sNewChord === "So" ||
               sNewChord === "SO"
             ) {
@@ -1315,7 +1338,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
           options.inputFormat === "GERMAN2"
         ) {
           if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options, true, false) >= 0) {
+            if (noteToIndex(s[i], options, true, false, inputObj) >= 0) {
               newChord = true;
             }
           }
@@ -1324,7 +1347,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
             if (
-              noteToIndex(sNewChord, options, true, false) >= 0 ||
+              noteToIndex(sNewChord, options, true, false, inputObj) >= 0 ||
               sNewChord === "Ντο" ||
               sNewChord === "ΝΤΟ" ||
               sNewChord === "Σολ" ||
@@ -1378,7 +1401,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
               addMinor = "m";
             }
           }
-          noteIndex = noteToIndex(note, options, false, false);
+          noteIndex = noteToIndex(note, options, false, false, inputObj);
           if (noteIndex === -1) {
             error = true;
           }
@@ -1435,7 +1458,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
         prevPos = chords[i].position;
       }
       n = fixNoteIndex(chords[i].noteIndex + semiTones);
-      noteStr = noteIndexToString(n, options, false);
+      noteStr = noteIndexToString(n, options, false, outputObj);
       chordType = chords[i].chordType;
       if (options.strict) {
         if (!checkChordType(chordType)) {
@@ -1443,7 +1466,7 @@ function transposeLine(input, semiTones, options, nextInput, inputObj) {
         }
       }
       if (!error) {
-        chordType = changeBass(chordType, semiTones, options);
+        chordType = changeBass(chordType, semiTones, options, inputObj, outputObj);
         if (chordType === "ERROR") {
           error = true;
         }
@@ -1568,8 +1591,6 @@ function test() {
     testOptions.outputFormat = outputFormat;
     inputData = [];
   }
-
-
 
   // Test 1
   initTest("CDE", false, false, false, true, false, false, "CDE");
