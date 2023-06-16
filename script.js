@@ -1,18 +1,20 @@
 class CDE {
-  noteList = [
-    "C",
-    "C#,Db",
-    "D",
-    "D#,Eb",
-    "E",
-    "F",
-    "F#,Gb",
-    "G",
-    "G#,Ab",
-    "A",
-    "A#,Bb",
-    "B",
-  ];
+  constructor() {
+    this.noteList = [
+      "C",
+      "C#,Db",
+      "D",
+      "D#,Eb",
+      "E",
+      "F",
+      "F#,Gb",
+      "G",
+      "G#,Ab",
+      "A",
+      "A#,Bb",
+      "B",
+    ];
+  }
 
   notes(minor, bass) {
     return this.noteList;
@@ -38,22 +40,24 @@ class CDE {
 }
 
 class DoReMi {
-  noteList = [
-    "Do",
-    "Do#,Reb",
-    "Re",
-    "Re#,Mib",
-    "Mi",
-    "Fa",
-    "Fa#,Solb",
-    "Sol",
-    "Sol#,Lab",
-    "La",
-    "La#,Sib",
-    "Si",
-    "La#,Tib",
-    "Ti",
-  ];
+  constructor() {
+    this.noteList = [
+      "Do",
+      "Do#,Reb",
+      "Re",
+      "Re#,Mib",
+      "Mi",
+      "Fa",
+      "Fa#,Solb",
+      "Sol",
+      "Sol#,Lab",
+      "La",
+      "La#,Sib",
+      "Si",
+      "La#,Tib",
+      "Ti",
+    ];
+  }
 
   notes(minor, bass) {
     return this.noteList;
@@ -81,20 +85,22 @@ class DoReMi {
 }
 
 class German1 {
-  noteList = [
-    "C",
-    "Cis,Des",
-    "D",
-    "Dis,Es",
-    "E",
-    "F",
-    "Fis,Ges",
-    "G",
-    "Gis,As",
-    "A",
-    "Ais,B",
-    "H",
-  ];
+  constructor() {
+    this.noteList = [
+      "C",
+      "Cis,Des",
+      "D",
+      "Dis,Es",
+      "E",
+      "F",
+      "Fis,Ges",
+      "G",
+      "Gis,As",
+      "A",
+      "Ais,B",
+      "H",
+    ];
+  }
 
   notes(minor, bass) {
     return this.noteList;
@@ -127,20 +133,22 @@ class German1 {
 }
 
 class German2 {
-  noteList = [
-    "C",
-    "C#,Db",
-    "D",
-    "D#,Eb",
-    "E",
-    "F",
-    "F#,Gb",
-    "G",
-    "G#,Ab",
-    "A",
-    "A#,B",
-    "H",
-  ];
+  constructor() {
+    this.noteList = [
+      "C",
+      "C#,Db",
+      "D",
+      "D#,Eb",
+      "E",
+      "F",
+      "F#,Gb",
+      "G",
+      "G#,Ab",
+      "A",
+      "A#,B",
+      "H",
+    ];
+  }
 
   notes(minor, bass) {
     return this.noteList;
@@ -166,20 +174,22 @@ class German2 {
 }
 
 class Greek {
-  noteList = [
-    "Ντο",
-    "Ντο#,Ρεb",
-    "Ρε",
-    "Ρε#,Μιb",
-    "Μι",
-    "Φα",
-    "Φα#,Σολb",
-    "Σολ",
-    "Σολ#,Λαb",
-    "Λα",
-    "Λα#,Σιb",
-    "Σι",
-  ];
+  constructor() {
+    this.noteList = [
+      "Ντο",
+      "Ντο#,Ρεb",
+      "Ρε",
+      "Ρε#,Μιb",
+      "Μι",
+      "Φα",
+      "Φα#,Σολb",
+      "Σολ",
+      "Σολ#,Λαb",
+      "Λα",
+      "Λα#,Σιb",
+      "Σι",
+    ];
+  }
 
   notes(minor, bass) {
     return this.noteList;
@@ -210,20 +220,22 @@ class Greek {
 }
 
 class Inline {
-  noteList = [
-    "C",
-    "C#,Db",
-    "D",
-    "D#,Eb",
-    "E",
-    "F",
-    "F#,Gb",
-    "G",
-    "G#,Ab",
-    "A",
-    "A#,Bb",
-    "B",
-  ];
+  constructor() {
+    this.noteList = [
+      "C",
+      "C#,Db",
+      "D",
+      "D#,Eb",
+      "E",
+      "F",
+      "F#,Gb",
+      "G",
+      "G#,Ab",
+      "A",
+      "A#,Bb",
+      "B",
+    ];
+  }
 
   notes(minor, bass) {
     return this.noteList;
@@ -249,36 +261,38 @@ class Inline {
 }
 
 class Nashville {
-  notesMajor = [
-    "1",
-    "#1,b2",
-    "2",
-    "#2,b3",
-    "3",
-    "4",
-    "#4,5",
-    "5",
-    "#5,b6",
-    "6",
-    "#6,b7",
-    "7",
-  ];
+  constructor() {
+    this.notesMajor = [
+      "1",
+      "#1,b2",
+      "2",
+      "#2,b3",
+      "3",
+      "4",
+      "#4,5",
+      "5",
+      "#5,b6",
+      "6",
+      "#6,b7",
+      "7",
+    ];
 
-  // Natural Minor
-  notesMinor = [
-    "1",
-    "#1,b2",
-    "2",
-    "3",
-    "#3,b4",
-    "4",
-    "#4,b5",
-    "5",
-    "6",
-    "#6,b7",
-    "7",
-    "#7,b1",
-  ];
+    // Natural Minor
+    this.notesMinor = [
+      "1",
+      "#1,b2",
+      "2",
+      "3",
+      "#3,b4",
+      "4",
+      "#4,b5",
+      "5",
+      "6",
+      "#6,b7",
+      "7",
+      "#7,b1",
+    ];
+  }
 
   notes(minor, bass) {
     let result = [];
@@ -306,67 +320,69 @@ class Nashville {
 }
 
 class Roman {
-  bassMajor = [
-    "1",
-    "#1,b2",
-    "2",
-    "#2,b3",
-    "3",
-    "4",
-    "#4,b5",
-    "5",
-    "#5,b6",
-    "6",
-    "#6,b7",
-    "7",
-  ];
+  constructor() {
+    this.bassMajor = [
+      "1",
+      "#1,b2",
+      "2",
+      "#2,b3",
+      "3",
+      "4",
+      "#4,b5",
+      "5",
+      "#5,b6",
+      "6",
+      "#6,b7",
+      "7",
+    ];
 
-  // Natural Minor
-  bassMinor = [
-    "1",
-    "#1,b2",
-    "2",
-    "3",
-    "#3,b4",
-    "4",
-    "#4,b5",
-    "5",
-    "6",
-    "#6,b7",
-    "7",
-    "#7,b1",
-  ];
+    // Natural Minor
+    this.bassMinor = [
+      "1",
+      "#1,b2",
+      "2",
+      "3",
+      "#3,b4",
+      "4",
+      "#4,b5",
+      "5",
+      "6",
+      "#6,b7",
+      "7",
+      "#7,b1",
+    ];
 
-  chordsMajor = [
-    "I",
-    "#I,bII",
-    "ii",
-    "#II,bIII",
-    "iii",
-    "IV",
-    "#IV,bV",
-    "V",
-    "#V,bVI",
-    "vi",
-    "#VI,bVII",
-    "vii",
-  ];
+    this.chordsMajor = [
+      "I",
+      "#I,bII",
+      "ii",
+      "#II,bIII",
+      "iii",
+      "IV",
+      "#IV,bV",
+      "V",
+      "#V,bVI",
+      "vi",
+      "#VI,bVII",
+      "vii",
+    ];
 
-  // Natural Minor
-  chordsMinor = [
-    "i",
-    "#I,bII",
-    "ii",
-    "III",
-    "#III,bIV",
-    "iv",
-    "#IV,bV",
-    "v",
-    "VI",
-    "#VI,bVII",
-    "VII",
-    "#VII,bI",
-  ];
+    // Natural Minor
+    this.chordsMinor = [
+      "i",
+      "#I,bII",
+      "ii",
+      "III",
+      "#III,bIV",
+      "iv",
+      "#IV,bV",
+      "v",
+      "VI",
+      "#VI,bVII",
+      "VII",
+      "#VII,bI",
+    ];
+  }
 
   notes(minor, bass) {
     let result = [];
@@ -1466,7 +1482,13 @@ function transposeLine(
         }
       }
       if (!error) {
-        chordType = changeBass(chordType, semiTones, options, inputObj, outputObj);
+        chordType = changeBass(
+          chordType,
+          semiTones,
+          options,
+          inputObj,
+          outputObj
+        );
         if (chordType === "ERROR") {
           error = true;
         }
