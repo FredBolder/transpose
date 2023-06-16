@@ -1,5 +1,174 @@
-class CDE {
+class MusicData {
+  static chordTypes = [
+    "",
+    "2",
+    "5",
+    "6",
+    "6b5",
+    "69",
+    "7",
+    "7b5",
+    "7#5",
+    "7b9",
+    "7#9",
+    "7#9#11",
+    "9",
+    "11",
+    "11omit3",
+    "11omit5",
+    "13",
+    "minor",
+    "minor2",
+    "minoradd2",
+    "minoradd4",
+    "minor6",
+    "minor69",
+    "minor7",
+    "minor7b5",
+    "minor7#5",
+    "minor7b9",
+    "minor7#9",
+    "minor9",
+    "minoradd9",
+    "minor11",
+    "minor11omit5",
+    "minor11b5b9",
+    "minor11b9",
+    "minor13",
+    "maj7",
+    "Δ",
+    "maj7b5",
+    "Δb5",
+    "maj7#9",
+    "Δ#9",
+    "maj9",
+    "maj11",
+    "maj13",
+    "minmaj7",
+    "-Δ",
+    "minmaj9",
+    "+",
+    "+7",
+    "aug",
+    "aug6",
+    "aug7",
+    "dim",
+    "°",
+    "dim7",
+    "°7",
+    "dim9",
+    "°9",
+    "sus",
+    "sus2",
+    "sus4",
+    "sus24",
+    "sus42",
+    "6sus2",
+    "6sus4",
+    "69sus4",
+    "7sus",
+    "7sus2",
+    "7sus4",
+    "7sus24",
+    "7sus42",
+    "9sus",
+    "9sus4",
+    "maj7sus2",
+    "maj7sus4",
+    "maj7sus24",
+    "maj7sus42",
+    "Δsus2",
+    "Δsus4",
+    "Δsus24",
+    "Δsus42",
+    "maj9sus4",
+    "add2",
+    "add4",
+    "add9",
+    "add11",
+  ];
+  
+  static simpleNotes = [
+    "B#,C",
+    "E#,F",
+    "Cb,B",
+    "Fb,E",
+    "Si#,Do",
+    "Ti#,Do",
+    "Mi#,Fa",
+    "Dob,Si",
+    "Fab,Mi",
+    "Σι#,Ντο",
+    "Μι#,Φα",
+    "Ντοb,Σι",
+    "Φαb,Μι",
+    "Cbb,Bb",
+    "Dbb,C",
+    "Ebb,D",
+    "Fbb,Eb",
+    "Gbb,F",
+    "Abb,G",
+    "Bbb,A",
+    "C##,D",
+    "D##,E",
+    "E##,F#",
+    "F##,G",
+    "G##,A",
+    "A##,B",
+    "B##,C#",
+    "Dobb,Sib",
+    "Rebb,Do",
+    "Mibb,Re",
+    "Fabb,Mib",
+    "Solbb,Fa",
+    "Labb,Sol",
+    "Sibb,La",
+    "Tibb,La",
+    "Do##,Re",
+    "Re##,Mi",
+    "Mi##,Fa#",
+    "Fa##,Sol",
+    "Sol##,La",
+    "La##,Si",
+    "Si##,Do#",
+    "Ti##,Do#",
+    "Ντοbb,Σιb",
+    "Ρεbb,Ντο",
+    "Μιbb,Ρε",
+    "Φαbb,Μιb",
+    "Σολbb,Φα",
+    "Λαbb,Σολ",
+    "Σιbb,Λα",
+    "Ντο##,Ρε",
+    "Ρε##,Μι",
+    "Μι##,Φα#",
+    "Φα##,Σολ",
+    "Σολ##,Λα",
+    "Λα##,Σι",
+    "Σι##,Ντο#",
+    "So,Sol",
+    "Sob,Solb",
+    "So#,Sol#",
+    "Sobb,Fa",
+    "So##,La",
+    "Ces,H",
+    "His,C",
+    "Eis,F",
+    "Fes,E",
+  ];
+}
+
+class ChordSystem {
+  constructor() {}
+
+  convertType(type, options) {
+    return type;
+  }
+}
+
+class CDE extends ChordSystem {
   constructor() {
+    super();
     this.noteList = [
       "C",
       "C#,Db",
@@ -39,8 +208,9 @@ class CDE {
   }
 }
 
-class DoReMi {
+class DoReMi extends ChordSystem {
   constructor() {
+    super();
     this.noteList = [
       "Do",
       "Do#,Reb",
@@ -84,8 +254,9 @@ class DoReMi {
   }
 }
 
-class German1 {
+class German1 extends ChordSystem {
   constructor() {
+    super();
     this.noteList = [
       "C",
       "Cis,Des",
@@ -132,8 +303,9 @@ class German1 {
   }
 }
 
-class German2 {
+class German2 extends ChordSystem {
   constructor() {
+    super();
     this.noteList = [
       "C",
       "C#,Db",
@@ -173,8 +345,9 @@ class German2 {
   }
 }
 
-class Greek {
+class Greek extends ChordSystem {
   constructor() {
+    super();
     this.noteList = [
       "Ντο",
       "Ντο#,Ρεb",
@@ -189,6 +362,30 @@ class Greek {
       "Λα#,Σιb",
       "Σι",
     ];
+  }
+
+  convertType(type, options) {
+    let convert = true;
+    let result = type;
+    if (type.startsWith("minor")) {
+      result = "-" + type.slice(5);
+    } else if (type.startsWith("min")) {
+      result = "-" + type.slice(3);
+    } else if (type.startsWith("mi")) {
+      result = "-" + type.slice(2);
+    } else if (type.startsWith("m")) {
+      if (type.length > 1) {
+        if ("aA".includes(type[1])) {
+          convert = false;
+        }
+      }
+      if (convert) {
+        result = "-" + type.slice(1);
+      }
+    } else if (type === "" && !options.compact) {
+      result = "+";
+    }
+    return result;
   }
 
   notes(minor, bass) {
@@ -219,8 +416,9 @@ class Greek {
   }
 }
 
-class Inline {
+class Inline extends ChordSystem {
   constructor() {
+    super();
     this.noteList = [
       "C",
       "C#,Db",
@@ -260,8 +458,9 @@ class Inline {
   }
 }
 
-class Nashville {
+class Nashville extends ChordSystem {
   constructor() {
+    super();
     this.notesMajor = [
       "1",
       "#1,b2",
@@ -294,6 +493,23 @@ class Nashville {
     ];
   }
 
+  convertType(type, options) {
+    let convert = true;
+    let result = type;
+    if (type.startsWith("dim")) {
+      result = "°" + type.slice(3);
+    } else if (type.startsWith("aug")) {
+      result = "+" + type.slice(3);
+    } else if (type.startsWith("minor")) {
+      result = "m" + type.slice(5);
+    } else if (type.startsWith("min")) {
+      result = "m" + type.slice(3);
+    } else if (type.startsWith("mi")) {
+      result = "m" + type.slice(2);
+    }
+    return result;
+  }
+
   notes(minor, bass) {
     let result = [];
 
@@ -319,8 +535,9 @@ class Nashville {
   }
 }
 
-class Roman {
+class Roman extends ChordSystem {
   constructor() {
+    super();
     this.bassMajor = [
       "1",
       "#1,b2",
@@ -384,6 +601,32 @@ class Roman {
     ];
   }
 
+  convertType(type, options) {
+    let convert = true;
+    let result = type;
+    if (type.startsWith("dim")) {
+      result = "°" + type.slice(3);
+    } else if (type.startsWith("aug")) {
+      result = "+" + type.slice(3);
+    } else if (type.startsWith("minor")) {
+      result = type.slice(5);
+    } else if (type.startsWith("min")) {
+      result = type.slice(3);
+    } else if (type.startsWith("mi")) {
+      result = type.slice(2);
+    } else if (type.startsWith("m")) {
+      if (type.length > 1) {
+        if ("aA".includes(type[1])) {
+          convert = false;
+        }
+      }
+      if (convert) {
+        result = type.slice(1);
+      }
+    }
+    return result;
+  }
+
   notes(minor, bass) {
     let result = [];
 
@@ -422,9 +665,9 @@ class Roman {
   }
 }
 
-function createInputOrOutputObject(ChordSystem) {
+function createInputOrOutputObject(chordSystem) {
   let result = null;
-  switch (ChordSystem) {
+  switch (chordSystem) {
     case "CDE":
       result = new CDE();
       break;
@@ -477,164 +720,6 @@ function greekToNormal(s) {
   }
   return result;
 }
-
-const chordTypes = [
-  "",
-  "2",
-  "5",
-  "6",
-  "6b5",
-  "69",
-  "7",
-  "7b5",
-  "7#5",
-  "7b9",
-  "7#9",
-  "7#9#11",
-  "9",
-  "11",
-  "11omit3",
-  "11omit5",
-  "13",
-  "minor",
-  "minor2",
-  "minoradd2",
-  "minoradd4",
-  "minor6",
-  "minor69",
-  "minor7",
-  "minor7b5",
-  "minor7#5",
-  "minor7b9",
-  "minor7#9",
-  "minor9",
-  "minoradd9",
-  "minor11",
-  "minor11omit5",
-  "minor11b5b9",
-  "minor11b9",
-  "minor13",
-  "maj7",
-  "Δ",
-  "maj7b5",
-  "Δb5",
-  "maj7#9",
-  "Δ#9",
-  "maj9",
-  "maj11",
-  "maj13",
-  "minmaj7",
-  "-Δ",
-  "minmaj9",
-  "+",
-  "+7",
-  "aug",
-  "aug6",
-  "aug7",
-  "dim",
-  "°",
-  "dim7",
-  "°7",
-  "dim9",
-  "°9",
-  "sus",
-  "sus2",
-  "sus4",
-  "sus24",
-  "sus42",
-  "6sus2",
-  "6sus4",
-  "69sus4",
-  "7sus",
-  "7sus2",
-  "7sus4",
-  "7sus24",
-  "7sus42",
-  "9sus",
-  "9sus4",
-  "maj7sus2",
-  "maj7sus4",
-  "maj7sus24",
-  "maj7sus42",
-  "Δsus2",
-  "Δsus4",
-  "Δsus24",
-  "Δsus42",
-  "maj9sus4",
-  "add2",
-  "add4",
-  "add9",
-  "add11",
-];
-
-const simpleNotes = [
-  "B#,C",
-  "E#,F",
-  "Cb,B",
-  "Fb,E",
-  "Si#,Do",
-  "Ti#,Do",
-  "Mi#,Fa",
-  "Dob,Si",
-  "Fab,Mi",
-  "Σι#,Ντο",
-  "Μι#,Φα",
-  "Ντοb,Σι",
-  "Φαb,Μι",
-  "Cbb,Bb",
-  "Dbb,C",
-  "Ebb,D",
-  "Fbb,Eb",
-  "Gbb,F",
-  "Abb,G",
-  "Bbb,A",
-  "C##,D",
-  "D##,E",
-  "E##,F#",
-  "F##,G",
-  "G##,A",
-  "A##,B",
-  "B##,C#",
-  "Dobb,Sib",
-  "Rebb,Do",
-  "Mibb,Re",
-  "Fabb,Mib",
-  "Solbb,Fa",
-  "Labb,Sol",
-  "Sibb,La",
-  "Tibb,La",
-  "Do##,Re",
-  "Re##,Mi",
-  "Mi##,Fa#",
-  "Fa##,Sol",
-  "Sol##,La",
-  "La##,Si",
-  "Si##,Do#",
-  "Ti##,Do#",
-  "Ντοbb,Σιb",
-  "Ρεbb,Ντο",
-  "Μιbb,Ρε",
-  "Φαbb,Μιb",
-  "Σολbb,Φα",
-  "Λαbb,Σολ",
-  "Σιbb,Λα",
-  "Ντο##,Ρε",
-  "Ρε##,Μι",
-  "Μι##,Φα#",
-  "Φα##,Σολ",
-  "Σολ##,Λα",
-  "Λα##,Σι",
-  "Σι##,Ντο#",
-  "So,Sol",
-  "Sob,Solb",
-  "So#,Sol#",
-  "Sobb,Fa",
-  "So##,La",
-  "Ces,H",
-  "His,C",
-  "Eis,F",
-  "Fes,E",
-];
 
 class Chord {
   constructor(position, noteIndex, chordType) {
@@ -720,8 +805,8 @@ function checkChordType(s) {
     s = s.slice(0, s.length - 4) + "#9";
   }
   let i = 0;
-  while (i < chordTypes.length && !found) {
-    ct1 = chordTypes[i];
+  while (i < MusicData.chordTypes.length && !found) {
+    ct1 = MusicData.chordTypes[i];
     ct2 = "";
     if (ct1.startsWith("minor")) {
       arrType = ["minor", "min", "mi", "m", "-"];
@@ -847,73 +932,6 @@ function convertTypeToCompact(s, options) {
       result = "m" + s.slice(2);
     } else if (s.startsWith("dim")) {
       result = "°" + s.slice(3);
-    }
-  }
-  return result;
-}
-
-function convertTypeToGreek(s, options) {
-  let convert = true;
-  let result = s;
-  if (s.startsWith("minor")) {
-    result = "-" + s.slice(5);
-  } else if (s.startsWith("min")) {
-    result = "-" + s.slice(3);
-  } else if (s.startsWith("mi")) {
-    result = "-" + s.slice(2);
-  } else if (s.startsWith("m")) {
-    if (s.length > 1) {
-      if ("aA".includes(s[1])) {
-        convert = false;
-      }
-    }
-    if (convert) {
-      result = "-" + s.slice(1);
-    }
-  } else if (s === "" && !options.compact) {
-    result = "+";
-  }
-  return result;
-}
-
-function convertTypeToNashville(s) {
-  let convert = true;
-  let result = s;
-  if (s.startsWith("dim")) {
-    result = "°" + s.slice(3);
-  } else if (s.startsWith("aug")) {
-    result = "+" + s.slice(3);
-  } else if (s.startsWith("minor")) {
-    result = "m" + s.slice(5);
-  } else if (s.startsWith("min")) {
-    result = "m" + s.slice(3);
-  } else if (s.startsWith("mi")) {
-    result = "m" + s.slice(2);
-  }
-  return result;
-}
-
-function convertTypeToRoman(s) {
-  let convert = true;
-  let result = s;
-  if (s.startsWith("dim")) {
-    result = "°" + s.slice(3);
-  } else if (s.startsWith("aug")) {
-    result = "+" + s.slice(3);
-  } else if (s.startsWith("minor")) {
-    result = s.slice(5);
-  } else if (s.startsWith("min")) {
-    result = s.slice(3);
-  } else if (s.startsWith("mi")) {
-    result = s.slice(2);
-  } else if (s.startsWith("m")) {
-    if (s.length > 1) {
-      if ("aA".includes(s[1])) {
-        convert = false;
-      }
-    }
-    if (convert) {
-      result = s.slice(1);
     }
   }
   return result;
@@ -1097,11 +1115,11 @@ function simplifyNote(note) {
   let s2 = "";
 
   let i = 0;
-  while (s === "" && i < simpleNotes.length) {
-    p = simpleNotes[i].indexOf(",");
+  while (s === "" && i < MusicData.simpleNotes.length) {
+    p = MusicData.simpleNotes[i].indexOf(",");
     if (p >= 0) {
-      s1 = simpleNotes[i].slice(0, p).trim();
-      s2 = simpleNotes[i].slice(p + 1).trim();
+      s1 = MusicData.simpleNotes[i].slice(0, p).trim();
+      s2 = MusicData.simpleNotes[i].slice(p + 1).trim();
       if (note === s1) {
         s = s2;
       }
@@ -1516,15 +1534,8 @@ function transposeLine(
           }
         }
         s += noteStr;
-        if (options.outputFormat === "GREEK") {
-          chordType = convertTypeToGreek(chordType, options);
-        }
-        if (options.outputFormat === "ROMAN") {
-          chordType = convertTypeToRoman(chordType);
-        }
-        if (options.outputFormat === "NASHVILLE") {
-          chordType = convertTypeToNashville(chordType);
-        }
+        chordType = outputObj.convertType(chordType, options);
+
         chordType = convertTypeToCompact(chordType, options);
         s += chordType;
         if (options.outputFormat === "INLINE") {
@@ -1851,7 +1862,11 @@ function test() {
   testOptions.key = 2; // D
   semitones = 0;
   outputData = transpose(inputData, semitones, testOptions);
-  checkResult("Test 26", "I ii IV iii III I/3 i/5 bIII", outputData.join("\n"));
+  checkResult(
+    "Test 26",
+    "I ii IV iii III I/3 i/5 bIII",
+    outputData.join("\n")
+  );
 
   // Extra test
   testOptions.key = 0;
