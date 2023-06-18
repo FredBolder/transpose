@@ -108,9 +108,9 @@ function test() {
 
   // Test 5
   initTest("DOREMI", true, false, false, false, false, false, "CDE");
-  inputData.push("Rem LaRem SolFa SolbFa");
+  inputData.push("Rem LaRem SolFa SolbFaSol");
   outputData = transpose(inputData, 0, testOptions);
-  checkResult("Test 5", "Dm  A Dm  G  F  F#  F", outputData.join("\n"));
+  checkResult("Test 5", "Dm  A Dm  G  F  F#  F G", outputData.join("\n"));
 
   // Test 6
   initTest("CDE", false, false, false, false, false, false, "CDE");

@@ -10,6 +10,19 @@ import { Inline } from "./inline.js";
 import { Nashville } from "./nashville.js";
 import { Roman } from "./roman.js";
 
+function bracket(options, start) {
+  let result = "";
+  if (options.outputFormat === "INLINE") {
+    if (options.bracketsOutput === "SQUARE") {
+      result = start ? "[": "]";
+    }
+    if (options.bracketsOutput === "ROUND") {
+      result = start ? "(": ")";
+    }
+  }
+  return result;
+}
+
 function createInputOrOutputObject(chordSystem) {
   let result = null;
   switch (chordSystem) {
@@ -585,6 +598,7 @@ function transposeLine(
   let mergeWithNextLine = false;
   let n = 0;
   let newChord = false;
+  let newPosition = -1;
   let note = "";
   let noteIndex = -1;
   let noteStr = "";
@@ -638,48 +652,30 @@ function transposeLine(
     }
     if (readChord) {
       if (chord.length > 0 && !oneMore && options.inputFormat !== "INLINE") {
-        if (options.inputFormat === "CDE") {
-          if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options, true, false, inputObj) >= 0) {
-              newChord = true;
-            }
-          }
-        }
-        if (options.inputFormat === "DOREMI" && chord.length > 2) {
-          if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
-            sNewChord = chord.slice(chord.length - 1) + s[i];
-            if (
-              noteToIndex(sNewChord, options, true, false, inputObj) >= 0 ||
-              sNewChord === "So" ||
-              sNewChord === "SO"
-            ) {
-              newChord = true;
-              chord = chord.slice(0, chord.length - 1);
-            }
-          }
-        }
         if (
+          options.inputFormat === "CDE" ||
           options.inputFormat === "GERMAN1" ||
           options.inputFormat === "GERMAN2"
         ) {
           if (chord[chord.length - 1] !== "/") {
-            if (noteToIndex(s[i], options, true, false, inputObj) >= 0) {
+            sNewChord = s[i];
+            if (noteToIndex(sNewChord, options, true, false, inputObj) >= 0) {
               newChord = true;
+              newPosition = i;
             }
           }
         }
-        if (options.inputFormat === "GREEK" && chord.length > 2) {
+        if (
+          (options.inputFormat === "DOREMI" ||
+            options.inputFormat === "GREEK") &&
+          chord.length > 2
+        ) {
           if (chord[chord.length - 2] !== "/" && s[i] !== "#" && s[i] !== "b") {
             sNewChord = chord.slice(chord.length - 1) + s[i];
-            if (
-              noteToIndex(sNewChord, options, true, false, inputObj) >= 0 ||
-              sNewChord === "Ντο" ||
-              sNewChord === "ΝΤΟ" ||
-              sNewChord === "Σολ" ||
-              sNewChord === "ΣΟΛ"
-            ) {
+            if (noteToIndex(sNewChord, options, true, false, inputObj) >= 0) {
               newChord = true;
               chord = chord.slice(0, chord.length - 1);
+              newPosition = i - 1;
             }
           }
         }
@@ -738,22 +734,9 @@ function transposeLine(
           //console.log(chords[chords.length - 1]);
         }
         if (newChord) {
+          position = newPosition;
+          chord = sNewChord;
           readChord = true;
-          if (
-            options.inputFormat === "CDE" ||
-            options.inputFormat === "GERMAN1" ||
-            options.inputFormat === "GERMAN2"
-          ) {
-            position = i;
-            chord = s[i];
-          }
-          if (
-            options.inputFormat === "DOREMI" ||
-            options.inputFormat === "GREEK"
-          ) {
-            position = i - 1;
-            chord = sNewChord;
-          }
           if (i === s.length - 1) {
             oneMore = true;
           }
@@ -816,28 +799,12 @@ function transposeLine(
             noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
           }
         }
-        if (options.outputFormat === "INLINE") {
-          if (options.bracketsOutput === "SQUARE") {
-            s += "[";
-          }
-          if (options.bracketsOutput === "ROUND") {
-            s += "(";
-          }
-        }
+        s += bracket(options, true);
         s += noteStr;
         chordType = outputObj.convertType(chordType, options);
-
         chordType = convertTypeToCompact(chordType, options);
         s += chordType;
-        if (options.outputFormat === "INLINE") {
-          if (options.bracketsOutput === "SQUARE") {
-            s += "]";
-          }
-          if (options.bracketsOutput === "ROUND") {
-            s += ")";
-          }
-        }
-
+        s += bracket(options, false);
         if (
           options.spaceBetween ||
           options.outputFormat === "ROMAN" ||
@@ -846,12 +813,7 @@ function transposeLine(
           s += " ";
         }
         if (mergeWithNextLine) {
-          if (options.bracketsOutput === "SQUARE") {
-            outputInline += "[" + noteStr + chordType + "]";
-          }
-          if (options.bracketsOutput === "ROUND") {
-            outputInline += "(" + noteStr + chordType + ")";
-          }
+          outputInline += bracket(options, true) + noteStr + chordType + bracket(options, false);
         }
       }
     }
@@ -888,4 +850,4 @@ try {
   //console.log(e);
 }
 
-export {Options, keyToSemitones, transpose};
+export { Options, keyToSemitones, transpose };
