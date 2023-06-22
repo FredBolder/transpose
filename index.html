@@ -25,7 +25,11 @@
           <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
           (fgh.bolder@gmail.com).
         </p>
-        <textarea id="input" spellcheck="false" placeholder="Paste lyrics including chords here"></textarea>
+        <textarea
+          id="input"
+          spellcheck="false"
+          placeholder="Paste lyrics including chords here"
+        ></textarea>
         <div class="settings">
           <div>
             <label for="inputFormat">Input format:</label>
@@ -191,6 +195,16 @@
             </select>
           </div>
           <div>
+            <input
+              type="checkbox"
+              id="chordsBold"
+              name="chordsBold"
+              value="bold"
+              checked
+            />
+            <label for="chordsBold">Chords=bold</label>
+          </div>
+          <div>
             <button id="btTranspose">Transpose / Convert</button>
           </div>
           <div>
@@ -198,7 +212,7 @@
             <button id="btUp">Up</button>
           </div>
           <div>
-            <button id="btCopy">Copy</button>
+            <button id="btPrint">Print</button>
           </div>
           <div>
             <input
@@ -208,7 +222,10 @@
             />
           </div>
         </div>
-        <textarea id="output" spellcheck="false"></textarea>
+        <!-- 
+          <textarea id="output" spellcheck="false"></textarea>
+        -->
+        <div id="output" class="output"></div>
       </main>
       <section>
         <h2>Links</h2>
@@ -372,6 +389,6 @@
         </table>
       </section>
     </div>
-    <script type="module" src="./script.js"></script>
+    <script type="module" src="./modules/script.js"></script>
   </body>
 </html>

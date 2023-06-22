@@ -14,10 +14,10 @@ function bracket(options, start) {
   let result = "";
   if (options.outputFormat === "INLINE") {
     if (options.bracketsOutput === "SQUARE") {
-      result = start ? "[": "]";
+      result = start ? "[" : "]";
     }
     if (options.bracketsOutput === "ROUND") {
-      result = start ? "(": ")";
+      result = start ? "(" : ")";
     }
   }
   return result;
@@ -173,6 +173,24 @@ function convertGreekType(s) {
   return result;
 }
 
+function convertSpaces(s) {
+  let value = "";
+  let result = "";
+
+  for (let i = 0; i < s.length; i++) {
+    switch (s[i]) {
+      case " ":
+        value = "&nbsp;";
+        break;
+      default:
+        value = s[i];
+        break;
+    }
+    result += value;
+  }
+  return result;
+}
+
 function convertToNormalChars(s) {
   let value = "";
   let result = "";
@@ -267,11 +285,6 @@ function convertTypeToCompact(s, options) {
     }
   }
   return result;
-}
-
-function copyClicked() {
-  let data = document.getElementById("output").value;
-  navigator.clipboard.writeText(data);
 }
 
 function fixNoteIndex(n) {
@@ -413,6 +426,25 @@ function noteToIndex(note, options, start, bass, inputObj) {
   return idx;
 }
 
+function printClicked() {
+  const w = window.open(" ", " ");
+  w.document.writeln("<head>");
+  w.document.write(document.querySelector("head").innerHTML);
+  w.document.writeln("</head>");
+  w.document.writeln("<body>");
+  w.document.writeln(`<div class="outputprint">`);
+  w.document.write(document.getElementById("output").innerHTML);
+  w.document.writeln("</div>");
+  w.document.writeln("</body>");
+  let stateCheck = setInterval(() => {
+    if (document.readyState === "complete") {
+      clearInterval(stateCheck);
+      w.print();
+      w.close();
+    }
+  }, 100);
+}
+
 function simplifyNote(note) {
   let p = -1;
   let s = "";
@@ -540,8 +572,10 @@ function upClicked() {
 }
 
 function transposeClicked() {
+  let chordsIsBold = false;
   let inputData = [];
-  let outputData = [];
+  let outputData1 = [];
+  let outputData2 = [];
   let options = new Options();
   let semitones = 0;
   options.inputFormat = document.getElementById("inputFormat").value;
@@ -556,6 +590,7 @@ function transposeClicked() {
   options.compact = document.getElementById("compact").checked;
   options.uppercase = document.getElementById("uppercase").checked;
   options.outputFormat = document.getElementById("outputFormat").value;
+  chordsIsBold = document.getElementById("chordsBold").checked;
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
   options.key = parseInt(document.getElementById("key").value);
@@ -576,8 +611,27 @@ function transposeClicked() {
   ) {
     semitones = 0;
   }
-  outputData = transpose(inputData, semitones, options);
-  document.getElementById("output").value = outputData.join("\n");
+  outputData1 = transpose(inputData, semitones, options);
+  //document.getElementById("output").value = outputData.join("\n");
+
+  outputData2 = [...outputData1];
+  for (let i = 0; i < outputData2.length; i++) {
+    outputData2[i] = convertSpaces(outputData2[i]);
+  }
+  if (inputData.length === outputData1.length) {
+    for (let i = 0; i < outputData1.length; i++) {
+      if (outputData1[i] !== inputData[i] && chordsIsBold) {
+        outputData2[i] = `<div class="outputline bold">${outputData2[i]}</div>`;
+      } else {
+        outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
+      }
+    }
+  } else {
+    for (let i = 0; i < outputData2.length; i++) {
+      outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
+    }
+  }
+  document.getElementById("output").innerHTML = outputData2.join("");
 }
 
 function transposeLine(
@@ -813,7 +867,11 @@ function transposeLine(
           s += " ";
         }
         if (mergeWithNextLine) {
-          outputInline += bracket(options, true) + noteStr + chordType + bracket(options, false);
+          outputInline +=
+            bracket(options, true) +
+            noteStr +
+            chordType +
+            bracket(options, false);
         }
       }
     }
@@ -845,7 +903,7 @@ try {
     .addEventListener("click", transposeClicked);
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
-  document.getElementById("btCopy").addEventListener("click", copyClicked);
+  document.getElementById("btPrint").addEventListener("click", printClicked);
 } catch (e) {
   //console.log(e);
 }
