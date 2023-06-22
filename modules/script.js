@@ -617,6 +617,9 @@ function transposeClicked() {
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
     outputData2[i] = convertSpaces(outputData2[i]);
+    if (outputData2[i] === "") {
+      outputData2[i] = "&nbsp;";
+    }
   }
   if (inputData.length === outputData1.length) {
     for (let i = 0; i < outputData1.length; i++) {
