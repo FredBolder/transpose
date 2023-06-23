@@ -1,5 +1,4 @@
-import {Options, keyToSemitones, transpose} from "./script.js";
-
+import { Options, keyToSemitones, transpose } from "./script.js";
 
 function checkResult(testName, expected, result) {
   if (result !== expected) {
@@ -71,7 +70,7 @@ function test() {
   // Test 1
   initTest("CDE", false, false, false, true, false, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B B# Cb Ebb C7b5");
-  outputData = transpose(inputData, -1, testOptions);
+  outputData = transpose(inputData, -1, testOptions).data;
   checkResult(
     "Test 1",
     "B C  Db D Eb E F Gb G Ab A Bb B Bb Db  B7b5",
@@ -81,13 +80,13 @@ function test() {
   // Test 2
   initTest("CDE", true, false, false, true, false, false, "CDE");
   inputData.push("C C# D D# E F F# G G# A A# B");
-  outputData = transpose(inputData, 1, testOptions);
+  outputData = transpose(inputData, 1, testOptions).data;
   checkResult("Test 2", "C# D D# E F F# G G# A A# B C", outputData.join("\n"));
 
   // Test 3
   initTest("CDE", true, false, false, true, false, false, "DOREMI");
   inputData.push("C C# D D# E F F# G G# A A# B");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult(
     "Test 3",
     "Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si",
@@ -99,7 +98,7 @@ function test() {
   inputData.push(
     "Do Do# Re Re# Mi Fa Fa# Sol Sol# La La# Si FA SOL SOLb Mi# Mibb TI"
   );
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult(
     "Test 4",
     "C  C#  D  D#  E  F  F#  G   G#   A  A#  B  F  G   F#   F   D    B",
@@ -109,19 +108,19 @@ function test() {
   // Test 5
   initTest("DOREMI", true, false, false, false, false, false, "CDE");
   inputData.push("Rem LaRem SolFa SolbFaSol");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult("Test 5", "Dm  A Dm  G  F  F#  F G", outputData.join("\n"));
 
   // Test 6
   initTest("CDE", false, false, false, false, false, false, "CDE");
   inputData.push("Dm7/A Bb DmF");
-  outputData = transpose(inputData, 2, testOptions);
+  outputData = transpose(inputData, 2, testOptions).data;
   checkResult("Test 6", "Em7/B C  EmG", outputData.join("\n"));
 
   // Test 7
   initTest("INLINE", false, false, false, false, false, false, "CDE");
   inputData.push("This is a [Am]Test with [C/G]inline chords");
-  outputData = transpose(inputData, -1, testOptions);
+  outputData = transpose(inputData, -1, testOptions).data;
   checkResult(
     "Test 7",
     "          Abm       B/Gb\nThis is a Test with inline chords",
@@ -131,13 +130,13 @@ function test() {
   // Test 8
   initTest("CDE", false, false, false, true, false, false, "GREEK");
   inputData.push("Dm/F C Cmaj7");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult("Test 8", "Ρε-/Φα Ντο+ Ντοmaj7", outputData.join("\n"));
 
   // Test 9
   initTest("GREEK", false, false, false, true, false, false, "CDE");
   inputData.push("Ρε-/Φα Ντο+ Σολ♭ Σολ7 ΝΤΟΣολb ΣΟΛ Ρεbb");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult(
     "Test 9",
     "Dm/F   C    Gb   G7   C  Gb   G   C",
@@ -147,7 +146,7 @@ function test() {
   // Test 10
   initTest("CDE", false, false, false, true, false, true, "DOREMI");
   inputData.push("Bbm Ebm7");
-  outputData = transpose(inputData, -2, testOptions);
+  outputData = transpose(inputData, -2, testOptions).data;
   checkResult("Test 10", "LAbm REbm7", outputData.join("\n"));
 
   // Test 11
@@ -155,7 +154,7 @@ function test() {
   inputData.push("Ρε-/Φα Σολ- ΛΑ7 ΛΑ-7 Ντο+");
   testOptions.key = 14; // Dm
   semitones = keyToSemitones(testOptions.key);
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 11", "i/3    iv   V7  v7   VII", outputData.join("\n"));
 
   // Test 12
@@ -163,7 +162,7 @@ function test() {
   inputData.push("[F#]Inline [B]chords [C#7]to [Fdim]Roman [E#dim]notation");
   testOptions.key = 6; // F#
   semitones = keyToSemitones(testOptions.key);
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult(
     "Test 12",
     "I      IV     V7 vii°  vii°\nInline chords to Roman notation",
@@ -174,7 +173,7 @@ function test() {
   initTest("CDE", false, false, false, false, false, false, "INLINE");
   inputData.push("          Abm       B/Gb");
   inputData.push("This is a Test with inline chords");
-  outputData = transpose(inputData, 1, testOptions);
+  outputData = transpose(inputData, 1, testOptions).data;
   checkResult(
     "Test 13",
     "This is a [Am]Test with [C/G]inline chords",
@@ -186,7 +185,7 @@ function test() {
   inputData.push("Am Bdim C Dm Em F G");
   testOptions.key = 21; // Am
   semitones = keyToSemitones(testOptions.key);
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 14", "i  ii°  III iv v VI VII", outputData.join("\n"));
 
   // Test 15
@@ -194,7 +193,7 @@ function test() {
   inputData.push("C  F  G");
   inputData.push("C         G7");
   inputData.push("This is a Test with inline chords");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult(
     "Test 15",
     "[C][F][G]\n[C]This is a [G7]Test with inline chords",
@@ -204,7 +203,7 @@ function test() {
   // Test 16
   initTest("INLINE", false, false, false, false, false, false, "INLINE");
   inputData.push("This is a [Am]Test with [C/G]inline chords");
-  outputData = transpose(inputData, 2, testOptions);
+  outputData = transpose(inputData, 2, testOptions).data;
   checkResult(
     "Test 16",
     "This is a [Bm]Test with [D/A]inline chords",
@@ -214,7 +213,7 @@ function test() {
   // Test 17
   initTest("CDE", false, false, false, true, true, false, "CDE");
   inputData.push("Cdim Fmaj7 Aminor Dmi7 Aaug7");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult("Test 17", "C°   FM7   Am     Dm7  A+7", outputData.join("\n"));
 
   // Test 18
@@ -222,7 +221,7 @@ function test() {
   testOptions.bracketsInput = "ROUND";
   testOptions.bracketsOutput = "SQUARE";
   inputData.push("This is a (Am)Test with (C/G)inline chords");
-  outputData = transpose(inputData, 3, testOptions);
+  outputData = transpose(inputData, 3, testOptions).data;
   checkResult(
     "Test 18",
     "This is a [Cm]Test with [Eb/Bb]inline chords",
@@ -234,7 +233,7 @@ function test() {
   testOptions.bracketsInput = "SQUARE";
   testOptions.bracketsOutput = "ROUND";
   inputData.push("This is a [Cmin]Test with [Eb/Bb]inline chords");
-  outputData = transpose(inputData, -3, testOptions);
+  outputData = transpose(inputData, -3, testOptions).data;
   checkResult(
     "Test 19",
     "This is a (Am)Test with (C/G)inline chords",
@@ -246,7 +245,7 @@ function test() {
   inputData.push(
     "C Cis Des D Dis Es E F Fis Ges G Gis As A Ais B H Ces His Eis Fes CisDesDDis Gm/B"
   );
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult(
     "Test 20",
     "C Db  Db  D Eb  Eb E F Gb  Gb  G Ab  Ab A Bb  Bb B B  C   F   E   Db Db D Eb Gm/Bb",
@@ -256,7 +255,7 @@ function test() {
   // Test 21
   initTest("GERMAN2", true, false, false, true, false, false, "CDE");
   inputData.push("C C# Db D D# Eb E F F# Gb G G# Ab A A# B H");
-  outputData = transpose(inputData, 0, testOptions);
+  outputData = transpose(inputData, 0, testOptions).data;
   checkResult(
     "Test 21",
     "C C# C# D D# D# E F F# F# G G# G# A A# A# B",
@@ -267,7 +266,7 @@ function test() {
   initTest("CDE", false, false, false, true, false, false, "CDE");
   testOptions.lowerIsMinor = true;
   inputData.push("C c bb def F f7 Csus4");
-  outputData = transpose(inputData, -1, testOptions);
+  outputData = transpose(inputData, -1, testOptions).data;
   checkResult(
     "Test 22",
     "B Bm Am Dbm Ebm Em E Em7 Bsus4",
@@ -280,7 +279,7 @@ function test() {
   inputData.push("I ii IV iii III I/3 i/5");
   testOptions.key = 2; // D
   semitones = -keyToSemitones(testOptions.key);
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 23", "D Em G  F#m F#  D/F# Dm/A", outputData.join("\n"));
 
   // Test 24
@@ -288,7 +287,7 @@ function test() {
   inputData.push("Am Bdim C Dm Em F G Am/C");
   testOptions.key = 21; // Am
   semitones = keyToSemitones(testOptions.key);
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 24", "1m 2°   3 4m 5m 6 7 1m/3", outputData.join("\n"));
 
   // Test 25
@@ -296,7 +295,7 @@ function test() {
   inputData.push("1 2m 4 3m 3 1/3 1m/5 b3");
   testOptions.key = 2; // D
   semitones = -keyToSemitones(testOptions.key);
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 25", "D Em G F#m F# D/F# Dm/A F", outputData.join("\n"));
 
   // Test 26
@@ -304,7 +303,7 @@ function test() {
   inputData.push("1 2m 4 3m 3 1/3 1m/5 b3");
   testOptions.key = 2; // D
   semitones = 0;
-  outputData = transpose(inputData, semitones, testOptions);
+  outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 26", "I ii IV iii III I/3 i/5 bIII", outputData.join("\n"));
 
   // Extra test
@@ -323,7 +322,7 @@ function test() {
   testOptions.outputFormat = "CDE";
   inputData = createTestData(4);
   //console.log(inputData.join("\n"));
-  outputData = transpose(inputData, 2, testOptions);
+  outputData = transpose(inputData, 2, testOptions).data;
   //console.log(outputData.join("\n"));
 }
 

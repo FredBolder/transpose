@@ -13,221 +13,359 @@
         <h1>Transpose by Fred Bolder</h1>
       </header>
       <main>
-        <p>
-          Paste lyrics including chords in the first text area. Change the
-          settings and click the "Transpose / Convert" button. The result will
-          appear in the second text area. If the result is not what you expect,
-          click
-          <a href="./info.html">here</a> for more information.
-        </p>
-        <p>
-          Feel free to contact me by
-          <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
-          (fgh.bolder@gmail.com).
-        </p>
-        <textarea
-          id="input"
-          spellcheck="false"
-          placeholder="Paste lyrics including chords here"
-        ></textarea>
-        <div class="settings">
-          <div>
-            <label for="inputFormat">Input format:</label>
-            <select name="inputFormat" id="inputFormat">
-              <option value="CDE" selected="selected">C D E</option>
-              <option value="INLINE">[C] Inline</option>
-              <option value="DOREMI">Do Re Mi</option>
-              <option value="GERMAN1">German 1</option>
-              <option value="GERMAN2">German 2</option>
-              <option value="GREEK">Greek</option>
-              <option value="ROMAN">Roman</option>
-              <option value="NASHVILLE">Nashville</option>
-            </select>
+        <div id="main">
+          <p>
+            Paste lyrics including chords in the first text area. Change the
+            settings and click the "Transpose / Convert" button. The result will
+            appear in the second text area. If the result is not what you
+            expect, click the Help button for more information.
+          </p>
+          <p>
+            Feel free to contact me by
+            <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
+            (fgh.bolder@gmail.com).
+          </p>
+          <textarea
+            id="input"
+            spellcheck="false"
+            placeholder="Paste lyrics including chords here"
+          ></textarea>
+          <div class="settings">
+            <div>
+              <label for="inputFormat">Input format:</label>
+              <select name="inputFormat" id="inputFormat">
+                <option value="CDE" selected="selected">C D E</option>
+                <option value="INLINE">[C] Inline</option>
+                <option value="DOREMI">Do Re Mi</option>
+                <option value="GERMAN1">German 1</option>
+                <option value="GERMAN2">German 2</option>
+                <option value="GREEK">Greek</option>
+                <option value="ROMAN">Roman</option>
+                <option value="NASHVILLE">Nashville</option>
+              </select>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="strict"
+                name="strict"
+                value="strict"
+                checked
+              />
+              <label for="strict">Strict</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="lowerIsMinor"
+                name="lowerIsMinor"
+                value="lowerIsMinor"
+              />
+              <label for="lowerIsMinor">Lowercase=minor</label>
+            </div>
+            <div>
+              <label for="bracketsInput">Brackets:</label>
+              <select name="bracketsInput" id="bracketsInput">
+                <option value="SQUARE" selected="selected">[C]</option>
+                <option value="ROUND">(C)</option>
+              </select>
+              <select name="bracketsOutput" id="bracketsOutput">
+                <option value="SQUARE" selected="selected">[C]</option>
+                <option value="ROUND">(C)</option>
+              </select>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="useSharps"
+                name="useSharps"
+                value="sharps"
+              />
+              <label for="useSharps">Use sharps (#)</label>
+            </div>
+            <div>
+              <input type="checkbox" id="useTi" name="useTi" value="ti" />
+              <label for="useTi">Use Ti</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="useSpecial"
+                name="useSpecial"
+                value="special"
+              />
+              <label for="useSpecial">Special chars</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="spaceBetween"
+                name="spaceBetween"
+                value="space"
+                checked
+              />
+              <label for="spaceBetween">Space between chords</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="compact"
+                name="compact"
+                value="compact"
+              />
+              <label for="compact">Compact</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="uppercase"
+                name="uppercase"
+                value="upper"
+              />
+              <label for="uppercase">Uppercase notes</label>
+            </div>
+            <div>
+              <label for="key">Key:</label>
+              <select name="key" id="key">
+                <option value="0" selected="selected">C</option>
+                <option value="1">C#/Db</option>
+                <option value="2">D</option>
+                <option value="3">D#/Eb</option>
+                <option value="4">E</option>
+                <option value="5">F</option>
+                <option value="6">F#/Gb</option>
+                <option value="7">G</option>
+                <option value="8">G#/Ab</option>
+                <option value="9">A</option>
+                <option value="10">A#/Bb</option>
+                <option value="11">B</option>
+                <option value="12">Cm</option>
+                <option value="13">C#m/Dbm</option>
+                <option value="14">Dm</option>
+                <option value="15">D#m/Ebm</option>
+                <option value="16">Em</option>
+                <option value="17">Fm</option>
+                <option value="18">F#m/Gbm</option>
+                <option value="19">Gm</option>
+                <option value="20">G#m/Abm</option>
+                <option value="21">Am</option>
+                <option value="22">A#m/Bbm</option>
+                <option value="23">Bm</option>
+              </select>
+            </div>
+            <div>
+              <label for="semitones">Semitones:</label>
+              <select name="semitones" id="semitones">
+                <option value="11">11</option>
+                <option value="10">10</option>
+                <option value="9">9</option>
+                <option value="8">8</option>
+                <option value="7">7</option>
+                <option value="6">6</option>
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+                <option value="0">0</option>
+                <option value="-1">-1</option>
+                <option value="-2" selected="selected">-2</option>
+                <option value="-3">-3</option>
+                <option value="-4">-4</option>
+                <option value="-5">-5</option>
+                <option value="-6">-6</option>
+                <option value="-7">-7</option>
+                <option value="-8">-8</option>
+                <option value="-9">-9</option>
+                <option value="-10">-10</option>
+                <option value="-11">-11</option>
+              </select>
+            </div>
+            <div>
+              <label for="outputFormat">Output format:</label>
+              <select name="outputFormat" id="outputFormat">
+                <option value="CDE" selected="selected">C D E</option>
+                <option value="INLINE">[C] Inline</option>
+                <option value="DOREMI">Do Re Mi</option>
+                <option value="GERMAN1">German 1</option>
+                <option value="GERMAN2">German 2</option>
+                <option value="GREEK">Greek</option>
+                <option value="ROMAN">Roman</option>
+                <option value="NASHVILLE">Nashville</option>
+              </select>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                id="chordsBold"
+                name="chordsBold"
+                value="bold"
+                checked
+              />
+              <label for="chordsBold">Chords=bold</label>
+            </div>
+            <div>
+              <button id="btTranspose">Transpose / Convert</button>
+            </div>
+            <div>
+              <button id="btDown">Down</button>
+              <button id="btUp">Up</button>
+            </div>
+            <div>
+              <button id="btSelectAll">Select all</button>
+            </div>
+            <div>
+              <button id="btPrint">Print</button>
+            </div>
+            <div>
+              <button id="btHelp">Help</button>
+            </div>
           </div>
-          <div>
-            <input
-              type="checkbox"
-              id="strict"
-              name="strict"
-              value="strict"
-              checked
-            />
-            <label for="strict">Strict</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="lowerIsMinor"
-              name="lowerIsMinor"
-              value="lowerIsMinor"
-            />
-            <label for="lowerIsMinor">Lowercase=minor</label>
-          </div>
-          <div>
-            <label for="bracketsInput">Brackets:</label>
-            <select name="bracketsInput" id="bracketsInput">
-              <option value="SQUARE" selected="selected">[C]</option>
-              <option value="ROUND">(C)</option>
-            </select>
-            <select name="bracketsOutput" id="bracketsOutput">
-              <option value="SQUARE" selected="selected">[C]</option>
-              <option value="ROUND">(C)</option>
-            </select>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="useSharps"
-              name="useSharps"
-              value="sharps"
-            />
-            <label for="useSharps">Use sharps (#)</label>
-          </div>
-          <div>
-            <input type="checkbox" id="useTi" name="useTi" value="ti" />
-            <label for="useTi">Use Ti</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="useSpecial"
-              name="useSpecial"
-              value="special"
-            />
-            <label for="useSpecial">Special chars</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="spaceBetween"
-              name="spaceBetween"
-              value="space"
-              checked
-            />
-            <label for="spaceBetween">Space between chords</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="compact"
-              name="compact"
-              value="compact"
-            />
-            <label for="compact">Compact</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="uppercase"
-              name="uppercase"
-              value="upper"
-            />
-            <label for="uppercase">Uppercase notes</label>
-          </div>
-          <div>
-            <label for="key">Key:</label>
-            <select name="key" id="key">
-              <option value="0" selected="selected">C</option>
-              <option value="1">C#/Db</option>
-              <option value="2">D</option>
-              <option value="3">D#/Eb</option>
-              <option value="4">E</option>
-              <option value="5">F</option>
-              <option value="6">F#/Gb</option>
-              <option value="7">G</option>
-              <option value="8">G#/Ab</option>
-              <option value="9">A</option>
-              <option value="10">A#/Bb</option>
-              <option value="11">B</option>
-              <option value="12">Cm</option>
-              <option value="13">C#m/Dbm</option>
-              <option value="14">Dm</option>
-              <option value="15">D#m/Ebm</option>
-              <option value="16">Em</option>
-              <option value="17">Fm</option>
-              <option value="18">F#m/Gbm</option>
-              <option value="19">Gm</option>
-              <option value="20">G#m/Abm</option>
-              <option value="21">Am</option>
-              <option value="22">A#m/Bbm</option>
-              <option value="23">Bm</option>
-            </select>
-          </div>
-          <div>
-            <label for="semitones">Semitones:</label>
-            <select name="semitones" id="semitones">
-              <option value="11">11</option>
-              <option value="10">10</option>
-              <option value="9">9</option>
-              <option value="8">8</option>
-              <option value="7">7</option>
-              <option value="6">6</option>
-              <option value="5">5</option>
-              <option value="4">4</option>
-              <option value="3">3</option>
-              <option value="2">2</option>
-              <option value="1">1</option>
-              <option value="0">0</option>
-              <option value="-1">-1</option>
-              <option value="-2" selected="selected">-2</option>
-              <option value="-3">-3</option>
-              <option value="-4">-4</option>
-              <option value="-5">-5</option>
-              <option value="-6">-6</option>
-              <option value="-7">-7</option>
-              <option value="-8">-8</option>
-              <option value="-9">-9</option>
-              <option value="-10">-10</option>
-              <option value="-11">-11</option>
-            </select>
-          </div>
-          <div>
-            <label for="outputFormat">Output format:</label>
-            <select name="outputFormat" id="outputFormat">
-              <option value="CDE" selected="selected">C D E</option>
-              <option value="INLINE">[C] Inline</option>
-              <option value="DOREMI">Do Re Mi</option>
-              <option value="GERMAN1">German 1</option>
-              <option value="GERMAN2">German 2</option>
-              <option value="GREEK">Greek</option>
-              <option value="ROMAN">Roman</option>
-              <option value="NASHVILLE">Nashville</option>
-            </select>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="chordsBold"
-              name="chordsBold"
-              value="bold"
-              checked
-            />
-            <label for="chordsBold">Chords=bold</label>
-          </div>
-          <div>
-            <button id="btTranspose">Transpose / Convert</button>
-          </div>
-          <div>
-            <button id="btDown">Down</button>
-            <button id="btUp">Up</button>
-          </div>
-          <div>
-            <button id="btPrint">Print</button>
-          </div>
-          <div>
-            <input
-              type="button"
-              onclick="window.location.href='./info.html';"
-              value="Help"
-            />
-          </div>
+          <div id="output" class="output"></div>
         </div>
-        <!-- 
-          <textarea id="output" spellcheck="false"></textarea>
-        -->
-        <div id="output" class="output"></div>
+        <div id="help" class="hidden">
+          <div class="back">
+            <button id="btBack">Back</button> to the Main page
+          </div>
+          <h2>General information</h2>
+          <p>
+            If there is normal text in the chord line and the Input format is
+            not "[C] Inline", the line will be ignored. An exception is the "|"
+            character, which will not be visible in the result. The first letter
+            of a note name must be a capital (uppercase letter), except when
+            Lowercase=minor is enabled or when the Input format is set to Roman.
+            When the Output format is set to Roman, the note names for minor and
+            diminished chords will be in lowercase.<br />
+            The text after a slash is interpreted as a bass note, so don't use
+            chord names like D6/9. You can use D69 instead. Inversions that are
+            sometimes used in Roman numerals are not supported.
+          </p>
+          <p>
+            Feel free to contact me by
+            <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
+            (fgh.bolder@gmail.com) for questions or feedback.
+          </p>
+          <h2>Input format</h2>
+          <p>
+            It is important to choose the correct Input format. For example,
+            when there are chords with the text lines, the Input format need to
+            be set to "[C] Inline".
+          </p>
+          <h2>Strict</h2>
+          <p>
+            Normally it is best to have Strict enabled to prevent normal text
+            from being changed. If there are unusual chords in the text, you can
+            disable Strict and correct some text later if needed.
+          </p>
+          <h2>Lowercase=minor</h2>
+          <p>
+            When this option is enabled, the lowercase notes in the input will
+            be capitalized and the chord type will be changed to minor.
+          </p>
+          <h2>Brackets</h2>
+          <p>
+            The Brackets settings are used for the inline formats. The first
+            bracket setting is for the input and the second bracket setting is
+            for the output (result).
+          </p>
+          <h2>Use sharps (#)</h2>
+          <p>
+            Enable this option if you prefer to see sharps (#) instead of flats
+            (b) on the result. This option has only influence on the note names,
+            so D7#5 will not change. Enable Special chars if you want real music
+            symbols, but keep in mind that if you want to use the result in
+            other software these characters might not be supported. When the
+            Output format is set to German, there are no sharp or flat symbols
+            in the note name, but if Use sharps is enabled, you will see for
+            example Cis instead of Des.
+          </p>
+          <h2>Use Ti</h2>
+          <p>
+            If the Output format is set to "Do Re Mi" and you want Ti instead of
+            Si on the result, enable Use Ti. If the Input format is set to "Do
+            Re Mi", both Ti and Si are recognized independently of the Use Ti
+            setting.
+          </p>
+          <h2>Special chars</h2>
+          <p>
+            Enable Special chars if you prefer real music symbols for sharps
+            (#), flats (b) etc., but keep in mind that if you want to use the
+            result in other software these characters might not be supported.
+          </p>
+          <h2>Space between chords</h2>
+          <p>
+            When this option is enabled, there will be always at least one space
+            character between two chords. When the Output format is set to Roman
+            there will be always at least one space character between two chords
+            independent of the "Space between chords" setting, because when
+            there is no space between the I chord and the V chord, it is in fact
+            the IV chord.
+          </p>
+          <h2>Compact</h2>
+          <p>
+            Enable this option if you want compact chord symbols. If in the
+            original text long chord names are used, they will be converted to
+            short chord names. For example minor will be converted to m and maj7
+            will be converted to M7 or even just a delta symbol when Special
+            chars is enabled.
+          </p>
+          <h2>Uppercase notes</h2>
+          <p>
+            When this option is enabled, the letters of the note names will be
+            in capitals. This option has only influence on the result when the
+            Output format is set to "Do Re Mi" or Greek. For example, Solm7 will
+            be converted to SOLm7.
+          </p>
+          <h2>Key</h2>
+          <p>
+            The "Key" setting is only used for Roman numerals and the Nashville
+            Number System. The key of a song is mostly the last chord.
+          </p>
+          <h2>Semitones</h2>
+          <p>
+            With this setting you adjust the number of semitones that the chords
+            will be transposed up or down. When the number is negative, the
+            chords will be transposed down. When you only want to convert to
+            another format, Semitones must be set to 0. When the Output format
+            is set to Roman, the Semitones setting is ignored.
+          </p>
+          <h2>Output format</h2>
+          <p>With this setting you can adjust the format of the result.</p>
+          <h2>Chords=bold</h2>
+          <p>
+            Enable this option if you want the chords to be bold. When the
+            Output format is set to Inline the chords will not be bold.
+          </p>
+          <h2>Transpose / Convert</h2>
+          <p>Press this button to generate a result in the second text area.</p>
+          <h2>Down</h2>
+          <p>
+            Press the Down button to decrease (if possible) the Semitones
+            setting and to generate a result.
+          </p>
+          <h2>Up</h2>
+          <p>
+            Press the Up button to increase (if possible) the Semitones setting
+            and to generate a result.
+          </p>
+          <h2>Select all</h2>
+          <p>
+            Press this button to select the complete result. After that you can
+            press Ctrl-C to copy it. Copying to the clipboard is not done
+            automatically, as browsers may prevent this for security reasons.
+          </p>
+          <h2>Print</h2>
+          <p>
+            Press the Print button to print the complete result using the
+            standard print function. The result can be different depending on
+            the browser. Mostly you can also print to a PDF file.<br />
+            This is just a fast way to print. If you copy the text and past it
+            in a document, you can change the layout the way you like and print
+            the document.
+          </p>
+        </div>
       </main>
-      <section>
+      <section id="links">
         <h2>Links</h2>
         <p></p>
         <table>

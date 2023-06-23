@@ -173,7 +173,7 @@ function convertGreekType(s) {
   return result;
 }
 
-function convertSpaces(s) {
+function convertSpacesAndLF(s) {
   let value = "";
   let result = "";
 
@@ -181,6 +181,9 @@ function convertSpaces(s) {
     switch (s[i]) {
       case " ":
         value = "&nbsp;";
+        break;
+      case "\n":
+        value = `</div><div class="outputline">`;
         break;
       default:
         value = s[i];
@@ -445,6 +448,20 @@ function printClicked() {
   }, 100);
 }
 
+function selectAllClicked() {
+  if (document.selection) {
+    // IE
+    var range = document.body.createTextRange();
+    range.moveToElementText(document.getElementById("output"));
+    range.select();
+  } else if (window.getSelection) {
+    var range = document.createRange();
+    range.selectNode(document.getElementById("output"));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  }
+}
+
 function simplifyNote(note) {
   let p = -1;
   let s = "";
@@ -477,6 +494,9 @@ function transpose(inputData, semiTones, options) {
   let nextResult = "";
   let output = "";
   let outputData = [];
+  let outputInfo = [];
+  let result1 = {};
+  let result2 = {};
   const inputObj = createInputOrOutputObject(options.inputFormat);
   const outputObj = createInputOrOutputObject(options.outputFormat);
 
@@ -514,7 +534,7 @@ function transpose(inputData, semiTones, options) {
       } else {
         if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
           next = inputData[i + 1];
-          nextResult = transposeLine(
+          result1 = transposeLine(
             next,
             1,
             nextOptions,
@@ -522,13 +542,14 @@ function transpose(inputData, semiTones, options) {
             inputObj,
             outputObj
           );
+          nextResult = result1.result;
           if (next !== nextResult || next.trim() === "") {
             next = "";
           }
         } else {
           next = "";
         }
-        output = transposeLine(
+        result2 = transposeLine(
           inputData[i],
           semiTones,
           options,
@@ -536,7 +557,9 @@ function transpose(inputData, semiTones, options) {
           inputObj,
           outputObj
         );
+        output = result2.result;
         outputData.push(output);
+        outputInfo.push(result2.isChordLine);
         if (
           options.outputFormat === "INLINE" &&
           output !== inputData[i] &&
@@ -548,7 +571,10 @@ function transpose(inputData, semiTones, options) {
       }
     }
   }
-  return outputData;
+  return {
+    data: outputData,
+    info: outputInfo,
+  };
 }
 
 function downClicked() {
@@ -574,8 +600,10 @@ function upClicked() {
 function transposeClicked() {
   let chordsIsBold = false;
   let inputData = [];
+  let outputData = {};
   let outputData1 = [];
   let outputData2 = [];
+  let outputInfo = [];
   let options = new Options();
   let semitones = 0;
   options.inputFormat = document.getElementById("inputFormat").value;
@@ -611,26 +639,20 @@ function transposeClicked() {
   ) {
     semitones = 0;
   }
-  outputData1 = transpose(inputData, semitones, options);
-  //document.getElementById("output").value = outputData.join("\n");
-
+  outputData = transpose(inputData, semitones, options);
+  outputData1 = outputData.data;
+  outputInfo = outputData.info;
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
-    outputData2[i] = convertSpaces(outputData2[i]);
+    outputData2[i] = convertSpacesAndLF(outputData2[i]);
     if (outputData2[i] === "") {
       outputData2[i] = "&nbsp;";
     }
   }
-  if (inputData.length === outputData1.length) {
-    for (let i = 0; i < outputData1.length; i++) {
-      if (outputData1[i] !== inputData[i] && chordsIsBold) {
-        outputData2[i] = `<div class="outputline bold">${outputData2[i]}</div>`;
-      } else {
-        outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
-      }
-    }
-  } else {
-    for (let i = 0; i < outputData2.length; i++) {
+  for (let i = 0; i < outputData2.length; i++) {
+    if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
+      outputData2[i] = `<div class="outputline bold">${outputData2[i]}</div>`;
+    } else {
       outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
     }
   }
@@ -650,6 +672,7 @@ function transposeLine(
   let chords = [];
   let chordType = "";
   let error = false;
+  let hasRead = false;
   let inlinePos = 0;
   let inlineText = "";
   let mergeWithNextLine = false;
@@ -708,6 +731,7 @@ function transposeLine(
       }
     }
     if (readChord) {
+      hasRead = true;
       if (chord.length > 0 && !oneMore && options.inputFormat !== "INLINE") {
         if (
           options.inputFormat === "CDE" ||
@@ -896,7 +920,10 @@ function transposeLine(
   } else {
     result = input;
   }
-  return result;
+  return {
+    isChordLine: !error && hasRead,
+    result: result,
+  };
 }
 
 // To prevent error when using node
@@ -906,7 +933,22 @@ try {
     .addEventListener("click", transposeClicked);
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
+  document
+    .getElementById("btSelectAll")
+    .addEventListener("click", selectAllClicked);
   document.getElementById("btPrint").addEventListener("click", printClicked);
+  document.getElementById("btHelp").addEventListener("click", () => {
+    document.getElementById("main").classList.add("hidden");
+    document.getElementById("links").classList.add("hidden");
+    document.getElementById("help").classList.remove("hidden");
+    document.querySelector("h1").innerText = "Transpose - Help";
+  });
+  document.getElementById("btBack").addEventListener("click", () => {
+    document.getElementById("main").classList.remove("hidden");
+    document.getElementById("links").classList.remove("hidden");
+    document.getElementById("help").classList.add("hidden");
+    document.querySelector("h1").innerText = "Transpose by Fred Bolder";
+  });
 } catch (e) {
   //console.log(e);
 }

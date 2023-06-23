@@ -23,6 +23,15 @@ textarea {
   font-size: 1rem;
 }
 
+.back {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
 .output {
   width: 100%;
   height: auto;
