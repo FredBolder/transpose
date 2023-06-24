@@ -306,6 +306,16 @@ function test() {
   outputData = transpose(inputData, semitones, testOptions).data;
   checkResult("Test 26", "I ii IV iii III I/3 i/5 bIII", outputData.join("\n"));
 
+  // Test 27
+  initTest("CDE", false, true, false, true, false, true, "DOREMI");
+  inputData.push("C C# D D# E F F# G G# A A# B");
+  outputData = transpose(inputData, 0, testOptions).data;
+  checkResult(
+    "Test 27",
+    "DO REb RE MIb MI FA SOLb SOL LAb LA TIb TI",
+    outputData.join("\n")
+  );
+
   // Extra test
   testOptions.key = 0;
   testOptions.inputFormat = "INLINE";

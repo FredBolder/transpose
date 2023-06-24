@@ -320,7 +320,7 @@ function isRomanLower(s) {
 }
 
 function isSharpOrFlat(index) {
-  return [1, 3, 6, 8, 10].includes(index);
+  return [1, 3, 6, 8, 10, 12].includes(index);
 }
 
 function keyToSemitones(key) {
