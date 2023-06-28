@@ -23,6 +23,15 @@ function bracket(options, start) {
   return result;
 }
 
+function Capitalize(s) {
+  let result = s;
+  
+  if (result.length > 0) {
+    result = result[0].toUpperCase() + result.slice(1);
+  }
+  return result;
+}
+
 function createInputOrOutputObject(chordSystem) {
   let result = null;
   switch (chordSystem) {
@@ -300,6 +309,69 @@ function fixNoteIndex(n) {
   return n;
 }
 
+function getDirective(s) {
+  let p1 = s.indexOf("{");
+  let p2 = s.lastIndexOf("{");
+  let p3 = s.indexOf("}");
+  let p4 = s.lastIndexOf("}");
+  let s1 = "";
+  let s2 = "";
+  let s3 = "";
+
+  if (p1 >= 0 && p3 >= 0 && p1 === p2 && p3 === p4 && p3 > p1 + 1) {
+    s1 = s.slice(p1 + 1, p3).trim();
+    p1 = s1.indexOf(":");
+    if (p1 >= 0 && p1 < s1.length - 1) {
+      s2 = s1.slice(0, p1).trim().toLowerCase();
+      s3 = s1.slice(p1 + 1).trim();
+    }
+    if (p1 === -1) {
+      // no argument
+      s2 = s1;
+    }
+  }
+  return {
+    name: s2,
+    value: s3,
+  };
+}
+
+function ignoreLine(s, inputFormat, outputFormat) {
+  let d = {};
+  let ignore = false;
+  if (inputFormat === "INLINE" && outputFormat !== "INLINE") {
+    if (s.startsWith("#")) {
+      ignore = true;
+    }
+    d = getDirective(s);
+    if (
+      d.name === "new_song" ||
+      d.name === "ns" ||
+      d.name === "start_of_chorus" ||
+      d.name === "soc" ||
+      d.name === "end_of_chorus" ||
+      d.name === "eoc" ||
+      d.name === "start_of_tab" ||
+      d.name === "sot" ||
+      d.name === "end_of_tab" ||
+      d.name === "eot" ||
+      d.name === "new_page" ||
+      d.name === "np" ||
+      d.name === "new_physical_page" ||
+      d.name === "npp" ||
+      d.name === "column_break" ||
+      d.name === "colb" ||
+      d.name === "no_grid" ||
+      d.name === "ng" ||
+      d.name === "grid" ||
+      d.name === "g"
+    ) {
+      ignore = true;
+    }
+  }
+  return ignore;
+}
+
 function isRomanLower(s) {
   let convert = true;
   let isLower = false;
@@ -488,7 +560,6 @@ function simplifyNote(note) {
 
 function transpose(inputData, semiTones, options) {
   let skipNext = false;
-  let n = 0;
   let next = "";
   let nextOptions = new Options();
   let nextResult = "";
@@ -500,39 +571,23 @@ function transpose(inputData, semiTones, options) {
   const inputObj = createInputOrOutputObject(options.inputFormat);
   const outputObj = createInputOrOutputObject(options.outputFormat);
 
-  let inlineToInline =
-    options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
-
-  n = 1;
-  if (inlineToInline) {
-    n++;
+  nextOptions.inputFormat = options.inputFormat;
+  if (options.inputFormat === "CDE") {
+    nextOptions.outputFormat = "DOREMI";
+  } else {
+    nextOptions.outputFormat = "CDE";
   }
-  for (let j = 0; j < n; j++) {
-    if (inlineToInline) {
-      if (j === 0) {
-        options.inputFormat = "INLINE";
-        options.outputFormat = "CDE";
-      }
-      if (j === 1) {
-        semiTones = 0;
-        options.inputFormat = "CDE";
-        options.outputFormat = "INLINE";
-        inputData = outputData.join("\n").split("\n");
-        outputData = [];
-      }
-    }
-    nextOptions.inputFormat = options.inputFormat;
-    if (options.inputFormat === "CDE") {
-      nextOptions.outputFormat = "DOREMI";
-    } else {
-      nextOptions.outputFormat = "CDE";
-    }
-    skipNext = false;
-    for (let i = 0; i < inputData.length; i++) {
+  skipNext = false;
+  for (let i = 0; i < inputData.length; i++) {
+    if (!ignoreLine(inputData[i], options.inputFormat, options.outputFormat)) {
       if (skipNext) {
         skipNext = false;
       } else {
-        if (i < inputData.length - 1 && options.outputFormat === "INLINE") {
+        if (
+          i < inputData.length - 1 &&
+          options.inputFormat !== "INLINE" &&
+          options.outputFormat === "INLINE"
+        ) {
           next = inputData[i + 1];
           result1 = transposeLine(
             next,
@@ -543,7 +598,12 @@ function transpose(inputData, semiTones, options) {
             outputObj
           );
           nextResult = result1.result;
-          if (next !== nextResult || next.trim() === "") {
+          if (
+            result1.isChordLine ||
+            next.trim() === "" ||
+            next.includes("{") ||
+            next.includes("}")
+          ) {
             next = "";
           }
         } else {
@@ -598,7 +658,9 @@ function upClicked() {
 }
 
 function transposeClicked() {
+  let changed = false;
   let chordsIsBold = false;
+  let directive = {};
   let inputData = [];
   let outputData = {};
   let outputData1 = [];
@@ -606,6 +668,7 @@ function transposeClicked() {
   let outputInfo = [];
   let options = new Options();
   let semitones = 0;
+  let value = "";
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
   options.lowerIsMinor = document.getElementById("lowerIsMinor").checked;
@@ -645,7 +708,10 @@ function transposeClicked() {
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
     outputData2[i] = convertSpacesAndLF(outputData2[i]);
-    if (outputData2[i] === "") {
+    if (
+      outputData2[i] === "" ||
+      outputData2[i] === `</div><div class="outputline">`
+    ) {
       outputData2[i] = "&nbsp;";
     }
   }
@@ -653,7 +719,34 @@ function transposeClicked() {
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
       outputData2[i] = `<div class="outputline bold">${outputData2[i]}</div>`;
     } else {
-      outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
+      changed = false;
+      if (options.outputFormat !== "INLINE") {
+        directive = getDirective(outputData1[i]);
+        if (directive.name !== "") {
+          changed = true;
+          value = convertSpacesAndLF(directive.value);
+          if (directive.name === "title" || directive.name === "t") {
+            outputData2[i] = `<div class="title">${value}</div>`;
+          } else if (directive.name === "subtitle" || directive.name === "st") {
+            outputData2[i] = `<div class="subtitle">${value}</div>`;
+          } else if (directive.name === "artist") {
+            outputData2[i] = `<div class="artist">${value}</div>`;
+          } else if (directive.name === "comment" || directive.name === "c") {
+            outputData2[i] = `<div class="comment">${value}</div>`;
+          } else if (directive.name === "comment_italic" || directive.name === "ci") {
+            outputData2[i] = `<div class="comment_italic">${value}</div>`;
+          } else if (value !== "") {
+            outputData2[
+              i
+            ] = `<div class="unknown">${Capitalize(directive.name)}: ${value}</div>`;
+          } else {
+            changed = false;
+          }
+        }
+      }
+      if (!changed) {
+        outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
+      }
     }
   }
   document.getElementById("output").innerHTML = outputData2.join("");
@@ -671,10 +764,11 @@ function transposeLine(
   let chord = "";
   let chords = [];
   let chordType = "";
-  let error = false;
   let hasRead = false;
+  let hasText = false;
   let inlinePos = 0;
   let inlineText = "";
+  let inlineToInline = false;
   let mergeWithNextLine = false;
   let n = 0;
   let newChord = false;
@@ -688,23 +782,30 @@ function transposeLine(
   let prevPos = 0;
   let readChord = false;
   let result = "";
+  let c = "";
   let s = "";
   let sAdd = "";
+  let skip = 0;
   let sNewChord = "";
 
+  inlineToInline =
+    options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
   mergeWithNextLine = nextInput.length > 0 && options.outputFormat === "INLINE";
   s = convertToNormalChars(input);
   if (
-    (input.includes(",") || input.includes(".")) &&
+    (input.includes(",") ||
+      input.includes(".") ||
+      input.includes("{") ||
+      input.includes("}")) &&
     options.inputFormat !== "INLINE"
   ) {
-    error = true;
+    hasText = true;
   }
   oneMore = false;
   inlinePos = 0;
   inlineText = "";
   let i = 0;
-  while ((i < s.length || oneMore) && !error) {
+  while ((i < s.length || oneMore) && !hasText) {
     if (oneMore) {
       i--;
     }
@@ -790,7 +891,7 @@ function transposeLine(
         note = inputObj.readNote(chord);
         addMinor = "";
         if (note === "") {
-          error = true;
+          hasText = true;
         } else {
           if (options.lowerIsMinor) {
             if (note === note.toLowerCase()) {
@@ -805,10 +906,10 @@ function transposeLine(
           }
           noteIndex = noteToIndex(note, options, false, false, inputObj);
           if (noteIndex === -1) {
-            error = true;
+            hasText = true;
           }
         }
-        if (!error) {
+        if (!hasText) {
           chords.push(
             new Chord(position, noteIndex, addMinor + chord.slice(note.length))
           );
@@ -826,7 +927,7 @@ function transposeLine(
     }
     i++;
   }
-  if (!error) {
+  if (!hasText) {
     s = "";
     outputInline = "";
     for (let i = 0; i < chords.length; i++) {
@@ -851,10 +952,10 @@ function transposeLine(
       chordType = chords[i].chordType;
       if (options.strict) {
         if (!checkChordType(chordType)) {
-          error = true;
+          hasText = true;
         }
       }
-      if (!error) {
+      if (!hasText) {
         chordType = changeBass(
           chordType,
           semiTones,
@@ -863,10 +964,10 @@ function transposeLine(
           outputObj
         );
         if (chordType === "ERROR") {
-          error = true;
+          hasText = true;
         }
       }
-      if (!error) {
+      if (!hasText) {
         if (options.inputFormat === "GREEK") {
           chordType = convertGreekType(chordType);
         }
@@ -903,7 +1004,7 @@ function transposeLine(
       }
     }
   }
-  if (!error) {
+  if (!hasText) {
     if (mergeWithNextLine) {
       outputInline += nextInput;
       result = outputInline;
@@ -914,14 +1015,48 @@ function transposeLine(
     if (options.useSpecial) {
       result = convertToSpecialChars(result);
     }
-    if (options.inputFormat === "INLINE") {
-      result += "\n" + inlineText;
+    if (inlineToInline) {
+      if (hasRead) {
+        result = "";
+        inlinePos = 0;
+        skip = 0;
+        for (let i = 0; i < inlineText.length; i++) {
+          do {
+            c = " ";
+            if (inlinePos < s.length) {
+              c = s[inlinePos];
+            }
+            if (c !== " ") {
+              result += c;
+              inlinePos++;
+              skip++;
+            }
+          } while (c !== " ");
+          result += inlineText[i];
+          if (skip > 0) {
+            skip--;
+          } else {
+            inlinePos++;
+          }
+        }
+        while (inlinePos < s.length) {
+          result += s[inlinePos];
+          inlinePos++;
+        }
+      }
+      if (result === "") {
+        result = input;
+      }
+    } else {
+      if (options.inputFormat === "INLINE") {
+        result += "\n" + inlineText;
+      }
     }
   } else {
     result = input;
   }
   return {
-    isChordLine: !error && hasRead,
+    isChordLine: !hasText && hasRead,
     result: result,
   };
 }
@@ -953,4 +1088,4 @@ try {
   //console.log(e);
 }
 
-export { Options, keyToSemitones, transpose };
+export { Options, keyToSemitones, transpose, getDirective };

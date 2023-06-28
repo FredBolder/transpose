@@ -57,7 +57,40 @@ textarea {
 
 .outputline {
   font-family: "Courier New", Courier, monospace;
-  font-size: 1rem;
+  font-size: 1em;
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.25em;
+}
+
+.artist {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+}
+
+.comment {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.comment_italic {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  font-style: italic;
+}
+
+.unknown {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
 }
 
 p {

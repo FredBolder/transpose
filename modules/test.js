@@ -1,4 +1,4 @@
-import { Options, keyToSemitones, transpose } from "./script.js";
+import { Options, keyToSemitones, transpose, getDirective } from "./script.js";
 
 function checkResult(testName, expected, result) {
   if (result !== expected) {
@@ -36,6 +36,7 @@ function createTestData(n) {
 }
 
 function test() {
+  let data = "";
   let inputData = [];
   let outputData = [];
   let semitones = 0;
@@ -313,6 +314,27 @@ function test() {
   checkResult(
     "Test 27",
     "DO REb RE MIb MI FA SOLb SOL LAb LA TIb TI",
+    outputData.join("\n")
+  );
+
+  // Test 28
+  data = "{title: This is a nice song}";
+  checkResult(
+    "Test 28",
+    "title,This is a nice song",
+    getDirective(data).name + "," + getDirective(data).value
+  );
+
+  // Test 29
+  initTest("CDE", false, false, false, false, false, false, "INLINE");
+  inputData.push("Dm Am");
+  inputData.push("{comment: Play fast}");
+  inputData.push("Dm        A7");
+  inputData.push("Test with inline chords");
+  outputData = transpose(inputData, 0, testOptions).data;
+  checkResult(
+    "Test 29",
+    "[Dm][Am]\n{comment: Play fast}\n[Dm]Test with [A7]inline chords",
     outputData.join("\n")
   );
 
