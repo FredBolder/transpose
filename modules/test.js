@@ -338,6 +338,29 @@ function test() {
     outputData.join("\n")
   );
 
+  // Test 30
+  initTest("INLINE", false, false, false, false, false, false, "NOCHORDS");
+  inputData.push("This is a [Am]Test with [C/G]inline chords");
+  outputData = transpose(inputData, 2, testOptions).data;
+  checkResult(
+    "Test 30",
+    "This is a Test with inline chords",
+    outputData.join("\n")
+  );
+
+  // Test 31
+  initTest("CDE", false, false, false, false, false, false, "NOCHORDS");
+  inputData.push("Dm Am");
+  inputData.push("{comment: Verse}");
+  inputData.push("Dm        A7");
+  inputData.push("Test is a test");
+  outputData = transpose(inputData, 0, testOptions).data;
+  checkResult(
+    "Test 31",
+    "{comment: Verse}\nTest is a test",
+    outputData.join("\n")
+  );
+
   // Extra test
   testOptions.key = 0;
   testOptions.inputFormat = "INLINE";

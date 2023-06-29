@@ -25,6 +25,14 @@
             <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
             (fgh.bolder@gmail.com).
           </p>
+          <div class="settings">
+            <div>
+              <button id="btClear">Clear</button>
+            </div>
+            <div>
+              <button id="btTitle">Title</button>
+            </div>
+          </div>
           <textarea
             id="input"
             spellcheck="false"
@@ -192,6 +200,7 @@
                 <option value="GREEK">Greek</option>
                 <option value="ROMAN">Roman</option>
                 <option value="NASHVILLE">Nashville</option>
+                <option value="NOCHORDS">No chords</option>
               </select>
             </div>
             <div>
@@ -203,6 +212,14 @@
                 checked
               />
               <label for="chordsBold">Chords=bold</label>
+            </div>
+            <div>
+              <label for="textSize">Text size:</label>
+              <select name="textSize" id="textSize">
+                <option value="SMALL">Small</option>
+                <option value="NORMAL" selected="selected">Normal</option>
+                <option value="LARGE">Large</option>
+              </select>
             </div>
             <div>
               <button id="btTranspose">Transpose / Convert</button>
@@ -244,6 +261,17 @@
             Feel free to contact me by
             <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
             (fgh.bolder@gmail.com) for questions or feedback.
+          </p>
+          <h2>Clear</h2>
+          <p>
+            Press the Clear button to clear the input. After that you can easily
+            paste or type a new text.
+          </p>
+          <h2>Title</h2>
+          <p>
+            Press the Title button to find the title and create a directive for
+            a better styling. Make sure that you have selected the Input format
+            that matches with the input for the best result.
           </p>
           <h2>Input format</h2>
           <p>

@@ -25,7 +25,7 @@ function bracket(options, start) {
 
 function Capitalize(s) {
   let result = s;
-  
+
   if (result.length > 0) {
     result = result[0].toUpperCase() + result.slice(1);
   }
@@ -58,6 +58,9 @@ function createInputOrOutputObject(chordSystem) {
       break;
     case "NASHVILLE":
       result = new Nashville();
+      break;
+    case "NOCHORDS":
+      result = new CDE();
       break;
     default:
       break;
@@ -618,8 +621,10 @@ function transpose(inputData, semiTones, options) {
           outputObj
         );
         output = result2.result;
-        outputData.push(output);
-        outputInfo.push(result2.isChordLine);
+        if (!result2.isChordLine || options.outputFormat !== "NOCHORDS") {
+          outputData.push(output);
+          outputInfo.push(result2.isChordLine);
+        }
         if (
           options.outputFormat === "INLINE" &&
           output !== inputData[i] &&
@@ -635,6 +640,64 @@ function transpose(inputData, semiTones, options) {
     data: outputData,
     info: outputInfo,
   };
+}
+
+function clearClicked() {
+  const input = document.getElementById("input");
+  if (input.value !== "") {
+    if (confirm("Clear the input?")) {
+      input.value = "";
+    }
+  }
+}
+
+function titleClicked() {
+  let found = false;
+  let chord = false;
+  let data = [];
+  let i = 0;
+  let name = "";
+  let outputData = {};
+  let result = {};
+  let s = "";
+  let titleExists = false;
+  const input = document.getElementById("input");
+  const inputFormat = document.getElementById("inputFormat").value;
+  let options = new Options();
+  options.inputFormat = inputFormat;
+  const inputObj = createInputOrOutputObject(options.inputFormat);
+  const outputObj = createInputOrOutputObject(options.outputFormat);
+
+  data = input.value.split("\n");
+  found = false;
+  titleExists = false;
+  for (let j = 0; j < data.length; j++) {
+    name = getDirective(data[j]).name;
+    if (name === "title" || name === "t") {
+      titleExists = true;
+    }
+  }
+  if (!titleExists) {
+    i = 0;
+    while (!found && !chord && i < data.length) {
+      let s = data[i].trim();
+      if (s !== "") {
+        if (!data[i].startsWith("#") && !s.startsWith("{")) {
+          result = transposeLine(data[i], 1, options, "", inputObj, outputObj);
+          if (result.isChordLine) {
+            chord = true;
+          } else {
+            found = true;
+            data[i] = `{title: ${s}}`;
+          }
+        }
+      }
+      i++;
+    }
+    if (found) {
+      input.value = data.join("\n");
+    }
+  }
 }
 
 function downClicked() {
@@ -668,7 +731,10 @@ function transposeClicked() {
   let outputInfo = [];
   let options = new Options();
   let semitones = 0;
+  let sizeClass = "normal";
+  let textSize = "NORMAL";
   let value = "";
+  const outputArea = document.getElementById("output");
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
   options.lowerIsMinor = document.getElementById("lowerIsMinor").checked;
@@ -682,6 +748,20 @@ function transposeClicked() {
   options.uppercase = document.getElementById("uppercase").checked;
   options.outputFormat = document.getElementById("outputFormat").value;
   chordsIsBold = document.getElementById("chordsBold").checked;
+
+  textSize = document.getElementById("textSize").value;
+  if (textSize === "LARGE") {
+    sizeClass = "large";
+  } else if (textSize === "SMALL") {
+    sizeClass = "small";
+  } else {
+    sizeClass = "normal";
+  }
+  outputArea.classList.remove("large");
+  outputArea.classList.remove("small");
+  outputArea.classList.remove("normal");
+  outputArea.classList.add(sizeClass);
+
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
   options.key = parseInt(document.getElementById("key").value);
@@ -733,12 +813,15 @@ function transposeClicked() {
             outputData2[i] = `<div class="artist">${value}</div>`;
           } else if (directive.name === "comment" || directive.name === "c") {
             outputData2[i] = `<div class="comment">${value}</div>`;
-          } else if (directive.name === "comment_italic" || directive.name === "ci") {
+          } else if (
+            directive.name === "comment_italic" ||
+            directive.name === "ci"
+          ) {
             outputData2[i] = `<div class="comment_italic">${value}</div>`;
           } else if (value !== "") {
-            outputData2[
-              i
-            ] = `<div class="unknown">${Capitalize(directive.name)}: ${value}</div>`;
+            outputData2[i] = `<div class="unknown">${Capitalize(
+              directive.name
+            )}: ${value}</div>`;
           } else {
             changed = false;
           }
@@ -749,7 +832,7 @@ function transposeClicked() {
       }
     }
   }
-  document.getElementById("output").innerHTML = outputData2.join("");
+  outputArea.innerHTML = outputData2.join("");
 }
 
 function transposeLine(
@@ -836,6 +919,7 @@ function transposeLine(
       if (chord.length > 0 && !oneMore && options.inputFormat !== "INLINE") {
         if (
           options.inputFormat === "CDE" ||
+          options.inputFormat === "NOCHORDS" ||
           options.inputFormat === "GERMAN1" ||
           options.inputFormat === "GERMAN2"
         ) {
@@ -1049,7 +1133,12 @@ function transposeLine(
       }
     } else {
       if (options.inputFormat === "INLINE") {
-        result += "\n" + inlineText;
+        if (options.outputFormat === "NOCHORDS") {
+          result = inlineText;
+          hasText = true;
+        } else {
+          result += "\n" + inlineText;
+        }
       }
     }
   } else {
@@ -1063,6 +1152,8 @@ function transposeLine(
 
 // To prevent error when using node
 try {
+  document.getElementById("btClear").addEventListener("click", clearClicked);
+  document.getElementById("btTitle").addEventListener("click", titleClicked);
   document
     .getElementById("btTranspose")
     .addEventListener("click", transposeClicked);
