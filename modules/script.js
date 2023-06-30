@@ -185,7 +185,7 @@ function convertGreekType(s) {
   return result;
 }
 
-function convertSpacesAndLF(s) {
+function convertSpacesAndLF(s, style) {
   let value = "";
   let result = "";
 
@@ -195,7 +195,7 @@ function convertSpacesAndLF(s) {
         value = "&nbsp;";
         break;
       case "\n":
-        value = `</div><div class="outputline">`;
+        value = `</div><div ${style}>`;
         break;
       default:
         value = s[i];
@@ -731,9 +731,16 @@ function transposeClicked() {
   let outputInfo = [];
   let options = new Options();
   let semitones = 0;
-  let sizeClass = "normal";
+  let style = "";
+  let styleBold = "";
+  let styleComment = "";
+  let styleCommentItalic = "";
+  let styleSubTitle = "";
+  let styleText = "";
+  let styleTitle = "";
   let textSize = "NORMAL";
   let value = "";
+  let valueStyle = 0;
   const outputArea = document.getElementById("output");
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
@@ -750,18 +757,22 @@ function transposeClicked() {
   chordsIsBold = document.getElementById("chordsBold").checked;
 
   textSize = document.getElementById("textSize").value;
-  if (textSize === "LARGE") {
-    sizeClass = "large";
-  } else if (textSize === "SMALL") {
-    sizeClass = "small";
+  if (textSize === "SMALL") {
+    valueStyle = 12;
+  } else if (textSize === "LARGE") {
+    valueStyle = 20;
   } else {
-    sizeClass = "normal";
+    valueStyle = 16;
   }
-  outputArea.classList.remove("large");
-  outputArea.classList.remove("small");
-  outputArea.classList.remove("normal");
-  outputArea.classList.add(sizeClass);
-
+  // Styles inline for keeping style when copying from browser to document
+  style = `style="font-family: Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
+  styleBold = `style="font-family: Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
+  styleComment = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${valueStyle}px"`;
+  styleCommentItalic = `style="font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: ${valueStyle}px"`;
+  styleText = `style="font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
+  styleTitle = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${Math.round(valueStyle * 1.5)}px"`;
+  styleSubTitle = `style="font-family: Arial, Helvetica, sans-serif; font-size: ${Math.round(valueStyle * 1.25)}px"`;
+  
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
   options.key = parseInt(document.getElementById("key").value);
@@ -787,39 +798,41 @@ function transposeClicked() {
   outputInfo = outputData.info;
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
-    outputData2[i] = convertSpacesAndLF(outputData2[i]);
+    outputData2[i] = convertSpacesAndLF(outputData2[i], style);
     if (
       outputData2[i] === "" ||
-      outputData2[i] === `</div><div class="outputline">`
+      outputData2[i] === `</div><div ${style}>`
     ) {
       outputData2[i] = "&nbsp;";
     }
   }
   for (let i = 0; i < outputData2.length; i++) {
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
-      outputData2[i] = `<div class="outputline bold">${outputData2[i]}</div>`;
+      outputData2[
+        i
+      ] = `<div ${styleBold}>${outputData2[i]}</div>`;
     } else {
       changed = false;
       if (options.outputFormat !== "INLINE") {
         directive = getDirective(outputData1[i]);
         if (directive.name !== "") {
           changed = true;
-          value = convertSpacesAndLF(directive.value);
+          value = convertSpacesAndLF(directive.value, style);
           if (directive.name === "title" || directive.name === "t") {
-            outputData2[i] = `<div class="title">${value}</div>`;
+            outputData2[i] = `<div ${styleTitle}>${value}</div>`;
           } else if (directive.name === "subtitle" || directive.name === "st") {
-            outputData2[i] = `<div class="subtitle">${value}</div>`;
+            outputData2[i] = `<div ${styleSubTitle}>${value}</div>`;
           } else if (directive.name === "artist") {
-            outputData2[i] = `<div class="artist">${value}</div>`;
+            outputData2[i] = `<div ${styleText}>${value}</div>`;
           } else if (directive.name === "comment" || directive.name === "c") {
-            outputData2[i] = `<div class="comment">${value}</div>`;
+            outputData2[i] = `<div ${styleComment}>${value}</div>`;
           } else if (
             directive.name === "comment_italic" ||
             directive.name === "ci"
           ) {
-            outputData2[i] = `<div class="comment_italic">${value}</div>`;
+            outputData2[i] = `<div ${styleCommentItalic}>${value}</div>`;
           } else if (value !== "") {
-            outputData2[i] = `<div class="unknown">${Capitalize(
+            outputData2[i] = `<div ${styleText}>${Capitalize(
               directive.name
             )}: ${value}</div>`;
           } else {
@@ -828,7 +841,9 @@ function transposeClicked() {
         }
       }
       if (!changed) {
-        outputData2[i] = `<div class="outputline">${outputData2[i]}</div>`;
+        outputData2[
+          i
+        ] = `<div ${style}>${outputData2[i]}</div>`;
       }
     }
   }
