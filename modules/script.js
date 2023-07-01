@@ -9,6 +9,21 @@ import { Greek } from "./greek.js";
 import { Inline } from "./inline.js";
 import { Nashville } from "./nashville.js";
 import { Roman } from "./roman.js";
+import { Songs } from "./songs.js";
+
+function addColor(style, color) {
+  let p1 = 0;
+  let result = style;
+
+  if (color !== "") {
+    p1 = style.indexOf(`"`);
+    if (p1 >= 0) {
+      result =
+        style.slice(0, p1 + 1) + "color: " + color + "; " + style.slice(p1 + 1);
+    }
+  }
+  return result;
+}
 
 function bracket(options, start) {
   let result = "";
@@ -342,35 +357,51 @@ function getDirective(s) {
 function ignoreLine(s, inputFormat, outputFormat) {
   let d = {};
   let ignore = false;
-  if (inputFormat === "INLINE" && outputFormat !== "INLINE") {
-    if (s.startsWith("#")) {
-      ignore = true;
-    }
-    d = getDirective(s);
-    if (
-      d.name === "new_song" ||
-      d.name === "ns" ||
-      d.name === "start_of_chorus" ||
-      d.name === "soc" ||
-      d.name === "end_of_chorus" ||
-      d.name === "eoc" ||
-      d.name === "start_of_tab" ||
-      d.name === "sot" ||
-      d.name === "end_of_tab" ||
-      d.name === "eot" ||
-      d.name === "new_page" ||
-      d.name === "np" ||
-      d.name === "new_physical_page" ||
-      d.name === "npp" ||
-      d.name === "column_break" ||
-      d.name === "colb" ||
-      d.name === "no_grid" ||
-      d.name === "ng" ||
-      d.name === "grid" ||
-      d.name === "g"
-    ) {
-      ignore = true;
-    }
+
+  if (
+    s.startsWith("#") &&
+    inputFormat === "INLINE" &&
+    outputFormat !== "INLINE"
+  ) {
+    ignore = true;
+  }
+  d = getDirective(s);
+  if (
+    d.name === "new_song" ||
+    d.name === "ns" ||
+    d.name === "start_of_chorus" ||
+    d.name === "soc" ||
+    d.name === "end_of_chorus" ||
+    d.name === "eoc" ||
+    d.name === "start_of_tab" ||
+    d.name === "sot" ||
+    d.name === "end_of_tab" ||
+    d.name === "eot" ||
+    d.name === "define" ||
+    d.name === "textfont" ||
+    d.name === "tf" ||
+    d.name === "textsize" ||
+    d.name === "ts" ||
+    d.name === "chordfont" ||
+    d.name === "cf" ||
+    d.name === "chordsize" ||
+    d.name === "cs" ||
+    d.name === "no_grid" ||
+    d.name === "ng" ||
+    d.name === "grid" ||
+    d.name === "g" ||
+    d.name === "titles" ||
+    d.name === "new_page" ||
+    d.name === "np" ||
+    d.name === "new_physical_page" ||
+    d.name === "npp" ||
+    d.name === "columns" ||
+    d.name === "col" ||
+    d.name === "column_break" ||
+    d.name === "colb" ||
+    d.name === "pagetype"
+  ) {
+    ignore = true;
   }
   return ignore;
 }
@@ -700,6 +731,52 @@ function titleClicked() {
   }
 }
 
+function commentClicked() {
+  let p1 = 0;
+  let p2 = 0;
+  let p3 = 0;
+  let s1 = "";
+  let s2 = "";
+  let s3 = "";
+  let value = "";
+  const input = document.getElementById("input");
+  const commentType = document.getElementById("commentType").value;
+  value = input.value;
+  if (value !== "") {
+    p3 = input.selectionStart;
+    p1 = value.lastIndexOf("\n", p3);
+    if (p1 === -1) {
+      p1 = 0;
+    }
+    p2 = value.indexOf("\n", p3);
+    if (p2 === -1) {
+      p2 = value.length - 1;
+    }
+    s1 = value.slice(p1 + 1, p2);
+    s2 = s1.trim();
+    if (s2 !== "" && !s2.startsWith("{")) {
+      s1 = "{" + commentType + ": " + s1 + "}";
+      s3 = value.slice(0, p1 + 1) + s1 + value.slice(p2);
+      input.value = s3;
+    }
+  }
+}
+
+function surpriseMeClicked() {
+  const input = document.getElementById("input");
+  let n = 1;
+  let song = {};
+
+  if (confirm("Load a random example song?")) {
+    n = Math.floor(Math.random() * Songs.numberOfSongs()) + 1;
+    console.log(n);
+    song = Songs.loadSong(n);
+    input.value = song.join("\n");
+    document.getElementById("inputFormat").value = "CDE";
+    transposeClicked();
+  }
+}
+
 function downClicked() {
   const semitonesElement = document.getElementById("semitones");
   let semitones = parseInt(semitonesElement.value);
@@ -722,18 +799,22 @@ function upClicked() {
 
 function transposeClicked() {
   let changed = false;
+  let chordColor = "";
   let chordsIsBold = false;
   let directive = {};
+  let ignore = false;
   let inputData = [];
   let outputData = {};
   let outputData1 = [];
   let outputData2 = [];
+  let outputData3 = [];
   let outputInfo = [];
   let options = new Options();
   let semitones = 0;
   let style = "";
   let styleBold = "";
   let styleComment = "";
+  let styleCommentBox = "";
   let styleCommentItalic = "";
   let styleSubTitle = "";
   let styleText = "";
@@ -768,11 +849,16 @@ function transposeClicked() {
   style = `style="font-family: Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
   styleBold = `style="font-family: Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
   styleComment = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${valueStyle}px"`;
+  styleCommentBox = `style="width: fit-content; border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
   styleCommentItalic = `style="font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: ${valueStyle}px"`;
   styleText = `style="font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
-  styleTitle = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${Math.round(valueStyle * 1.5)}px"`;
-  styleSubTitle = `style="font-family: Arial, Helvetica, sans-serif; font-size: ${Math.round(valueStyle * 1.25)}px"`;
-  
+  styleTitle = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${Math.round(
+    valueStyle * 1.5
+  )}px"`;
+  styleSubTitle = `style="font-family: Arial, Helvetica, sans-serif; font-size: ${Math.round(
+    valueStyle * 1.25
+  )}px"`;
+
   let data = document.getElementById("input").value;
   inputData = data.split("\n");
   options.key = parseInt(document.getElementById("key").value);
@@ -799,18 +885,16 @@ function transposeClicked() {
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
     outputData2[i] = convertSpacesAndLF(outputData2[i], style);
-    if (
-      outputData2[i] === "" ||
-      outputData2[i] === `</div><div ${style}>`
-    ) {
+    if (outputData2[i] === "" || outputData2[i] === `</div><div ${style}>`) {
       outputData2[i] = "&nbsp;";
     }
   }
   for (let i = 0; i < outputData2.length; i++) {
+    ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
-      outputData2[
-        i
-      ] = `<div ${styleBold}>${outputData2[i]}</div>`;
+      outputData2[i] = `<div ${addColor(styleBold, chordColor)}>${
+        outputData2[i]
+      }</div>`;
     } else {
       changed = false;
       if (options.outputFormat !== "INLINE") {
@@ -818,6 +902,16 @@ function transposeClicked() {
         if (directive.name !== "") {
           changed = true;
           value = convertSpacesAndLF(directive.value, style);
+          if (
+            directive.name === "chordcolour" ||
+            directive.name === "chordcolor"
+          ) {
+            ignore = true;
+            if (value === "") {
+              value = "black";
+            }
+            chordColor = value;
+          }
           if (directive.name === "title" || directive.name === "t") {
             outputData2[i] = `<div ${styleTitle}>${value}</div>`;
           } else if (directive.name === "subtitle" || directive.name === "st") {
@@ -831,6 +925,11 @@ function transposeClicked() {
             directive.name === "ci"
           ) {
             outputData2[i] = `<div ${styleCommentItalic}>${value}</div>`;
+          } else if (
+            directive.name === "comment_box" ||
+            directive.name === "cb"
+          ) {
+            outputData2[i] = `<div ${styleCommentBox}>${value}</div>`;
           } else if (value !== "") {
             outputData2[i] = `<div ${styleText}>${Capitalize(
               directive.name
@@ -841,13 +940,20 @@ function transposeClicked() {
         }
       }
       if (!changed) {
-        outputData2[
-          i
-        ] = `<div ${style}>${outputData2[i]}</div>`;
+        if (options.outputFormat !== "INLINE" && outputInfo[i]) {
+          outputData2[i] = `<div ${addColor(style, chordColor)}>${
+            outputData2[i]
+          }</div>`;
+        } else {
+          outputData2[i] = `<div ${style}>${outputData2[i]}</div>`;
+        }
       }
     }
+    if (!ignore) {
+      outputData3.push(outputData2[i]);
+    }
   }
-  outputArea.innerHTML = outputData2.join("");
+  outputArea.innerHTML = outputData3.join("");
 }
 
 function transposeLine(
@@ -1169,6 +1275,12 @@ function transposeLine(
 try {
   document.getElementById("btClear").addEventListener("click", clearClicked);
   document.getElementById("btTitle").addEventListener("click", titleClicked);
+  document
+    .getElementById("btComment")
+    .addEventListener("click", commentClicked);
+  document
+    .getElementById("btSurpriseMe")
+    .addEventListener("click", surpriseMeClicked);
   document
     .getElementById("btTranspose")
     .addEventListener("click", transposeClicked);

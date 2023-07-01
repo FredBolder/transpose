@@ -1,4 +1,5 @@
-import { Options, keyToSemitones, transpose, getDirective } from "./script.js";
+import { keyToSemitones, transpose, getDirective } from "./script.js";
+import { Options } from "./options.js";
 
 function checkResult(testName, expected, result) {
   if (result !== expected) {
