@@ -764,12 +764,38 @@ function commentClicked() {
 
 function surpriseMeClicked() {
   const input = document.getElementById("input");
-  let n = 1;
+  let isInt = true;
+  let n = 0;
   let song = {};
+  let value = "";
 
-  if (confirm("Load a random example song?")) {
-    n = Math.floor(Math.random() * Songs.numberOfSongs()) + 1;
-    console.log(n);
+  n = 0;
+  value = input.value.trim().toLowerCase();
+  isInt = true;
+  if (value.length > 0 && value.length < 5) {
+    for (let i = 0; i < value.length; i++) {
+      if ("1234567890".includes(value[i]) === false) {
+        isInt = false;
+      }
+    }
+    if (isInt) {
+      n = parseInt(value);
+      if (n < 1 || n > Songs.numberOfSongs()) {
+        n = 0;
+      }
+    }
+  }
+  if (value === "index") {
+    song = Songs.loadSong(0);
+    input.value = song.join("\n");
+  } else {
+    if (n === 0) {
+      if (confirm("Load a random example song?")) {
+        n = Math.floor(Math.random() * Songs.numberOfSongs()) + 1;
+      }
+    }
+  }
+  if (n > 0) {
     song = Songs.loadSong(n);
     input.value = song.join("\n");
     document.getElementById("inputFormat").value = "CDE";
