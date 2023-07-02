@@ -1,6 +1,6 @@
 class Songs {
   static numberOfSongs() {
-    return 4;
+    return 5;
   }
 
   static loadSong(n) {
@@ -13,6 +13,7 @@ class Songs {
         inputData.push("002 Happy Birthday");
         inputData.push("003 Χρόνια πολλά");
         inputData.push("004 Silent night");
+        inputData.push("005 Greensleeves");
         break;
       case 1:
         inputData.push("{chordcolour: red}");
@@ -82,7 +83,7 @@ class Songs {
         inputData.push("{chordcolour: green}");
         inputData.push("{title: Silent night}");
         inputData.push("");
-        inputData.push("{comment: Verse 1}");
+        inputData.push("{comment: Verse 1:}");
         inputData.push("C");
         inputData.push("Silent night, holy night,");
         inputData.push("G7           C");
@@ -96,7 +97,7 @@ class Songs {
         inputData.push("C        G7       C");
         inputData.push("Sleep in heavenly peace.");
         inputData.push("");
-        inputData.push("{comment: Verse 2}");
+        inputData.push("{comment: Verse 2:}");
         inputData.push("C");
         inputData.push("Silent night, holy night,");
         inputData.push("G7              C");
@@ -110,7 +111,7 @@ class Songs {
         inputData.push("C          G7         C");
         inputData.push("Christ the Savior, is born!");
         inputData.push("");
-        inputData.push("{comment: Verse 3}");
+        inputData.push("{comment: Verse 3:}");
         inputData.push("C");
         inputData.push("Silent night, holy night,");
         inputData.push("G7          C");
@@ -123,6 +124,54 @@ class Songs {
         inputData.push("Jesus, Lord, at thy birth,");
         inputData.push("C      G7           C");
         inputData.push("Jesus, Lord, at thy birth.");
+        break;
+      case 5:
+        inputData.push("{chordcolour: green}");
+        inputData.push("{title: Greensleeves}");
+        inputData.push("");
+        inputData.push("{comment: Verse 1:}");
+        inputData.push(" Am     C         G     Em");
+        inputData.push("Alas my love, you do me wrong,");
+        inputData.push("   Am             E");
+        inputData.push("to cast me off discourteously.");
+        inputData.push("    Am     C         G        Em");
+        inputData.push("For I have loved you well and long,");
+        inputData.push("  Am       E7      Am");
+        inputData.push("delighting in your company.");
+        inputData.push("");
+        inputData.push("{comment: Chorus:}");
+        inputData.push("C                G      Em");
+        inputData.push("Greensleeves was all my joy,");
+        inputData.push("Am               E");
+        inputData.push("Greensleeves was my delight,");
+        inputData.push("C                   G        Em");
+        inputData.push("Greensleeves was my heart of gold,");
+        inputData.push("    Am         E7   Am");
+        inputData.push("and who but my lady Greensleeves.");
+        inputData.push("");
+        inputData.push("{comment: Verse 2:}");
+        inputData.push("  Am        C     G       Em");
+        inputData.push("I have been ready at your hand,");
+        inputData.push("   Am             E");
+        inputData.push("to grant whatever you would crave.");
+        inputData.push("  Am        C       G        Em");
+        inputData.push("I have both wagered life and land,");
+        inputData.push("     Am       E7        Am");
+        inputData.push("your love and good-will for to have.");
+        inputData.push("");
+        inputData.push("{comment: Chorus}");
+        inputData.push("");
+        inputData.push("{comment: Verse 3:}");
+        inputData.push("      Am     C       G      Em");
+        inputData.push("Well, I will pray to God on high,");
+        inputData.push("     Am              E");
+        inputData.push("that thou my constancy mayst see,");
+        inputData.push("    Am       C      G      Em");
+        inputData.push("and that yet once before I die,");
+        inputData.push("     Am        E7      Am");
+        inputData.push("thou wilt vouchsafe to love me.");
+        inputData.push("");
+        inputData.push("{comment: Chorus}");
         break;
       default:
         break;

@@ -829,6 +829,7 @@ function transposeClicked() {
   let chordsIsBold = false;
   let directive = {};
   let ignore = false;
+  let ignoreColors = false;
   let inputData = [];
   let outputData = {};
   let outputData1 = [];
@@ -862,6 +863,7 @@ function transposeClicked() {
   options.uppercase = document.getElementById("uppercase").checked;
   options.outputFormat = document.getElementById("outputFormat").value;
   chordsIsBold = document.getElementById("chordsBold").checked;
+  ignoreColors = document.getElementById("ignoreColors").checked;
 
   textSize = document.getElementById("textSize").value;
   if (textSize === "SMALL") {
@@ -915,6 +917,7 @@ function transposeClicked() {
       outputData2[i] = "&nbsp;";
     }
   }
+  chordColor = "";
   for (let i = 0; i < outputData2.length; i++) {
     ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
@@ -936,7 +939,9 @@ function transposeClicked() {
             if (value === "") {
               value = "black";
             }
-            chordColor = value;
+            if (!ignoreColors) {
+              chordColor = value;
+            }
           }
           if (directive.name === "title" || directive.name === "t") {
             outputData2[i] = `<div ${styleTitle}>${value}</div>`;
