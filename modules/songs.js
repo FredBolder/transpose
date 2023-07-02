@@ -1,9 +1,27 @@
 class Songs {
   static numberOfSongs() {
-    return 5;
+    return 8;
   }
 
   static loadSong(n) {
+    function weWishYou() {
+      inputData.push("   G                C");
+      inputData.push("We wish you a merry Christmas");
+      inputData.push("   A                D");
+      inputData.push("We wish you a merry Christmas");
+      inputData.push("   B7               Em");
+      inputData.push("We wish you a merry Christmas");
+      inputData.push("      C     D   G");
+      inputData.push("and a happy new year");
+    }
+
+    function goodTidings() {
+      inputData.push("     G          D        Em           D");
+      inputData.push("Good tidings we bring to you and your kin");
+      inputData.push("   G                Bm              C     D   G");
+      inputData.push("We wish you a merry Christmas and a happy new year");
+    }
+
     let inputData = [];
     switch (n) {
       case 0:
@@ -11,9 +29,12 @@ class Songs {
         inputData.push("");
         inputData.push("001 Μήλο μου κόκκινο");
         inputData.push("002 Happy Birthday");
-        inputData.push("003 Χρόνια πολλά");
+        inputData.push("003 Χρόνια πολλά (Greek birthday song)");
         inputData.push("004 Silent night");
         inputData.push("005 Greensleeves");
+        inputData.push("006 We wish you a merry Christmas");
+        inputData.push("007 Slaap, kindje slaap (Dutch lullaby)");
+        inputData.push("008 Του γάμου (Greek wedding song)");
         break;
       case 1:
         inputData.push("{chordcolour: red}");
@@ -26,7 +47,7 @@ class Songs {
         inputData.push("C                  F        C");
         inputData.push("Μήλο μου κόκκινο, ρόιδο βαμμένο  (2x)");
         inputData.push("C         G                 C");
-        inputData.push("γιατί με μάρανες, τον πικραμένο  (2x)");
+        inputData.push("Γιατί με μάρανες, τον πικραμένο  (2x)");
         inputData.push("");
         inputData.push("C                    F         C");
         inputData.push("Πηγαίνω κι έρχομαι, μα δε σε βρίσκω  (2x)");
@@ -56,6 +77,7 @@ class Songs {
         break;
       case 3:
         inputData.push("{title: Χρόνια πολλά}");
+        inputData.push("{comment_italic: Greek birthday song}");
         inputData.push("");
         inputData.push("{chordcolour: deeppink}");
         inputData.push("{comment: Birthday woman/girl}");
@@ -85,27 +107,27 @@ class Songs {
         inputData.push("");
         inputData.push("{comment: Verse 1:}");
         inputData.push("C");
-        inputData.push("Silent night, holy night,");
+        inputData.push("Silent night, holy night");
         inputData.push("G7           C");
         inputData.push("All is calm, all is bright");
         inputData.push("F                C");
-        inputData.push("Round yon virgin mother and child.");
+        inputData.push("Round yon virgin mother and child");
         inputData.push("F              C");
-        inputData.push("Holy infant so tender and mild,");
+        inputData.push("Holy infant so tender and mild");
         inputData.push("G7                C");
-        inputData.push("Sleep in heavenly peace,");
+        inputData.push("Sleep in heavenly peace");
         inputData.push("C        G7       C");
-        inputData.push("Sleep in heavenly peace.");
+        inputData.push("Sleep in heavenly peace");
         inputData.push("");
         inputData.push("{comment: Verse 2:}");
         inputData.push("C");
-        inputData.push("Silent night, holy night,");
+        inputData.push("Silent night, holy night");
         inputData.push("G7              C");
-        inputData.push("Shepherds quake at the sight,");
+        inputData.push("Shepherds quake at the sight");
         inputData.push("F                   C");
-        inputData.push("Glories stream from heaven afar.");
+        inputData.push("Glories stream from heaven afar");
         inputData.push("F                   C");
-        inputData.push("Heavenly hosts sing alleluia;");
+        inputData.push("Heavenly hosts sing alleluia");
         inputData.push("G7                    C");
         inputData.push("Christ the Savior, is born!");
         inputData.push("C          G7         C");
@@ -113,17 +135,17 @@ class Songs {
         inputData.push("");
         inputData.push("{comment: Verse 3:}");
         inputData.push("C");
-        inputData.push("Silent night, holy night,");
+        inputData.push("Silent night, holy night");
         inputData.push("G7          C");
         inputData.push("Son of God, love's pure light");
         inputData.push("F                      C");
-        inputData.push("Radiant beams from thy holy face.");
+        inputData.push("Radiant beams from thy holy face");
         inputData.push("F                  C");
-        inputData.push("With the dawn of redeeming grace,");
+        inputData.push("with the dawn of redeeming grace");
         inputData.push("G7                  C");
-        inputData.push("Jesus, Lord, at thy birth,");
+        inputData.push("Jesus, Lord, at thy birth");
         inputData.push("C      G7           C");
-        inputData.push("Jesus, Lord, at thy birth.");
+        inputData.push("Jesus, Lord, at thy birth");
         break;
       case 5:
         inputData.push("{chordcolour: green}");
@@ -151,7 +173,7 @@ class Songs {
         inputData.push("");
         inputData.push("{comment: Verse 2:}");
         inputData.push("  Am        C     G       Em");
-        inputData.push("I have been ready at your hand,");
+        inputData.push("I have been ready at your hand");
         inputData.push("   Am             E");
         inputData.push("to grant whatever you would crave.");
         inputData.push("  Am        C       G        Em");
@@ -172,6 +194,102 @@ class Songs {
         inputData.push("thou wilt vouchsafe to love me.");
         inputData.push("");
         inputData.push("{comment: Chorus}");
+        break;
+      case 6:
+        inputData.push("{chordcolour: green}");
+        inputData.push("{title: We wish you a merry Christmas}");
+        inputData.push("");
+        weWishYou();
+        inputData.push("");
+        goodTidings();
+        inputData.push("");
+        inputData.push("    G                   C");
+        inputData.push("Oh, bring us some figgy pudding");
+        inputData.push("    A                   D");
+        inputData.push("Oh, bring us some figgy pudding");
+        inputData.push("    B7                  Em");
+        inputData.push("Oh, bring us some figgy pudding");
+        inputData.push("    C        D     G");
+        inputData.push("and bring it right here");
+        inputData.push("");
+        goodTidings();
+        inputData.push("");
+        inputData.push("   G                 C");
+        inputData.push("We won't go until we get some");
+        inputData.push("   A                 D");
+        inputData.push("We won't go until we get some");
+        inputData.push("   B7                Em");
+        inputData.push("We won't go until we get some,");
+        inputData.push("   C        D     G");
+        inputData.push("so bring it right here");
+        inputData.push("");
+        goodTidings();
+        inputData.push("");
+        inputData.push("   G                  C");
+        inputData.push("We all like our figgy pudding");
+        inputData.push("   A                  D");
+        inputData.push("We all like our figgy pudding");
+        inputData.push("   B7                 Em");
+        inputData.push("We all like our figgy pudding");
+        inputData.push("     C       D    G");
+        inputData.push("with all its good cheers");
+        inputData.push("");
+        goodTidings();
+        inputData.push("");
+        weWishYou();
+        break;
+      case 7:
+        inputData.push("{title: Slaap, kindje slaap}");
+        inputData.push("{comment_italic: Dutch lullaby}");
+        inputData.push("");
+        inputData.push("G      D7     G");
+        inputData.push("Slaap, kindje slaap.");
+        inputData.push("            D7        G");
+        inputData.push("Daar buiten loopt een schaap.");
+        inputData.push("                     C");
+        inputData.push("Een schaap met witte voetjes,");
+        inputData.push("    G                   D7");
+        inputData.push("die drinkt zijn melk zo zoetjes.");
+        inputData.push("G      D7     G");
+        inputData.push("Slaap, kindje slaap.");
+        inputData.push("C    G       D7       G");
+        inputData.push("Daar buiten loopt een schaap.");
+        break;
+      case 8:
+        inputData.push("{title: Του γάμου}");
+        inputData.push("{comment_italic: Greek wedding song}");
+        inputData.push("");
+        inputData.push(" D");
+        inputData.push("Σήμερα γά-, σήμερα γάμος γίνεται");
+        inputData.push("      G       D         A       D");
+        inputData.push("Σ’ ωραίο περιβόλι σ' ωραίο περιβόλι  2x");
+        inputData.push(" ");
+        inputData.push(" D");
+        inputData.push("Σήμερα απο-, σήμερα αποχωρίζεται");
+        inputData.push("   G            D       A            D");
+        inputData.push("Η μάνα από την κόρη, η μάνα από την κόρη  2x");
+        inputData.push(" ");
+        inputData.push(" D");
+        inputData.push("Γαμπρέ τη νύ-, γαμπρέ τη νύφη ν' αγαπάς");
+        inputData.push("    G          D          A          D");
+        inputData.push("να μην τήνε μαλώνεις, να μην τήνε μαλώνεις  2x");
+        inputData.push(" ");
+        inputData.push(" D");
+        inputData.push("Σαν το βασι-, σαν το βασιλικό στη γη");
+        inputData.push(" G           D          A        D");
+        inputData.push("να τήνε καμαρώνεις, να τήνε καμαρώνεις  2x");
+        inputData.push(" ");
+        inputData.push(" D");
+        inputData.push("Σήκω περή, σήκω περήφανε αητέ");
+        inputData.push(" G               D        A             D");
+        inputData.push("κι άνοιξε τα φτερά σου κι άνοιξε τα φτερά σου  2x");
+        inputData.push(" ");
+        inputData.push(" D");
+        inputData.push("Να πεταχτεί, να πεταχτεί η πέρδικα");
+        inputData.push("  G                  D        A                  D");
+        inputData.push(
+          "που 'χεις στην αγκαλιά σου, που 'χεις στην αγκαλιά σου  2x"
+        );
         break;
       default:
         break;

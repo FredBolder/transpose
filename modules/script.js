@@ -785,7 +785,7 @@ function surpriseMeClicked() {
       }
     }
   }
-  if (value === "index") {
+  if (value === "index" || value === "?") {
     song = Songs.loadSong(0);
     input.value = song.join("\n");
   } else {
