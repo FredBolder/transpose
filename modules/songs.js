@@ -1,6 +1,6 @@
 class Songs {
   static numberOfSongs() {
-    return 8;
+    return 9;
   }
 
   static loadSong(n) {
@@ -35,6 +35,7 @@ class Songs {
         inputData.push("006 We wish you a merry Christmas");
         inputData.push("007 Slaap, kindje slaap (Dutch lullaby)");
         inputData.push("008 Του γάμου (Greek wedding song)");
+        inputData.push("009 Ωραία που ‘ναι η νύφη μας (Greek wedding song)");
         break;
       case 1:
         inputData.push("{chordcolour: red}");
@@ -289,6 +290,40 @@ class Songs {
         inputData.push("  G                  D        A                  D");
         inputData.push(
           "που 'χεις στην αγκαλιά σου, που 'χεις στην αγκαλιά σου  2x"
+        );
+        break;
+      case 9:
+        inputData.push("{title: Ωραία που ‘ναι η νύφη μας}");
+        inputData.push("{comment_italic: Greek wedding song}");
+        inputData.push("");
+        inputData.push("   G                          D           G");
+        inputData.push("Ωραία που ‘ναι η νύφη μας, ωραία τα προικιά της");
+        inputData.push(" G   D G");
+        inputData.push("Instrumental");
+        inputData.push("   F          C           D           G");
+        inputData.push("Ωραία κι η παρέα της που κάνει την χαρά της  2x");
+        inputData.push("");
+        inputData.push("  G                      D          G");
+        inputData.push("Ένα τραγούδι θα σας πω απάνω στο κεράσι");
+        inputData.push(" G   D G");
+        inputData.push("Instrumental");
+        inputData.push("       F         C         D          G");
+        inputData.push("Τ’ ανδρόγυνο που έγινε να ζήσει να γεράσει  2x");
+        inputData.push("");
+        inputData.push("  G                      D          G");
+        inputData.push("Ένα τραγούδι θα σας πω απάνω στο ρεβίθι");
+        inputData.push(" G   D G");
+        inputData.push("Instrumental");
+        inputData.push("   F             C               D           G");
+        inputData.push("Χαρά στα μάτια του γαμπρού που διάλεξαν την νύφη  2x");
+        inputData.push("");
+        inputData.push("  G                       D          G");
+        inputData.push("Ένα τραγούδι θα σας πώ, απάνω στο λεμόνι");
+        inputData.push(" G   D G");
+        inputData.push("Instrumental");
+        inputData.push("    F              C                D         G");
+        inputData.push(
+          "Να ζήσει η νύφη κι ο γαμπρός κι οι συμπεθέροι όλοι  2x"
         );
         break;
       default:
