@@ -253,7 +253,7 @@ class Songs {
         inputData.push("die drinkt zijn melk zo zoetjes.");
         inputData.push("G      D7     G");
         inputData.push("Slaap, kindje slaap.");
-        inputData.push("C    G       D7       G");
+        inputData.push("C    G      D7        G");
         inputData.push("Daar buiten loopt een schaap.");
         break;
       case 8:

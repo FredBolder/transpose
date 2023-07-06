@@ -554,6 +554,23 @@ function printClicked() {
   }, 100);
 }
 
+function exportClicked() {
+  let filename = prompt("Filename").trim();
+  if (filename !== "") {
+    const plainText = document.getElementById("output").innerText;
+    const element = document.createElement("a");
+    element.setAttribute(
+      "href",
+      "data:text/plain;charset=utf-8," + encodeURIComponent(plainText)
+    );
+    element.setAttribute("download", filename);
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+}
+
 function selectAllClicked() {
   if (document.selection) {
     // IE
@@ -1321,6 +1338,7 @@ try {
     .getElementById("btSelectAll")
     .addEventListener("click", selectAllClicked);
   document.getElementById("btPrint").addEventListener("click", printClicked);
+  document.getElementById("btExport").addEventListener("click", exportClicked);
   document.getElementById("btHelp").addEventListener("click", () => {
     document.getElementById("main").classList.add("hidden");
     document.getElementById("links").classList.add("hidden");
