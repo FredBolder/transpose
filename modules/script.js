@@ -38,7 +38,7 @@ function bracket(options, start) {
   return result;
 }
 
-function Capitalize(s) {
+function capitalize(s) {
   let result = s;
 
   if (result.length > 0) {
@@ -354,6 +354,21 @@ function getDirective(s) {
   };
 }
 
+function header(title) {
+  let s = "";
+
+  s += `<!DOCTYPE html>\n`;
+  s += `<html lang="en">\n`;
+  s += `  <head>\n`;
+  s += `    <meta charset="UTF-8" />\n`;
+  s += `    <meta http-equiv="X-UA-Compatible" content="IE=edge" />\n`;
+  s += `    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n`;
+  s += `    <title>${title}</title>\n`;
+  s += `  </head>\n`;
+  s += `  <body>\n`;
+  return s;
+}
+
 function ignoreLine(s, inputFormat, outputFormat) {
   let d = {};
   let ignore = false;
@@ -537,6 +552,8 @@ function noteToIndex(note, options, start, bass, inputObj) {
 
 function printClicked() {
   const w = window.open(" ", " ");
+  w.document.writeln("<!DOCTYPE html>");
+  w.document.writeln(`<html lang="en">`);
   w.document.writeln("<head>");
   w.document.write(document.querySelector("head").innerHTML);
   w.document.writeln("</head>");
@@ -545,6 +562,7 @@ function printClicked() {
   w.document.write(document.getElementById("output").innerHTML);
   w.document.writeln("</div>");
   w.document.writeln("</body>");
+  w.document.writeln("</html>");
   let stateCheck = setInterval(() => {
     if (document.readyState === "complete") {
       clearInterval(stateCheck);
@@ -555,14 +573,34 @@ function printClicked() {
 }
 
 function exportClicked() {
-  let filename = prompt("Filename").trim();
+  let data = "";
+  let filename = prompt("Filename without path").trim();
   if (filename !== "") {
-    const plainText = document.getElementById("output").innerText;
+    const exportFormat = document.getElementById("exportFormat").value;
     const element = document.createElement("a");
-    element.setAttribute(
-      "href",
-      "data:text/plain;charset=utf-8," + encodeURIComponent(plainText)
-    );
+    if (exportFormat === "HTML") {
+      if (!filename.includes(".")) {
+        filename += ".html";
+      }
+      data = document.getElementById("output").innerHTML;
+      data = data.split("</div><").join("</div>\n    <");
+      data = header(filename) + "    " + data;
+      data += `\n  </body>\n`;
+      data += `</html>\n`;
+      element.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(data)
+      );
+    } else {
+      if (!filename.includes(".")) {
+        filename += ".txt";
+      }
+      data = document.getElementById("output").innerText;
+      element.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(data)
+      );
+    }
     element.setAttribute("download", filename);
     element.style.display = "none";
     document.body.appendChild(element);
@@ -979,7 +1017,7 @@ function transposeClicked() {
           ) {
             outputData2[i] = `<div ${styleCommentBox}>${value}</div>`;
           } else if (value !== "") {
-            outputData2[i] = `<div ${styleText}>${Capitalize(
+            outputData2[i] = `<div ${styleText}>${capitalize(
               directive.name
             )}: ${value}</div>`;
           } else {
