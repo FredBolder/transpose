@@ -1,6 +1,6 @@
 class Songs {
   static numberOfSongs() {
-    return 9;
+    return 11;
   }
 
   static loadSong(n) {
@@ -27,7 +27,7 @@ class Songs {
       case 0:
         inputData.push("INDEX");
         inputData.push("");
-        inputData.push("001 Μήλο μου κόκκινο");
+        inputData.push("001 Μήλο μου κόκκινο (Greek folk song)");
         inputData.push("002 Happy Birthday");
         inputData.push("003 Χρόνια πολλά (Greek birthday song)");
         inputData.push("004 Silent night");
@@ -36,6 +36,8 @@ class Songs {
         inputData.push("007 Slaap, kindje slaap (Dutch lullaby)");
         inputData.push("008 Του γάμου (Greek wedding song)");
         inputData.push("009 Ωραία που ‘ναι η νύφη μας (Greek wedding song)");
+        inputData.push("010 Are you lonesome tonight?");
+        inputData.push("011 Yes sir, that's my baby");
         break;
       case 1:
         inputData.push("{chordcolour: red}");
@@ -325,6 +327,75 @@ class Songs {
         inputData.push(
           "Να ζήσει η νύφη κι ο γαμπρός κι οι συμπεθέροι όλοι  2x"
         );
+        break;
+      case 10:
+        inputData.push("{title: Are you lonesome tonight?}");
+        inputData.push("");
+        inputData.push("Dm  G7  C  G7");
+        inputData.push("");
+        inputData.push("        C          Em            Am");
+        inputData.push("Are you lonesome tonight, do you miss me tonight?");
+        inputData.push("        C        C7       F");
+        inputData.push("Are you sorry we drifted apart?");
+        inputData.push("          G                 G7");
+        inputData.push("Does your memory stray to a brighter summer day");
+        inputData.push("       G7                             C");
+        inputData.push("When I kissed you and called you sweetheart?");
+        inputData.push("       C7                         F");
+        inputData.push("Do the chairs in your parlor seem empty and bare?");
+        inputData.push("       D                         Dm         G");
+        inputData.push("Do you gaze at your doorstep and picture me there?");
+        inputData.push("        C                 Em            D");
+        inputData.push(
+          "Is your heart filled with pain, shall I come back again?"
+        );
+        inputData.push("        Dm            G7         C");
+        inputData.push("Tell me dear, are you lonesome tonight?");
+        break;
+      case 11:
+        inputData.push("{title: Yes sir, that's my baby}");
+        inputData.push("");
+        inputData.push("D");
+        inputData.push("   That's my baby");
+        inputData.push("A");
+        inputData.push(" No, sir, I don't mean maybe");
+        inputData.push("A7                         D");
+        inputData.push(" Yes, sir! That's my baby now...");
+        inputData.push("");
+        inputData.push("D");
+        inputData.push(" Yes, ma'am, we've decided");
+        inputData.push("A");
+        inputData.push(" No ma'am, we ain't gonna hide it");
+        inputData.push("A7                           D");
+        inputData.push(" Yes, ma'am, you're invited now");
+        inputData.push("");
+        inputData.push("       D    D7");
+        inputData.push("By the way");
+        inputData.push("       G");
+        inputData.push("By the way");
+        inputData.push("        E7                           A7");
+        inputData.push("When we walk up to the preacher I'll say");
+        inputData.push(" ");
+        inputData.push("D");
+        inputData.push(" Yes sir, that's my baby");
+        inputData.push("A");
+        inputData.push(" No sir, I don't mean maybe");
+        inputData.push("A7                        D");
+        inputData.push(" Yes sir, that's my baby now");
+        inputData.push("");
+        inputData.push("       D    D7");
+        inputData.push("By the way");
+        inputData.push("       G");
+        inputData.push("By the way");
+        inputData.push("           E7                         A7");
+        inputData.push("When we'll run into the preacher I'll say");
+        inputData.push("");
+        inputData.push("         D");
+        inputData.push("I'll say, Yes sir, that's my baby");
+        inputData.push("A");
+        inputData.push(" No sir, I don't mean maybe");
+        inputData.push("A7                        D");
+        inputData.push(" Yes sir, that's my baby now");
         break;
       default:
         break;
