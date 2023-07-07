@@ -551,17 +551,15 @@ function noteToIndex(note, options, start, bass, inputObj) {
 }
 
 function printClicked() {
+  let data = "";
+  data = document.getElementById("output").innerHTML;
+  data = data.split("</div><").join("</div>\n    <");
   const w = window.open(" ", " ");
-  w.document.writeln("<!DOCTYPE html>");
-  w.document.writeln(`<html lang="en">`);
-  w.document.writeln("<head>");
-  w.document.write(document.querySelector("head").innerHTML);
-  w.document.writeln("</head>");
-  w.document.writeln("<body>");
-  w.document.writeln(`<div class="outputprint">`);
-  w.document.write(document.getElementById("output").innerHTML);
-  w.document.writeln("</div>");
-  w.document.writeln("</body>");
+  w.document.write(header("Transpose by Fred Bolder"));
+  w.document.writeln(`    <div class="outputprint">`);
+  w.document.write(data);
+  w.document.writeln("    </div>");
+  w.document.writeln("  </body>");
   w.document.writeln("</html>");
   let stateCheck = setInterval(() => {
     if (document.readyState === "complete") {
@@ -901,6 +899,8 @@ function transposeClicked() {
   let styleSubTitle = "";
   let styleText = "";
   let styleTitle = "";
+  let textColor = "";
+  let titleColor = "";
   let textSize = "NORMAL";
   let value = "";
   let valueStyle = 0;
@@ -967,12 +967,14 @@ function transposeClicked() {
   outputInfo = outputData.info;
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
-    outputData2[i] = convertSpacesAndLF(outputData2[i], style);
-    if (outputData2[i] === "" || outputData2[i] === `</div><div ${style}>`) {
+    outputData2[i] = convertSpacesAndLF(outputData2[i], addColor(style, textColor));
+    if (outputData2[i] === "" || outputData2[i] === `</div><div ${addColor(style, textColor)}>`) {
       outputData2[i] = "&nbsp;";
     }
   }
   chordColor = "";
+  textColor = "";
+  titleColor = "";
   for (let i = 0; i < outputData2.length; i++) {
     ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
@@ -985,7 +987,8 @@ function transposeClicked() {
         directive = getDirective(outputData1[i]);
         if (directive.name !== "") {
           changed = true;
-          value = convertSpacesAndLF(directive.value, style);
+          //value = convertSpacesAndLF(directive.value, style);
+          value = directive.value;
           if (
             directive.name === "chordcolour" ||
             directive.name === "chordcolor"
@@ -998,26 +1001,50 @@ function transposeClicked() {
               chordColor = value;
             }
           }
+          if (
+            directive.name === "textcolour" ||
+            directive.name === "textcolor"
+          ) {
+            ignore = true;
+            if (value === "") {
+              value = "black";
+            }
+            if (!ignoreColors) {
+              textColor = value;
+            }
+          }
+          if (
+            directive.name === "titlecolour" ||
+            directive.name === "titlecolor"
+          ) {
+            ignore = true;
+            if (value === "") {
+              value = "black";
+            }
+            if (!ignoreColors) {
+              titleColor = value;
+            }
+          }
           if (directive.name === "title" || directive.name === "t") {
-            outputData2[i] = `<div ${styleTitle}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(styleTitle, titleColor)}>${value}</div>`;
           } else if (directive.name === "subtitle" || directive.name === "st") {
-            outputData2[i] = `<div ${styleSubTitle}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(styleSubTitle, textColor)}>${value}</div>`;
           } else if (directive.name === "artist") {
-            outputData2[i] = `<div ${styleText}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(styleText, textColor)}>${value}</div>`;
           } else if (directive.name === "comment" || directive.name === "c") {
-            outputData2[i] = `<div ${styleComment}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(styleComment, textColor)}>${value}</div>`;
           } else if (
             directive.name === "comment_italic" ||
             directive.name === "ci"
           ) {
-            outputData2[i] = `<div ${styleCommentItalic}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(styleCommentItalic, textColor)}>${value}</div>`;
           } else if (
             directive.name === "comment_box" ||
             directive.name === "cb"
           ) {
-            outputData2[i] = `<div ${styleCommentBox}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(styleCommentBox, textColor)}>${value}</div>`;
           } else if (value !== "") {
-            outputData2[i] = `<div ${styleText}>${capitalize(
+            outputData2[i] = `<div ${addColor(styleText, textColor)}>${capitalize(
               directive.name
             )}: ${value}</div>`;
           } else {
@@ -1031,7 +1058,7 @@ function transposeClicked() {
             outputData2[i]
           }</div>`;
         } else {
-          outputData2[i] = `<div ${style}>${outputData2[i]}</div>`;
+          outputData2[i] = `<div ${addColor(style, textColor)}>${outputData2[i]}</div>`;
         }
       }
     }
