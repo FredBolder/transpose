@@ -1,9 +1,24 @@
 class Songs {
+  static shown = [-1, -1, -1, -1, -1];
+  static shownIndex = 0;
+
   static numberOfSongs() {
     return 11;
   }
 
+  static recentlyShow(n) {
+    return this.shown.includes(n);
+  }
+
   static loadSong(n) {
+    this.shown[this.shownIndex] = n;
+    this.shownIndex++;
+    if (this.shownIndex >= this.shown.length)
+    {
+      this.shownIndex = 0;
+    }
+    console.log(this.shown);
+
     function weWishYou() {
       inputData.push("   G                C");
       inputData.push("We wish you a merry Christmas");
@@ -34,7 +49,7 @@ class Songs {
         inputData.push("005 Greensleeves");
         inputData.push("006 We wish you a merry Christmas");
         inputData.push("007 Slaap, kindje slaap (Dutch lullaby)");
-        inputData.push("008 Του γάμου (Greek wedding song)");
+        inputData.push("008 Σήμερα γάμος γίνεται (Greek wedding song)");
         inputData.push("009 Ωραία που ‘ναι η νύφη μας (Greek wedding song)");
         inputData.push("010 Are you lonesome tonight?");
         inputData.push("011 Yes sir, that's my baby");
@@ -259,7 +274,7 @@ class Songs {
         inputData.push("Daar buiten loopt een schaap.");
         break;
       case 8:
-        inputData.push("{title: Του γάμου}");
+        inputData.push("{title: Σήμερα γάμος γίνεται}");
         inputData.push("{comment_italic: Greek wedding song}");
         inputData.push("");
         inputData.push(" D");

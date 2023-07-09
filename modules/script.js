@@ -844,7 +844,9 @@ function surpriseMeClicked() {
   } else {
     if (n === 0) {
       if (confirm("Load a random example song?")) {
-        n = Math.floor(Math.random() * Songs.numberOfSongs()) + 1;
+        do {
+          n = Math.floor(Math.random() * Songs.numberOfSongs()) + 1;
+        } while (Songs.recentlyShow(n));
       }
     }
   }
