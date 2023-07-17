@@ -931,8 +931,8 @@ function transposeClicked() {
     valueStyle = 16;
   }
   // Styles inline for keeping style when copying from browser to document
-  style = `style="font-family: Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
-  styleBold = `style="font-family: Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
+  style = `style="font-family: Roboto Mono, Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
+  styleBold = `style="font-family: Roboto Mono, Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
   styleComment = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${valueStyle}px"`;
   styleCommentBox = `style="width: fit-content; border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
   styleCommentItalic = `style="font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: ${valueStyle}px"`;
