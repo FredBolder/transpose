@@ -212,9 +212,6 @@ function convertSpacesAndLF(s, style) {
       case "\n":
         value = `</div><div ${style}>`;
         break;
-      case "μ":
-        value = "&#956;";
-        break;
       default:
         value = s[i];
         break;
