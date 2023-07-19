@@ -212,6 +212,9 @@ function convertSpacesAndLF(s, style) {
       case "\n":
         value = `</div><div ${style}>`;
         break;
+      case "μ":
+        value = "&#956;";
+        break;
       default:
         value = s[i];
         break;
@@ -931,8 +934,8 @@ function transposeClicked() {
     valueStyle = 16;
   }
   // Styles inline for keeping style when copying from browser to document
-  style = `style="font-family: Consolas, Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
-  styleBold = `style="font-family: Consolas, Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
+  style = `style="font-family: Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
+  styleBold = `style="font-family: Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
   styleComment = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${valueStyle}px"`;
   styleCommentBox = `style="width: fit-content; border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
   styleCommentItalic = `style="font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: ${valueStyle}px"`;
@@ -969,8 +972,14 @@ function transposeClicked() {
   outputInfo = outputData.info;
   outputData2 = [...outputData1];
   for (let i = 0; i < outputData2.length; i++) {
-    outputData2[i] = convertSpacesAndLF(outputData2[i], addColor(style, textColor));
-    if (outputData2[i] === "" || outputData2[i] === `</div><div ${addColor(style, textColor)}>`) {
+    outputData2[i] = convertSpacesAndLF(
+      outputData2[i],
+      addColor(style, textColor)
+    );
+    if (
+      outputData2[i] === "" ||
+      outputData2[i] === `</div><div ${addColor(style, textColor)}>`
+    ) {
       outputData2[i] = "&nbsp;";
     }
   }
@@ -1028,27 +1037,46 @@ function transposeClicked() {
             }
           }
           if (directive.name === "title" || directive.name === "t") {
-            outputData2[i] = `<div ${addColor(styleTitle, titleColor)}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleTitle,
+              titleColor
+            )}>${value}</div>`;
           } else if (directive.name === "subtitle" || directive.name === "st") {
-            outputData2[i] = `<div ${addColor(styleSubTitle, textColor)}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleSubTitle,
+              textColor
+            )}>${value}</div>`;
           } else if (directive.name === "artist") {
-            outputData2[i] = `<div ${addColor(styleText, textColor)}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleText,
+              textColor
+            )}>${value}</div>`;
           } else if (directive.name === "comment" || directive.name === "c") {
-            outputData2[i] = `<div ${addColor(styleComment, textColor)}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleComment,
+              textColor
+            )}>${value}</div>`;
           } else if (
             directive.name === "comment_italic" ||
             directive.name === "ci"
           ) {
-            outputData2[i] = `<div ${addColor(styleCommentItalic, textColor)}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleCommentItalic,
+              textColor
+            )}>${value}</div>`;
           } else if (
             directive.name === "comment_box" ||
             directive.name === "cb"
           ) {
-            outputData2[i] = `<div ${addColor(styleCommentBox, textColor)}>${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleCommentBox,
+              textColor
+            )}>${value}</div>`;
           } else if (value !== "") {
-            outputData2[i] = `<div ${addColor(styleText, textColor)}>${capitalize(
-              directive.name
-            )}: ${value}</div>`;
+            outputData2[i] = `<div ${addColor(
+              styleText,
+              textColor
+            )}>${capitalize(directive.name)}: ${value}</div>`;
           } else {
             changed = false;
           }
@@ -1060,7 +1088,9 @@ function transposeClicked() {
             outputData2[i]
           }</div>`;
         } else {
-          outputData2[i] = `<div ${addColor(style, textColor)}>${outputData2[i]}</div>`;
+          outputData2[i] = `<div ${addColor(style, textColor)}>${
+            outputData2[i]
+          }</div>`;
         }
       }
     }
