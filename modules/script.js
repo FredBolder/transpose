@@ -923,10 +923,14 @@ function transposeClicked() {
   ignoreColors = document.getElementById("ignoreColors").checked;
 
   textSize = document.getElementById("textSize").value;
-  if (textSize === "SMALL") {
+  if (textSize === "XS") {
+    valueStyle = 8;
+  } else if (textSize === "SMALL") {
     valueStyle = 12;
-  } else if (textSize === "LARGE") {
+} else if (textSize === "LARGE") {
     valueStyle = 20;
+  } else if (textSize === "XL") {
+    valueStyle = 24;
   } else {
     valueStyle = 16;
   }

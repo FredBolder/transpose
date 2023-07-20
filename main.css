@@ -89,7 +89,8 @@ textarea {
 }
 
 .outputprint {
-  width: 100%;
+  width: fit-content;
+  min-width: 100%;
   height: auto;
   min-height: 10rem;
   font-family: "Liberation Mono", "Courier New", Courier, monospace;
