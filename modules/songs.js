@@ -3,7 +3,7 @@ class Songs {
   static shownIndex = 0;
 
   static numberOfSongs() {
-    return 11;
+    return 12;
   }
 
   static recentlyShow(n) {
@@ -13,8 +13,7 @@ class Songs {
   static loadSong(n) {
     this.shown[this.shownIndex] = n;
     this.shownIndex++;
-    if (this.shownIndex >= this.shown.length)
-    {
+    if (this.shownIndex >= this.shown.length) {
       this.shownIndex = 0;
     }
     console.log(this.shown);
@@ -53,6 +52,7 @@ class Songs {
         inputData.push("009 Ωραία που ‘ναι η νύφη μας (Greek wedding song)");
         inputData.push("010 Are you lonesome tonight?");
         inputData.push("011 Yes sir, that's my baby");
+        inputData.push("012 Ένας αϊτός (Greek folk song)");
         break;
       case 1:
         inputData.push("{chordcolour: red}");
@@ -411,6 +411,29 @@ class Songs {
         inputData.push(" No sir, I don't mean maybe");
         inputData.push("A7                        D");
         inputData.push(" Yes sir, that's my baby now");
+        break;
+      case 12:
+        inputData.push("{title: Ένας αϊτός}");
+        inputData.push("{comment_italic: Τσάμικος}");
+        inputData.push("{chordcolour: blue}");
+        inputData.push("");
+        inputData.push("G Cm     D   Gm  C       F     Cm");
+        inputData.push("Ένας, μωρέ ένας, ένας αϊτός καθότανε");
+        inputData.push("Gm             F Gm");
+        inputData.push("ναι μωρέ, καθότανε");
+        inputData.push("C       F     D   Gm  C         F");
+        inputData.push("Ένας αϊτός καθότανε στον ήλιο και");
+        inputData.push("    D        Gm            F Gm");
+        inputData.push("λιαζότανε, ναι μωρέ, λιαζότανε");
+        inputData.push("");
+        inputData.push("G     Cm     D      Gm   C        F");
+        inputData.push("Και τσί-, μωρέ παιδιά, και τσίμπαγε");
+        inputData.push("    Cm     Gm              F   Gm");
+        inputData.push("τα νύχια του, βρε τα νυχάκια του");
+        inputData.push("  C       F    D      Gm C      F");
+        inputData.push("Τσίμπαγε τα νυχάκια του τα νυχοπο-");
+        inputData.push("   D      Gm              F   Gm");
+        inputData.push("δαράκια του, βρε, ποδαράκια του");
         break;
       default:
         break;
