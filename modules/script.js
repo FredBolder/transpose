@@ -11,15 +11,21 @@ import { Nashville } from "./nashville.js";
 import { Roman } from "./roman.js";
 import { Songs } from "./songs.js";
 
-function addColor(style, color) {
+function addColor(style, color, theme) {
+  let c = color;
   let p1 = 0;
   let result = style;
 
   if (color !== "") {
     p1 = style.indexOf(`"`);
     if (p1 >= 0) {
+      if (theme === "DARK") {
+        if (c === "black") {
+          c = "white";
+        }
+      }
       result =
-        style.slice(0, p1 + 1) + "color: " + color + "; " + style.slice(p1 + 1);
+        style.slice(0, p1 + 1) + "color: " + c + "; " + style.slice(p1 + 1);
     }
   }
   return result;
@@ -552,6 +558,7 @@ function noteToIndex(note, options, start, bass, inputObj) {
 
 function printClicked() {
   let data = "";
+  transposeClicked(true);
   data = document.getElementById("output").innerHTML;
   data = data.split("</div><").join("</div>\n    <");
   const w = window.open(" ", " ");
@@ -568,6 +575,7 @@ function printClicked() {
       w.close();
     }
   }, 100);
+  transposeClicked();
 }
 
 function exportClicked() {
@@ -878,7 +886,7 @@ function upClicked() {
   }
 }
 
-function transposeClicked() {
+function transposeClicked(print = false) {
   let changed = false;
   let chordColor = "";
   let chordsIsBold = false;
@@ -906,6 +914,8 @@ function transposeClicked() {
   let textSize = "NORMAL";
   let value = "";
   let valueStyle = 0;
+  let theme = document.getElementById("theme").value;
+  let themeColor = "black";
   const outputArea = document.getElementById("output");
   options.inputFormat = document.getElementById("inputFormat").value;
   options.strict = document.getElementById("strict").checked;
@@ -922,12 +932,23 @@ function transposeClicked() {
   chordsIsBold = document.getElementById("chordsBold").checked;
   ignoreColors = document.getElementById("ignoreColors").checked;
 
+  if (print) {
+    theme = "LIGHT";
+  }
+  if (theme === "LIGHT") {
+    themeColor = "black";
+  } else if (theme === "DARK") {
+    themeColor = "white";
+  } else {
+    themeColor = "black";
+  }
+  
   textSize = document.getElementById("textSize").value;
   if (textSize === "XS") {
     valueStyle = 8;
   } else if (textSize === "SMALL") {
     valueStyle = 12;
-} else if (textSize === "LARGE") {
+  } else if (textSize === "LARGE") {
     valueStyle = 20;
   } else if (textSize === "XL") {
     valueStyle = 24;
@@ -938,7 +959,7 @@ function transposeClicked() {
   style = `style="font-family: Liberation Mono, Courier New, Courier, monospace; font-size: ${valueStyle}px"`;
   styleBold = `style="font-family: Liberation Mono, Courier New, Courier, monospace; font-weight: bold; font-size: ${valueStyle}px"`;
   styleComment = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${valueStyle}px"`;
-  styleCommentBox = `style="width: fit-content; border: 1px solid black; font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
+  styleCommentBox = `style="width: fit-content; border: 1px solid ${themeColor}; font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
   styleCommentItalic = `style="font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: ${valueStyle}px"`;
   styleText = `style="font-family: Arial, Helvetica, sans-serif; font-size: ${valueStyle}px"`;
   styleTitle = `style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: ${Math.round(
@@ -975,11 +996,11 @@ function transposeClicked() {
   for (let i = 0; i < outputData2.length; i++) {
     outputData2[i] = convertSpacesAndLF(
       outputData2[i],
-      addColor(style, textColor)
+      addColor(style, textColor, theme)
     );
     if (
       outputData2[i] === "" ||
-      outputData2[i] === `</div><div ${addColor(style, textColor)}>`
+      outputData2[i] === `</div><div ${addColor(style, textColor, theme)}>`
     ) {
       outputData2[i] = "&nbsp;";
     }
@@ -990,7 +1011,7 @@ function transposeClicked() {
   for (let i = 0; i < outputData2.length; i++) {
     ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
-      outputData2[i] = `<div ${addColor(styleBold, chordColor)}>${
+      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${
         outputData2[i]
       }</div>`;
     } else {
@@ -1040,22 +1061,26 @@ function transposeClicked() {
           if (directive.name === "title" || directive.name === "t") {
             outputData2[i] = `<div ${addColor(
               styleTitle,
-              titleColor
+              titleColor,
+              theme
             )}>${value}</div>`;
           } else if (directive.name === "subtitle" || directive.name === "st") {
             outputData2[i] = `<div ${addColor(
               styleSubTitle,
-              textColor
+              textColor,
+              theme
             )}>${value}</div>`;
           } else if (directive.name === "artist") {
             outputData2[i] = `<div ${addColor(
               styleText,
-              textColor
+              textColor,
+              theme
             )}>${value}</div>`;
           } else if (directive.name === "comment" || directive.name === "c") {
             outputData2[i] = `<div ${addColor(
               styleComment,
-              textColor
+              textColor,
+              theme
             )}>${value}</div>`;
           } else if (
             directive.name === "comment_italic" ||
@@ -1063,7 +1088,8 @@ function transposeClicked() {
           ) {
             outputData2[i] = `<div ${addColor(
               styleCommentItalic,
-              textColor
+              textColor,
+              theme
             )}>${value}</div>`;
           } else if (
             directive.name === "comment_box" ||
@@ -1071,12 +1097,14 @@ function transposeClicked() {
           ) {
             outputData2[i] = `<div ${addColor(
               styleCommentBox,
-              textColor
+              textColor,
+              theme
             )}>${value}</div>`;
           } else if (value !== "") {
             outputData2[i] = `<div ${addColor(
               styleText,
-              textColor
+              textColor,
+              theme
             )}>${capitalize(directive.name)}: ${value}</div>`;
           } else {
             changed = false;
@@ -1085,11 +1113,11 @@ function transposeClicked() {
       }
       if (!changed) {
         if (options.outputFormat !== "INLINE" && outputInfo[i]) {
-          outputData2[i] = `<div ${addColor(style, chordColor)}>${
+          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${
             outputData2[i]
           }</div>`;
         } else {
-          outputData2[i] = `<div ${addColor(style, textColor)}>${
+          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${
             outputData2[i]
           }</div>`;
         }
@@ -1419,6 +1447,18 @@ function transposeLine(
 
 // To prevent error when using node
 try {
+  document.getElementById("theme").addEventListener("change", (e) => {
+    let r = document.querySelector(":root");
+    if (e.target.value === "LIGHT") {
+      r.style.setProperty("--theme-color", "black");
+      r.style.setProperty("--theme-color-bg", "white");
+    } else if (e.target.value === "DARK") {
+      r.style.setProperty("--theme-color", "white");
+      r.style.setProperty("--theme-color-bg", "black");
+    }
+    transposeClicked();
+  });
+
   document.getElementById("btClear").addEventListener("click", clearClicked);
   document.getElementById("btTitle").addEventListener("click", titleClicked);
   document
@@ -1427,9 +1467,9 @@ try {
   document
     .getElementById("btSurpriseMe")
     .addEventListener("click", surpriseMeClicked);
-  document
-    .getElementById("btTranspose")
-    .addEventListener("click", transposeClicked);
+  document.getElementById("btTranspose").addEventListener("click", () => {
+    transposeClicked();
+  });
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
   document
