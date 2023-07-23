@@ -275,6 +275,12 @@
             </div>
           </div>
           <div id="output" class="output"></div>
+          <fieldset>
+            <legend>Chord information</legend>
+            <input id="inputChordInfo" type="text" spellcheck="false" />
+            <button id="btChordInfo">Info</button>
+            <div id="outputChordInfo" class="chord-info">-</div>
+          </fieldset>
         </div>
         <div id="help" class="hidden">
           <div class="back">
@@ -334,8 +340,8 @@
           <h2>Input format</h2>
           <p>
             It is important to choose the correct Input format. For example,
-            when there are chords with the text lines, the Input format need to
-            be set to "[C] Inline".
+            when there are chords within the text lines, the Input format need
+            to be set to "[C] Inline".
           </p>
           <h2>Strict</h2>
           <p>
@@ -483,6 +489,14 @@
           <p>
             Press the Export button to download the complete result in plain
             text format or in HTML format.
+          </p>
+          <h2>Chord information</h2>
+          <p>
+            Type or copy a chord name (example: Dm7) in the left input box and
+            press the Info button to see the notes that are in that chord. The
+            first letter of a note name must be a capital (uppercase letter).
+            Enable the option Use sharps if you prefer to see sharps (#) instead
+            of flats (b). At the moment only the CDE format is supported.
           </p>
         </div>
       </main>

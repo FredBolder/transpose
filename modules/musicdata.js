@@ -114,14 +114,6 @@ class MusicData {
     "E##,F#",
     "F##,G",
     "G##,A",
-    "A##,B",
-    "B##,C#",
-    "Dobb,Sib",
-    "Rebb,Do",
-    "Mibb,Re",
-    "Fabb,Mib",
-    "Solbb,Fa",
-    "Labb,Sol",
     "Sibb,La",
     "Tibb,La",
     "Do##,Re",
@@ -156,6 +148,112 @@ class MusicData {
     "Eis,F",
     "Fes,E",
   ];
+
+  static intervals(chordType) {
+    let result = [];
+
+    switch (chordType) {
+      case "":
+        result = [0, 4, 7];
+        break;
+      case "m":
+        result = [0, 3, 7];
+        break;
+      case "7":
+        result = [0, 4, 7, 10];
+        break;
+      case "m7":
+        result = [0, 3, 7, 10];
+        break;
+      case "M7":
+        result = [0, 4, 7, 11];
+        break;
+      case "mM7":
+        result = [0, 3, 7, 11];
+        break;
+      case "+":
+      case "aug":
+        result = [0, 4, 8];
+        break;
+      case "+7":
+      case "aug7":
+        result = [0, 4, 8, 10];
+        break;
+      case "dim":
+        result = [0, 3, 6];
+        break;
+      case "dim7":
+        result = [0, 3, 6, 9];
+        break;
+      case "5":
+        result = [0, 7];
+        break;
+      case "6":
+        result = [0, 4, 7, 9];
+        break;
+      case "m6":
+        result = [0, 3, 7, 9];
+        break;
+      case "9":
+        result = [0, 4, 7, 10, 14];
+        break;
+      case "m9":
+        result = [0, 3, 7, 10, 14];
+        break;
+      case "M9":
+        result = [0, 4, 7, 11, 14];
+        break;
+      case "11":
+        result = [0, 4, 7, 10, 14, 17];
+        break;
+      case "m11":
+        result = [0, 3, 7, 10, 14, 17];
+        break;
+      case "M11":
+        result = [0, 4, 7, 11, 14, 17];
+        break;
+      case "13":
+        result = [0, 4, 7, 10, 14, 17, 21];
+        break;
+      case "m13":
+        result = [0, 3, 7, 10, 14, 17, 21];
+        break;
+      case "M13":
+        result = [0, 4, 7, 11, 14, 17, 21];
+        break;
+      case "sus2":
+        result = [0, 2, 7];
+        break;
+      case "sus4":
+      case "sus":
+        result = [0, 5, 7];
+        break;
+      case "sus24":
+      case "sus42":
+        result = [0, 2, 5, 7];
+        break;
+      case "7sus2":
+        result = [0, 2, 7, 10];
+        break;
+      case "7sus4":
+      case "7sus":
+        result = [0, 5, 7, 10];
+        break;
+      case "7sus24":
+      case "7sus42":
+        result = [0, 2, 5, 7, 10];
+        break;
+      case "add2":
+        result = [0, 2, 4, 7];
+        break;
+      case "add9":
+        result = [0, 4, 7, 14];
+        break;
+      default:
+        break;
+    }
+    return result;
+  }
 }
 
 export { MusicData };

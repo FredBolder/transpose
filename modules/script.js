@@ -629,6 +629,52 @@ function selectAllClicked() {
   }
 }
 
+function chordInfoClicked() {
+  let comma = -1;
+  let idx = -1;
+  let info = "";
+  let note = "";
+  let chordNotes = [];
+  let notes = [];
+  let outputFormat = document.getElementById("outputFormat").value;
+  const outputObj = createInputOrOutputObject(outputFormat);
+  const input = convertToNormalChars(document.getElementById("inputChordInfo").value.trim());
+  const output = document.getElementById("outputChordInfo");
+  const preferSharps = document.getElementById("useSharps").checked;
+  const options = new Options();
+
+  outputFormat = "CDE"; // For now only support CDE format
+  notes = outputObj.notes(false, false);
+  note = outputObj.readNote(input);
+  if (note !== "") {
+    idx = noteToIndex(note, options, false, false, outputObj);
+    if (idx >= 0) {
+      chordNotes = MusicData.intervals(input.substring(note.length));
+    }
+  }
+  info = "";
+  for (let i = 0; i < chordNotes.length; i++) {
+    if (i > 0) {
+      info += ", ";
+    }
+    note = notes[fixNoteIndex(chordNotes[i] + idx)];
+    comma = note.indexOf(",");
+    if (comma >= 0) {
+      if (preferSharps) {
+        note = note.slice(0, comma).trim();
+      } else {
+        note = note.slice(comma + 1).trim();
+      }
+    }
+    info += note;
+  }
+
+  if (info === "") {
+    info = "No info available for this chord yet";
+  }
+  output.innerHTML = info;
+}
+
 function simplifyNote(note) {
   let p = -1;
   let s = "";
@@ -1483,6 +1529,7 @@ try {
     document.getElementById("help").classList.remove("hidden");
     document.querySelector("h1").innerText = "Transpose - Help";
   });
+  document.getElementById("btChordInfo").addEventListener("click", chordInfoClicked);
   document.getElementById("btBack").addEventListener("click", () => {
     document.getElementById("main").classList.remove("hidden");
     document.getElementById("links").classList.remove("hidden");
