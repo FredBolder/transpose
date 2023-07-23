@@ -162,10 +162,23 @@ class MusicData {
       case "7":
         result = [0, 4, 7, 10];
         break;
+      case "7b5":
+      case "7-5":
+        result = [0, 4, 6, 10];
+        break;
+      case "7#5":
+      case "7+5":
+        result = [0, 4, 8, 10];
+        break;
       case "m7":
         result = [0, 3, 7, 10];
         break;
+      case "m7b5":
+      case "m7(b5)":
+        result = [0, 3, 6, 10];
+        break;
       case "M7":
+      case "maj7":
         result = [0, 4, 7, 11];
         break;
       case "mM7":
@@ -179,6 +192,11 @@ class MusicData {
       case "aug7":
         result = [0, 4, 8, 10];
         break;
+      case "+9":
+      case "aug9":
+      case "9#5":
+        result = [0, 4, 8, 10, 14];
+        break;
       case "dim":
         result = [0, 3, 6];
         break;
@@ -187,6 +205,9 @@ class MusicData {
         break;
       case "5":
         result = [0, 7];
+        break;
+      case "57":
+        result = [0, 7, 10];
         break;
       case "6":
         result = [0, 4, 7, 9];
@@ -201,6 +222,7 @@ class MusicData {
         result = [0, 3, 7, 10, 14];
         break;
       case "M9":
+      case "maj9":
         result = [0, 4, 7, 11, 14];
         break;
       case "11":
@@ -210,6 +232,7 @@ class MusicData {
         result = [0, 3, 7, 10, 14, 17];
         break;
       case "M11":
+      case "maj11":
         result = [0, 4, 7, 11, 14, 17];
         break;
       case "13":
@@ -219,7 +242,16 @@ class MusicData {
         result = [0, 3, 7, 10, 14, 17, 21];
         break;
       case "M13":
+      case "maj13":
         result = [0, 4, 7, 11, 14, 17, 21];
+        break;
+      case "13(no9)":
+         result = [0, 4, 7, 10, 17, 21];
+        break;
+      case "13#11":
+      case "13+11":
+      case "13(#11)":
+        result = [0, 4, 7, 10, 14, 18, 21];
         break;
       case "sus2":
         result = [0, 2, 7];
@@ -243,11 +275,58 @@ class MusicData {
       case "7sus42":
         result = [0, 2, 5, 7, 10];
         break;
+      case "M7sus2":
+      case "maj7sus2":
+        result = [0, 2, 7, 11];
+        break;
+      case "M7sus4":
+      case "M7sus":
+      case "maj7sus4":
+      case "maj7sus":
+        result = [0, 5, 7, 11];
+        break;
+      case "M7sus24":
+      case "M7sus42":
+      case "maj7sus24":
+      case "maj7sus42":
+        result = [0, 2, 5, 7, 11];
+        break;
+      case "9sus4":
+        result = [0, 5, 7, 10, 14];
+        break;
       case "add2":
         result = [0, 2, 4, 7];
         break;
       case "add9":
         result = [0, 4, 7, 14];
+        break;
+      case "6add9":
+      case "69":
+        result = [0, 4, 7, 9, 14];
+        break;
+      case "7b9":
+      case "7-9":
+        result = [0, 4, 7, 10, 13];
+        break;
+      case "7#9":
+      case "7+9":
+        result = [0, 4, 7, 10, 15];
+        break;
+      case "m7b9":
+      case "m7-9":
+        result = [0, 3, 7, 10, 13];
+        break;
+      case "m7#9":
+      case "m7+9":
+        result = [0, 3, 7, 10, 15];
+        break;
+      case "M7b9":
+      case "M7-9":
+        result = [0, 4, 7, 11, 13];
+        break;
+      case "M7#9":
+      case "M7+9":
+        result = [0, 4, 7, 11, 15];
         break;
       default:
         break;
