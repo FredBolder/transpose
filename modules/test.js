@@ -41,6 +41,7 @@ function test() {
   let data = "";
   let duplicate = false;
   let inputData = [];
+  let n1 = 0;
   let outputData = [];
   let semitones = 0;
   let testOptions = new Options();
@@ -385,6 +386,7 @@ function test() {
   );
 
   // Test 35 (unique cases in switch)
+  n1 = 0;
   duplicate = false;
   arr1 = MusicData.intervals.toString().split("\n");
   arr2 = [];
@@ -398,9 +400,24 @@ function test() {
       } else {
         arr2.push(element);
       }
+    } else if (element.startsWith("result =")) {
+      n1++;
     }
   }
+  console.log(`Number of chords: ${(n1 * 12).toString()}`);
   checkResult("Test 35", false, duplicate);
+
+  checkResult(
+    "Test 36",
+    [0, 4, 7, 11].toString(),
+    MusicData.intervals("maj7").toString()
+  );
+
+  checkResult(
+    "Test 37",
+    [0, 3, 7].toString(),
+    MusicData.intervals("min").toString()
+  );
 
   // Extra test
   testOptions.key = 0;
