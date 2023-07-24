@@ -1,5 +1,6 @@
 import { keyToSemitones, transpose, getDirective } from "./script.js";
 import { Options } from "./options.js";
+import { MusicData } from "./musicdata.js";
 
 function checkResult(testName, expected, result) {
   if (result !== expected) {
@@ -38,10 +39,13 @@ function createTestData(n) {
 
 function test() {
   let data = "";
+  let duplicate = false;
   let inputData = [];
   let outputData = [];
   let semitones = 0;
   let testOptions = new Options();
+  let arr1 = [];
+  let arr2 = [];
 
   function initTest(
     inputFormat,
@@ -361,6 +365,42 @@ function test() {
     "{comment: Verse}\nTest is a test",
     outputData.join("\n")
   );
+
+  checkResult(
+    "Test 32",
+    [0, 3, 7].toString(),
+    MusicData.intervals("m").toString()
+  );
+
+  checkResult(
+    "Test 33",
+    [0, 3, 10, 14, 17].toString(),
+    MusicData.intervals("m11OMIT5").toString()
+  );
+
+  checkResult(
+    "Test 34",
+    [0, 5, 7, 11].toString(),
+    MusicData.intervals("M7SUS4").toString()
+  );
+
+  // Test 35 (unique cases in switch)
+  duplicate = false;
+  arr1 = MusicData.intervals.toString().split("\n");
+  arr2 = [];
+  for (let i = 0; i < arr1.length; i++) {
+    const element = arr1[i].trim();
+    if (element.startsWith("case")) {
+      if (arr2.includes(element)) {
+        duplicate = true;
+        data = element.substring(5, element.length - 1);
+        console.log(`You have defined the chord type ${data} more times :)`);
+      } else {
+        arr2.push(element);
+      }
+    }
+  }
+  checkResult("Test 35", false, duplicate);
 
   // Extra test
   testOptions.key = 0;

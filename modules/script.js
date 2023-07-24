@@ -630,6 +630,7 @@ function selectAllClicked() {
 }
 
 function chordInfoClicked() {
+  let chordType = "";
   let comma = -1;
   let idx = -1;
   let info = "";
@@ -649,7 +650,8 @@ function chordInfoClicked() {
   if (note !== "") {
     idx = noteToIndex(note, options, false, false, outputObj);
     if (idx >= 0) {
-      chordNotes = MusicData.intervals(input.substring(note.length));
+      chordType = input.substring(note.length);
+      chordNotes = MusicData.intervals(chordType);
     }
   }
   info = "";

@@ -1,3 +1,5 @@
+"use strict";
+
 class MusicData {
   static chordTypes = [
     "",
@@ -114,6 +116,14 @@ class MusicData {
     "E##,F#",
     "F##,G",
     "G##,A",
+    "A##,B",
+    "B##,C#",
+    "Dobb,Sib",
+    "Rebb,Do",
+    "Mibb,Re",
+    "Fabb,Mib",
+    "Solbb,Fa",
+    "Labb,Sol",
     "Sibb,La",
     "Tibb,La",
     "Do##,Re",
@@ -151,8 +161,17 @@ class MusicData {
 
   static intervals(chordType) {
     let result = [];
+    let ct = chordType;
+    let idxM = -1;
 
-    switch (chordType) {
+    idxM = ct.indexOf("M");
+    if (idxM === 0 || idxM === 1) {
+      ct = ct.substring(0, idxM + 1) + ct.substring(idxM + 1).toLowerCase();
+    } else {
+      ct = ct.toLowerCase();
+    }
+
+    switch (ct) {
       case "":
         result = [0, 4, 7];
         break;
@@ -170,6 +189,14 @@ class MusicData {
       case "7+5":
         result = [0, 4, 8, 10];
         break;
+      case "7b9":
+      case "7-9":
+        result = [0, 4, 7, 10, 13];
+        break;
+      case "7#9":
+      case "7+9":
+        result = [0, 4, 7, 10, 15];
+        break;
       case "m7":
         result = [0, 3, 7, 10];
         break;
@@ -181,12 +208,22 @@ class MusicData {
       case "maj7":
         result = [0, 4, 7, 11];
         break;
+      case "M7b5":
+      case "M7-5":
+      case "maj7b5":
+      case "maj7-5":
+        result = [0, 4, 6, 11];
+        break;
       case "mM7":
         result = [0, 3, 7, 11];
         break;
       case "+":
       case "aug":
         result = [0, 4, 8];
+        break;
+      case "+6":
+      case "aug6":
+        result = [0, 4, 8, 9];
         break;
       case "+7":
       case "aug7":
@@ -209,21 +246,22 @@ class MusicData {
       case "57":
         result = [0, 7, 10];
         break;
-      case "6":
-        result = [0, 4, 7, 9];
-        break;
-      case "m6":
-        result = [0, 3, 7, 9];
-        break;
       case "9":
         result = [0, 4, 7, 10, 14];
         break;
       case "m9":
         result = [0, 3, 7, 10, 14];
         break;
+      case "m9b5":
+      case "m9-5":
+        result = [0, 3, 6, 10, 14];
+        break;
       case "M9":
       case "maj9":
         result = [0, 4, 7, 11, 14];
+        break;
+      case "mM9":
+        result = [0, 3, 7, 11, 14];
         break;
       case "11":
         result = [0, 4, 7, 10, 14, 17];
@@ -246,7 +284,7 @@ class MusicData {
         result = [0, 4, 7, 11, 14, 17, 21];
         break;
       case "13(no9)":
-         result = [0, 4, 7, 10, 17, 21];
+        result = [0, 4, 7, 10, 17, 21];
         break;
       case "13#11":
       case "13+11":
@@ -264,12 +302,22 @@ class MusicData {
       case "sus42":
         result = [0, 2, 5, 7];
         break;
+      case "6sus2":
+        result = [0, 2, 7, 9];
+        break;
+      case "6sus4":
+      case "6sus":
+        result = [0, 5, 7, 9];
+        break;
       case "7sus2":
         result = [0, 2, 7, 10];
         break;
       case "7sus4":
       case "7sus":
         result = [0, 5, 7, 10];
+        break;
+      case "7sus4b9b13":
+        result = [0, 5, 7, 10, 13, 20];
         break;
       case "7sus24":
       case "7sus42":
@@ -294,23 +342,36 @@ class MusicData {
       case "9sus4":
         result = [0, 5, 7, 10, 14];
         break;
+      case "M9sus4":
+      case "maj9sus4":
+        result = [0, 5, 7, 11, 14];
+        break;
       case "add2":
         result = [0, 2, 4, 7];
         break;
+      case "add4":
+        result = [0, 4, 5, 7];
+        break;
+      case "madd4":
+        result = [0, 3, 5, 7];
+        break;
       case "add9":
         result = [0, 4, 7, 14];
+        break;
+      case "madd9":
+        result = [0, 3, 7, 14];
+        break;
+      case "5add9":
+      case "59":
+        result = [0, 7, 14];
         break;
       case "6add9":
       case "69":
         result = [0, 4, 7, 9, 14];
         break;
-      case "7b9":
-      case "7-9":
-        result = [0, 4, 7, 10, 13];
-        break;
-      case "7#9":
-      case "7+9":
-        result = [0, 4, 7, 10, 15];
+      case "69sus4":
+      case "69sus":
+        result = [0, 5, 7, 9, 14];
         break;
       case "m7b9":
       case "m7-9":
@@ -327,6 +388,15 @@ class MusicData {
       case "M7#9":
       case "M7+9":
         result = [0, 4, 7, 11, 15];
+        break;
+      case "11omit3":
+        result = [0, 7, 10, 14, 17];
+        break;
+      case "11omit5":
+        result = [0, 4, 10, 14, 17];
+        break;
+      case "m11omit5":
+        result = [0, 3, 10, 14, 17];
         break;
       default:
         break;
