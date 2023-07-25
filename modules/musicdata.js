@@ -227,6 +227,8 @@ class MusicData {
       case "7-5":
         result = [0, 4, 6, 10];
         break;
+      case "+7":
+      case "aug7":
       case "7#5":
       case "7+5":
         result = [0, 4, 8, 10];
@@ -238,6 +240,10 @@ class MusicData {
       case "7#9":
       case "7+9":
         result = [0, 4, 7, 10, 15];
+        break;
+      case "7b9#9":
+      case "7-9+9":
+        result = [0, 4, 7, 10, 13, 15];
         break;
       case "m7":
         result = [0, 3, 7, 10];
@@ -264,10 +270,6 @@ class MusicData {
       case "aug6":
         result = [0, 4, 8, 9];
         break;
-      case "+7":
-      case "aug7":
-        result = [0, 4, 8, 10];
-        break;
       case "+9":
       case "aug9":
       case "9#5":
@@ -284,6 +286,13 @@ class MusicData {
         break;
       case "57":
         result = [0, 7, 10];
+        break;
+      case "6":
+      case "add6":
+        result = [0, 4, 7, 9];
+        break;
+      case "m6":
+        result = [0, 3, 7, 9];
         break;
       case "9":
         result = [0, 4, 7, 10, 14];
@@ -318,6 +327,9 @@ class MusicData {
         break;
       case "M13":
         result = [0, 4, 7, 11, 14, 17, 21];
+        break;
+      case "M13#11":
+        result = [0, 4, 7, 11, 14, 18, 21];
         break;
       case "13(no9)":
         result = [0, 4, 7, 10, 17, 21];
@@ -402,6 +414,13 @@ class MusicData {
       case "6add9":
       case "69":
         result = [0, 4, 7, 9, 14];
+        break;
+      case "69#11":
+      case "69+11":
+        result = [0, 4, 7, 9, 14, 18];
+        break;
+      case "m69":
+        result = [0, 3, 7, 9, 14];
         break;
       case "69sus4":
       case "69sus":

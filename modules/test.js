@@ -45,8 +45,9 @@ function test() {
   let outputData = [];
   let semitones = 0;
   let testOptions = new Options();
-  let arr1 = [];
-  let arr2 = [];
+  let arrSourceCode = [];
+  let arrChordSymbols = [];
+  let arrIntervals = [];
 
   function initTest(
     inputFormat,
@@ -388,20 +389,28 @@ function test() {
   // Test 35 (unique cases in switch)
   n1 = 0;
   duplicate = false;
-  arr1 = MusicData.intervals.toString().split("\n");
-  arr2 = [];
-  for (let i = 0; i < arr1.length; i++) {
-    const element = arr1[i].trim();
+  arrSourceCode = MusicData.intervals.toString().split("\n");
+  arrChordSymbols = [];
+  arrIntervals = [];
+  for (let i = 0; i < arrSourceCode.length; i++) {
+    const element = arrSourceCode[i].trim();
     if (element.startsWith("case")) {
-      if (arr2.includes(element)) {
+      if (arrChordSymbols.includes(element)) {
         duplicate = true;
         data = element.substring(5, element.length - 1);
         console.log(`You have defined the chord type ${data} more times :)`);
       } else {
-        arr2.push(element);
+        arrChordSymbols.push(element);
       }
     } else if (element.startsWith("result =")) {
       n1++;
+      if (arrIntervals.includes(element)) {
+        duplicate = true;
+        data = element.substring(9, element.length - 1);
+        console.log(`Same result ${data} found :)`);
+      } else {
+        arrIntervals.push(element);
+      }
     }
   }
   console.log(`Number of chords: ${(n1 * 12).toString()}`);
