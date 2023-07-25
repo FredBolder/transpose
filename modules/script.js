@@ -635,22 +635,44 @@ function chordInfoClicked() {
   let idx = -1;
   let info = "";
   let note = "";
+  let p1 = -1;
+  let s1 = "";
   let chordNotes = [];
   let notes = [];
   let outputFormat = document.getElementById("outputFormat").value;
   const outputObj = createInputOrOutputObject(outputFormat);
-  const input = convertToNormalChars(document.getElementById("inputChordInfo").value.trim());
+  let input = convertToNormalChars(
+    document.getElementById("inputChordInfo").value.trim()
+  );
   const output = document.getElementById("outputChordInfo");
   const preferSharps = document.getElementById("useSharps").checked;
   const options = new Options();
 
-  outputFormat = "CDE"; // For now only support CDE format
+  // Remove spaces and square brackets
+  s1 = "";
+  for (let i = 0; i < input.length; i++) {
+    if (input[i] !== " " && input[i] !== "[" && input[i] !== "]") {
+      s1 += input[i];
+    }
+  }
+  input = s1;
+
+  if (outputFormat === "ROMAN" || outputFormat === "NASHVILLE") {
+    outputFormat = "CDE";
+  }
   notes = outputObj.notes(false, false);
   note = outputObj.readNote(input);
   if (note !== "") {
     idx = noteToIndex(note, options, false, false, outputObj);
     if (idx >= 0) {
       chordType = input.substring(note.length);
+      p1 = chordType.lastIndexOf("/");
+      if (p1 >= 0) {
+        chordType = chordType.substring(0, p1);
+      }
+      if (outputFormat === "GREEK") {
+        chordType = convertGreekType(chordType);
+      }
       chordNotes = MusicData.intervals(chordType);
     }
   }
@@ -990,7 +1012,7 @@ function transposeClicked(print = false) {
   } else {
     themeColor = "black";
   }
-  
+
   textSize = document.getElementById("textSize").value;
   if (textSize === "XS") {
     valueStyle = 8;
@@ -1531,7 +1553,9 @@ try {
     document.getElementById("help").classList.remove("hidden");
     document.querySelector("h1").innerText = "Transpose - Help";
   });
-  document.getElementById("btChordInfo").addEventListener("click", chordInfoClicked);
+  document
+    .getElementById("btChordInfo")
+    .addEventListener("click", chordInfoClicked);
   document.getElementById("btBack").addEventListener("click", () => {
     document.getElementById("main").classList.remove("hidden");
     document.getElementById("links").classList.remove("hidden");
