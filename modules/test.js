@@ -284,11 +284,11 @@ function test() {
   // Test 23
   // https://music.stackexchange.com/questions/73537/using-roman-numeral-notation-with-notes-in-the-bass-not-figured-bass
   initTest("ROMAN", true, false, false, true, false, false, "CDE");
-  inputData.push("I ii IV iii III I/3 i/5");
+  inputData.push("I ii IV iii III I/3 i/5 i°");
   testOptions.key = 2; // D
   semitones = -keyToSemitones(testOptions.key);
   outputData = transpose(inputData, semitones, testOptions).data;
-  checkResult("Test 23", "D Em G  F#m F#  D/F# Dm/A", outputData.join("\n"));
+  checkResult("Test 23", "D Em G  F#m F#  D/F# Dm/A D°", outputData.join("\n"));
 
   // Test 24
   initTest("CDE", false, false, false, false, false, false, "NASHVILLE");
@@ -386,7 +386,7 @@ function test() {
     MusicData.intervals("M7SUS4").toString()
   );
 
-  // Test 35 (unique cases in switch)
+  // Test 35 (unique cases and results in switch)
   n1 = 0;
   duplicate = false;
   arrSourceCode = MusicData.intervals.toString().split("\n");

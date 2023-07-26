@@ -631,22 +631,26 @@ function selectAllClicked() {
 
 function chordInfoClicked() {
   let chordType = "";
-  let comma = -1;
   let idx = -1;
   let info = "";
   let note = "";
+  let noteIdx = 0;
   let p1 = -1;
   let s1 = "";
   let chordNotes = [];
   let notes = [];
-  let outputFormat = document.getElementById("outputFormat").value;
-  const outputObj = createInputOrOutputObject(outputFormat);
   let input = convertToNormalChars(
     document.getElementById("inputChordInfo").value.trim()
   );
   const output = document.getElementById("outputChordInfo");
-  const preferSharps = document.getElementById("useSharps").checked;
   const options = new Options();
+  options.outputFormat = document.getElementById("outputFormat").value;
+  options.inputFormat = options.outputFormat;
+  options.key = parseInt(document.getElementById("key").value);
+  options.preferSharps = document.getElementById("useSharps").checked;
+  options.uppercase = document.getElementById("uppercase").checked;
+  options.useTi = document.getElementById("useTi").checked;
+  const outputObj = createInputOrOutputObject(options.outputFormat);
 
   // Remove spaces and square brackets
   s1 = "";
@@ -657,8 +661,8 @@ function chordInfoClicked() {
   }
   input = s1;
 
-  if (outputFormat === "ROMAN" || outputFormat === "NASHVILLE") {
-    outputFormat = "CDE";
+  if (options.outputFormat === "NOCHORDS") {
+    options.outputFormat = "CDE";
   }
   notes = outputObj.notes(false, false);
   note = outputObj.readNote(input);
@@ -670,8 +674,17 @@ function chordInfoClicked() {
       if (p1 >= 0) {
         chordType = chordType.substring(0, p1);
       }
-      if (outputFormat === "GREEK") {
+      if (options.outputFormat === "GREEK") {
         chordType = convertGreekType(chordType);
+      }
+      if (options.outputFormat === "ROMAN") {
+        if (
+          note === note.toLowerCase() &&
+          !chordType.startsWith("°") &&
+          !chordType.toLowerCase().startsWith("dim")
+        ) {
+          chordType = "m" + chordType;
+        }
       }
       chordNotes = MusicData.intervals(chordType);
     }
@@ -681,15 +694,8 @@ function chordInfoClicked() {
     if (i > 0) {
       info += ", ";
     }
-    note = notes[fixNoteIndex(chordNotes[i] + idx)];
-    comma = note.indexOf(",");
-    if (comma >= 0) {
-      if (preferSharps) {
-        note = note.slice(0, comma).trim();
-      } else {
-        note = note.slice(comma + 1).trim();
-      }
-    }
+    noteIdx = fixNoteIndex(chordNotes[i] + idx);
+    note = noteIndexToString(noteIdx, options, true, outputObj);
     info += note;
   }
 
@@ -1212,6 +1218,7 @@ function transposeLine(
   let chord = "";
   let chords = [];
   let chordType = "";
+  let ct = "";
   let hasRead = false;
   let hasText = false;
   let inlinePos = 0;
@@ -1338,6 +1345,7 @@ function transposeLine(
         note = "";
         readChord = false;
         note = inputObj.readNote(chord);
+        ct = chord.slice(note.length);
         addMinor = "";
         if (note === "") {
           hasText = true;
@@ -1349,7 +1357,11 @@ function transposeLine(
             }
           }
           if (options.inputFormat === "ROMAN") {
-            if (note === note.toLowerCase()) {
+            if (
+              note === note.toLowerCase() &&
+              !ct.startsWith("°") &&
+              !ct.toLowerCase().startsWith("dim")
+            ) {
               addMinor = "m";
             }
           }

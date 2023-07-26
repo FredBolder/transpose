@@ -275,9 +275,11 @@ class MusicData {
       case "9#5":
         result = [0, 4, 8, 10, 14];
         break;
+      case "°":
       case "dim":
         result = [0, 3, 6];
         break;
+      case "°7":
       case "dim7":
         result = [0, 3, 6, 9];
         break;
