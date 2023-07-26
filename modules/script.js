@@ -10,6 +10,10 @@ import { Inline } from "./inline.js";
 import { Nashville } from "./nashville.js";
 import { Roman } from "./roman.js";
 import { Songs } from "./songs.js";
+import { Glob } from "./glob.js";
+import { Settings } from "./settings.js";
+
+Glob.init();
 
 function addColor(style, color, theme) {
   let c = color;
@@ -559,7 +563,7 @@ function noteToIndex(note, options, start, bass, inputObj) {
 function printClicked() {
   let data = "";
   transposeClicked(true);
-  data = document.getElementById("output").innerHTML;
+  data = Glob.settings.outputArea.innerHTML;
   data = data.split("</div><").join("</div>\n    <");
   const w = window.open(" ", " ");
   w.document.write(header("Transpose by Fred Bolder"));
@@ -582,13 +586,13 @@ function exportClicked() {
   let data = "";
   let filename = prompt("Filename without path").trim();
   if (filename !== "") {
-    const exportFormat = document.getElementById("exportFormat").value;
+    const exportFormat = Glob.settings.exportFormat.value;
     const element = document.createElement("a");
     if (exportFormat === "HTML") {
       if (!filename.includes(".")) {
         filename += ".html";
       }
-      data = document.getElementById("output").innerHTML;
+      data = Glob.settings.outputArea.innerHTML;
       data = data.split("</div><").join("</div>\n    <");
       data = header(filename) + "    " + data;
       data += `\n  </body>\n`;
@@ -601,7 +605,7 @@ function exportClicked() {
       if (!filename.includes(".")) {
         filename += ".txt";
       }
-      data = document.getElementById("output").innerText;
+      data = Glob.settings.outputArea.innerText;
       element.setAttribute(
         "href",
         "data:text/plain;charset=utf-8," + encodeURIComponent(data)
@@ -619,11 +623,11 @@ function selectAllClicked() {
   if (document.selection) {
     // IE
     var range = document.body.createTextRange();
-    range.moveToElementText(document.getElementById("output"));
+    range.moveToElementText(Glob.settings.outputArea);
     range.select();
   } else if (window.getSelection) {
     var range = document.createRange();
-    range.selectNode(document.getElementById("output"));
+    range.selectNode(Glob.settings.outputArea);
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
   }
@@ -640,16 +644,12 @@ function chordInfoClicked() {
   let chordNotes = [];
   let notes = [];
   let input = convertToNormalChars(
-    document.getElementById("inputChordInfo").value.trim()
+    Glob.settings.inputChordInfo.value.trim()
   );
-  const output = document.getElementById("outputChordInfo");
+  const output = Glob.settings.outputChordInfo;
   const options = new Options();
-  options.outputFormat = document.getElementById("outputFormat").value;
+  Glob.settings.saveToOptions(options);
   options.inputFormat = options.outputFormat;
-  options.key = parseInt(document.getElementById("key").value);
-  options.preferSharps = document.getElementById("useSharps").checked;
-  options.uppercase = document.getElementById("uppercase").checked;
-  options.useTi = document.getElementById("useTi").checked;
   const outputObj = createInputOrOutputObject(options.outputFormat);
 
   // Remove spaces and square brackets
@@ -811,7 +811,7 @@ function transpose(inputData, semiTones, options) {
 }
 
 function clearClicked() {
-  const input = document.getElementById("input");
+  const input = Glob.settings.inputArea;
   if (input.value !== "") {
     if (confirm("Clear the input?")) {
       input.value = "";
@@ -829,8 +829,8 @@ function titleClicked() {
   let result = {};
   let s = "";
   let titleExists = false;
-  const input = document.getElementById("input");
-  const inputFormat = document.getElementById("inputFormat").value;
+  const input = Glob.settings.inputArea;
+  const inputFormat = Glob.settings.inputFormat.value;
   let options = new Options();
   options.inputFormat = inputFormat;
   const inputObj = createInputOrOutputObject(options.inputFormat);
@@ -876,8 +876,8 @@ function commentClicked() {
   let s2 = "";
   let s3 = "";
   let value = "";
-  const input = document.getElementById("input");
-  const commentType = document.getElementById("commentType").value;
+  const input = Glob.settings.inputArea;
+  const commentType = Glob.settings.commentType.value;
   value = input.value;
   if (value !== "") {
     p3 = input.selectionStart;
@@ -900,7 +900,7 @@ function commentClicked() {
 }
 
 function surpriseMeClicked() {
-  const input = document.getElementById("input");
+  const input = Glob.settings.inputArea;
   let isInt = true;
   let n = 0;
   let song = {};
@@ -937,27 +937,25 @@ function surpriseMeClicked() {
   if (n > 0) {
     song = Songs.loadSong(n);
     input.value = song.join("\n");
-    document.getElementById("inputFormat").value = "CDE";
+    Glob.settings.inputFormat.value = "CDE";
     transposeClicked();
   }
 }
 
 function downClicked() {
-  const semitonesElement = document.getElementById("semitones");
-  let semitones = parseInt(semitonesElement.value);
+  let semitones = parseInt(Glob.settings.semitones.value);
   if (semitones > -11) {
     semitones--;
-    semitonesElement.value = semitones.toString();
+    Glob.settings.semitones.value = semitones.toString();
     transposeClicked();
   }
 }
 
 function upClicked() {
-  const semitonesElement = document.getElementById("semitones");
-  let semitones = parseInt(semitonesElement.value);
+  let semitones = parseInt(Glob.settings.semitones.value);
   if (semitones < 11) {
     semitones++;
-    semitonesElement.value = semitones.toString();
+    Glob.settings.semitones.value = semitones.toString();
     transposeClicked();
   }
 }
@@ -990,23 +988,12 @@ function transposeClicked(print = false) {
   let textSize = "NORMAL";
   let value = "";
   let valueStyle = 0;
-  let theme = document.getElementById("theme").value;
+  let theme = Glob.settings.theme.value;
   let themeColor = "black";
-  const outputArea = document.getElementById("output");
-  options.inputFormat = document.getElementById("inputFormat").value;
-  options.strict = document.getElementById("strict").checked;
-  options.lowerIsMinor = document.getElementById("lowerIsMinor").checked;
-  options.bracketsInput = document.getElementById("bracketsInput").value;
-  options.bracketsOutput = document.getElementById("bracketsOutput").value;
-  options.preferSharps = document.getElementById("useSharps").checked;
-  options.useTi = document.getElementById("useTi").checked;
-  options.useSpecial = document.getElementById("useSpecial").checked;
-  options.spaceBetween = document.getElementById("spaceBetween").checked;
-  options.compact = document.getElementById("compact").checked;
-  options.uppercase = document.getElementById("uppercase").checked;
-  options.outputFormat = document.getElementById("outputFormat").value;
-  chordsIsBold = document.getElementById("chordsBold").checked;
-  ignoreColors = document.getElementById("ignoreColors").checked;
+  const outputArea = Glob.settings.outputArea;
+  Glob.settings.saveToOptions(options);
+  chordsIsBold = Glob.settings.chordsIsBold.checked;
+  ignoreColors = Glob.settings.ignoreColors.checked;
 
   if (print) {
     theme = "LIGHT";
@@ -1019,7 +1006,7 @@ function transposeClicked(print = false) {
     themeColor = "black";
   }
 
-  textSize = document.getElementById("textSize").value;
+  textSize = Glob.settings.textSize.value;
   if (textSize === "XS") {
     valueStyle = 8;
   } else if (textSize === "SMALL") {
@@ -1045,10 +1032,9 @@ function transposeClicked(print = false) {
     valueStyle * 1.25
   )}px"`;
 
-  let data = document.getElementById("input").value;
+  let data = Glob.settings.inputArea.value;
   inputData = data.split("\n");
-  options.key = parseInt(document.getElementById("key").value);
-  semitones = parseInt(document.getElementById("semitones").value);
+  semitones = parseInt(Glob.settings.semitones.value);
   if (
     options.outputFormat === "ROMAN" ||
     options.outputFormat === "NASHVILLE"
@@ -1529,6 +1515,12 @@ function transposeLine(
 
 // To prevent error when using node
 try {
+  window.addEventListener("load", (e) => {
+    if (Glob.settings === null) {
+      Glob.settings = new Settings();
+      console.log("Settings loaded");
+    }
+  });
   document.getElementById("theme").addEventListener("change", (e) => {
     let r = document.querySelector(":root");
     if (e.target.value === "LIGHT") {
