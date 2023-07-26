@@ -11,6 +11,7 @@ class Settings {
     this.inputChordInfo = document.getElementById("inputChordInfo")
     this.inputFormat = document.getElementById("inputFormat");
     this.key = document.getElementById("key");
+    this.keyboard = document.getElementById("keyboard");
     this.lowerIsMinor = document.getElementById("lowerIsMinor");
     this.outputArea = document.getElementById("output");
     this.outputChordInfo = document.getElementById("outputChordInfo")

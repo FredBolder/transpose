@@ -67,8 +67,8 @@ class Nashville extends ChordSystem {
     let result = "";
     if (s.length > 0) {
       result = s[0];
-      if (s.length > result.length) {
-        if ("1234567".includes(s[result.length])) {
+      if (s.length > result.length && result.length < 2) {
+        if ("b#".includes(s[0]) && "1234567".includes(s[result.length])) {
           result += s[result.length];
         }
       }

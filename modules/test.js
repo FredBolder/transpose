@@ -300,11 +300,11 @@ function test() {
 
   // Test 25
   initTest("NASHVILLE", true, false, false, true, false, false, "CDE");
-  inputData.push("1 2m 4 3m 3 1/3 1m/5 b3");
+  inputData.push("1 2m 4 3m 3 1/3 1m/5 b3 17");
   testOptions.key = 2; // D
   semitones = -keyToSemitones(testOptions.key);
   outputData = transpose(inputData, semitones, testOptions).data;
-  checkResult("Test 25", "D Em G F#m F# D/F# Dm/A F", outputData.join("\n"));
+  checkResult("Test 25", "D Em G F#m F# D/F# Dm/A F D7", outputData.join("\n"));
 
   // Test 26
   initTest("NASHVILLE", false, false, false, true, false, false, "ROMAN");

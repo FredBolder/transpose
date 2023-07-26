@@ -134,6 +134,14 @@ fieldset {
   padding-right: 0.25rem;
 }
 
+.keyboard {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  height: 50px;
+  width: 250px;
+}
+
 p {
   margin-top: 1rem;
   margin-bottom: 1rem;

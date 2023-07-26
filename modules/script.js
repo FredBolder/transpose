@@ -328,10 +328,10 @@ function convertTypeToCompact(s, options) {
 }
 
 function fixNoteIndex(n) {
-  if (n > 11) {
+  while (n > 11) {
     n -= 12;
   }
-  if (n < 0) {
+  while (n < 0) {
     n += 12;
   }
   return n;
@@ -634,18 +634,24 @@ function selectAllClicked() {
 }
 
 function chordInfoClicked() {
+  const keyboard = Glob.settings.keyboard;
+  let ch = 0;
+  let cw = 0;
   let chordType = "";
+  let dx1 = 0;
+  let dx2 = 0;
   let idx = -1;
   let info = "";
+  let n1 = 0;
   let note = "";
+  let notes = [];
   let noteIdx = 0;
   let p1 = -1;
   let s1 = "";
+  let x = 0;
+  let y = 0;
   let chordNotes = [];
-  let notes = [];
-  let input = convertToNormalChars(
-    Glob.settings.inputChordInfo.value.trim()
-  );
+  let input = convertToNormalChars(Glob.settings.inputChordInfo.value.trim());
   const output = Glob.settings.outputChordInfo;
   const options = new Options();
   Glob.settings.saveToOptions(options);
@@ -701,6 +707,78 @@ function chordInfoClicked() {
 
   if (info === "") {
     info = "No info available for this chord yet";
+  } else {
+    // Draw keyboard
+    const kb = keyboard.getContext("2d");
+    keyboard.width =
+      keyboard.height * (keyboard.clientWidth / keyboard.clientHeight);
+    ch = keyboard.height;
+    cw = keyboard.width;
+    dx1 = cw / 21;
+    kb.lineWidth = 5;
+    // White keys
+    kb.fillStyle = "white";
+    kb.strokeStyle = "black";
+    for (let i = 0; i < 21; i++) {
+      kb.fillRect(i * dx1, 0, dx1, ch);
+      kb.strokeRect(i * dx1, 0, dx1, ch);
+    }
+    // Black keys
+    kb.fillStyle = "black";
+    for (let i = 0; i < 20; i++) {
+      if (![2, 6, 9, 13, 16].includes(i)) {
+        dx2 = 0;
+        if ([0, 7, 14].includes(i)) {
+          dx2 = -2;
+        }
+        if ([1, 8, 15].includes(i)) {
+          dx2 = 2;
+        }
+        if ([3, 10, 17].includes(i)) {
+          dx2 = -4;
+        }
+        if ([5, 12, 19].includes(i)) {
+          dx2 = 4;
+        }
+        kb.fillRect(i * dx1 + 2 + dx1 / 2 + dx2, 0, dx1 - 4, ch / 1.7);
+      }
+    }
+    // Notes
+    x = 0;
+    for (let i = 0; i < 36; i++) {
+      n1 = ((i + 1) % 12) - 1;
+      if (n1 === 1) {
+        dx2 = -2;
+      } else if (n1 === 3) {
+        dx2 = 2;
+      } else if (n1 === 6) {
+        dx2 = -4;
+      } else if (n1 === 10) {
+        dx2 = 4;
+      } else {
+        dx2 = 0;
+      }
+      if ([1, 3, 6, 8, 10].includes(n1)) {
+        kb.fillStyle = "white";
+        y = 0.4 * ch;
+      } else {
+        kb.fillStyle = "black";
+        y = 0.85 * ch;
+      }
+      if ([5, 0].includes(n1)) {
+        x += dx1 / 2;
+      }
+      if (
+        chordNotes.reduce((prev, current) => {
+          return i === current + idx || prev;
+        }, false)
+      ) {
+        kb.beginPath();
+        kb.arc(x + dx2, y, 7, 0, 2 * Math.PI);
+        kb.fill();
+      }
+      x += dx1 / 2;
+    }
   }
   output.innerHTML = info;
 }
