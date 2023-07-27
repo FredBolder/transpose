@@ -327,6 +327,108 @@ function convertTypeToCompact(s, options) {
   return result;
 }
 
+function drawKeyboard(idx, notes) {
+  let ch = 0;
+  let cw = 0;
+  let dx1 = 0;
+  let dx2 = 0;
+  let n1 = 0;
+  let position = "";
+  let x = 0;
+  let y = 0;
+  const keyboard = Glob.settings.keyboard;
+  const kb = keyboard.getContext("2d");
+
+  kb.reset();
+  keyboard.width =
+    keyboard.height * (keyboard.clientWidth / keyboard.clientHeight);
+  ch = keyboard.height;
+  cw = keyboard.width;
+  dx1 = cw / 21;
+  kb.lineWidth = 5;
+  // White keys
+  kb.fillStyle = "white";
+  kb.strokeStyle = "black";
+  for (let i = 0; i < 21; i++) {
+    kb.beginPath;
+    kb.fillRect(i * dx1, 0, dx1, ch);
+    kb.strokeRect(i * dx1, 0, dx1, ch);
+  }
+  // Black keys
+  kb.fillStyle = "black";
+  for (let i = 0; i < 20; i++) {
+    if (![2, 6, 9, 13, 16].includes(i)) {
+      dx2 = 0;
+      if ([0, 7, 14].includes(i)) {
+        dx2 = -2;
+      }
+      if ([1, 8, 15].includes(i)) {
+        dx2 = 2;
+      }
+      if ([3, 10, 17].includes(i)) {
+        dx2 = -4;
+      }
+      if ([5, 12, 19].includes(i)) {
+        dx2 = 4;
+      }
+      kb.beginPath;
+      kb.fillRect(i * dx1 + 2 + dx1 / 2 + dx2, 0, dx1 - 4, ch / 1.7);
+    }
+  }
+  // Notes
+  if (notes.length > 1) {
+    position = Glob.settings.position.value;
+    if (position === "INV1" || position === "INV2" || position === "INV3") {
+      notes[0] += 12;
+    }
+    if (position === "INV2" || position === "INV3") {
+      notes[1] += 12;
+    }
+    if (position === "INV3") {
+      if (notes.length > 2) {
+        notes[2] += 12;
+      } else {
+        notes[0] += 12;
+      }
+    }
+    x = 0;
+    for (let i = 0; i < 36; i++) {
+      n1 = ((i + 1) % 12) - 1;
+      if (n1 === 1) {
+        dx2 = -2;
+      } else if (n1 === 3) {
+        dx2 = 2;
+      } else if (n1 === 6) {
+        dx2 = -4;
+      } else if (n1 === 10) {
+        dx2 = 4;
+      } else {
+        dx2 = 0;
+      }
+      if ([1, 3, 6, 8, 10].includes(n1)) {
+        kb.fillStyle = "white";
+        y = 0.4 * ch;
+      } else {
+        kb.fillStyle = "black";
+        y = 0.85 * ch;
+      }
+      if ([5, 0].includes(n1)) {
+        x += dx1 / 2;
+      }
+      if (
+        notes.reduce((prev, current) => {
+          return i === current + idx || prev;
+        }, false)
+      ) {
+        kb.beginPath();
+        kb.arc(x + dx2, y, 7, 0, 2 * Math.PI);
+        kb.fill();
+      }
+      x += dx1 / 2;
+    }
+  }
+}
+
 function fixNoteIndex(n) {
   while (n > 11) {
     n -= 12;
@@ -634,22 +736,14 @@ function selectAllClicked() {
 }
 
 function chordInfoClicked() {
-  const keyboard = Glob.settings.keyboard;
-  let ch = 0;
-  let cw = 0;
   let chordType = "";
-  let dx1 = 0;
-  let dx2 = 0;
   let idx = -1;
   let info = "";
-  let n1 = 0;
   let note = "";
   let notes = [];
   let noteIdx = 0;
   let p1 = -1;
   let s1 = "";
-  let x = 0;
-  let y = 0;
   let chordNotes = [];
   let input = convertToNormalChars(Glob.settings.inputChordInfo.value.trim());
   const output = Glob.settings.outputChordInfo;
@@ -708,77 +802,7 @@ function chordInfoClicked() {
   if (info === "") {
     info = "No info available for this chord yet";
   } else {
-    // Draw keyboard
-    const kb = keyboard.getContext("2d");
-    keyboard.width =
-      keyboard.height * (keyboard.clientWidth / keyboard.clientHeight);
-    ch = keyboard.height;
-    cw = keyboard.width;
-    dx1 = cw / 21;
-    kb.lineWidth = 5;
-    // White keys
-    kb.fillStyle = "white";
-    kb.strokeStyle = "black";
-    for (let i = 0; i < 21; i++) {
-      kb.fillRect(i * dx1, 0, dx1, ch);
-      kb.strokeRect(i * dx1, 0, dx1, ch);
-    }
-    // Black keys
-    kb.fillStyle = "black";
-    for (let i = 0; i < 20; i++) {
-      if (![2, 6, 9, 13, 16].includes(i)) {
-        dx2 = 0;
-        if ([0, 7, 14].includes(i)) {
-          dx2 = -2;
-        }
-        if ([1, 8, 15].includes(i)) {
-          dx2 = 2;
-        }
-        if ([3, 10, 17].includes(i)) {
-          dx2 = -4;
-        }
-        if ([5, 12, 19].includes(i)) {
-          dx2 = 4;
-        }
-        kb.fillRect(i * dx1 + 2 + dx1 / 2 + dx2, 0, dx1 - 4, ch / 1.7);
-      }
-    }
-    // Notes
-    x = 0;
-    for (let i = 0; i < 36; i++) {
-      n1 = ((i + 1) % 12) - 1;
-      if (n1 === 1) {
-        dx2 = -2;
-      } else if (n1 === 3) {
-        dx2 = 2;
-      } else if (n1 === 6) {
-        dx2 = -4;
-      } else if (n1 === 10) {
-        dx2 = 4;
-      } else {
-        dx2 = 0;
-      }
-      if ([1, 3, 6, 8, 10].includes(n1)) {
-        kb.fillStyle = "white";
-        y = 0.4 * ch;
-      } else {
-        kb.fillStyle = "black";
-        y = 0.85 * ch;
-      }
-      if ([5, 0].includes(n1)) {
-        x += dx1 / 2;
-      }
-      if (
-        chordNotes.reduce((prev, current) => {
-          return i === current + idx || prev;
-        }, false)
-      ) {
-        kb.beginPath();
-        kb.arc(x + dx2, y, 7, 0, 2 * Math.PI);
-        kb.fill();
-      }
-      x += dx1 / 2;
-    }
+    drawKeyboard(idx, chordNotes);
   }
   output.innerHTML = info;
 }
@@ -1596,7 +1620,13 @@ try {
   window.addEventListener("load", (e) => {
     if (Glob.settings === null) {
       Glob.settings = new Settings();
-      console.log("Settings loaded");
+      //console.log("Settings loaded");
+      drawKeyboard(-1, []);
+      Glob.settings.position.addEventListener("change", (e) => {
+        if (Glob.settings.inputChordInfo.value.trim() !== "") {
+          chordInfoClicked();
+        }
+      });
     }
   });
   document.getElementById("theme").addEventListener("change", (e) => {

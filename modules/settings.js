@@ -16,6 +16,7 @@ class Settings {
     this.outputArea = document.getElementById("output");
     this.outputChordInfo = document.getElementById("outputChordInfo")
     this.outputFormat = document.getElementById("outputFormat");
+    this.position = document.getElementById("position");
     this.preferSharps = document.getElementById("useSharps");
     this.semitones = document.getElementById("semitones");
     this.spaceBetween = document.getElementById("spaceBetween");

@@ -283,6 +283,12 @@
               type="text"
               spellcheck="false"
             />
+            <select name="position" id="position">
+              <option value="ROOT" selected="selected">Root</option>
+              <option value="INV1">1st inv</option>
+              <option value="INV2">2nd inv</option>
+              <option value="INV3">3rd inv</option>
+            </select>
             <button id="btChordInfo">Info</button>
             <div id="outputChordInfo" class="output-chord-info">-</div>
             <canvas class="keyboard" id="keyboard"></canvas>
@@ -361,9 +367,6 @@
             be capitalized and the chord type will be changed to minor.
           </p>
           <h2>Brackets</h2>
-          ΝέαΡούχα Παπούτσια Αξεσουάρ Αθλητικά Premium Home & Lifestyle Μάρκες
-          Προσφορές ￼ Γυναικεία
-
           <p>
             The Brackets settings are used for the inline formats. The first
             bracket setting is for the input and the second bracket setting is
@@ -502,16 +505,23 @@
           <h2>Chord information</h2>
           <p>
             Type or copy a chord name (example: Dm7) in the left input box and
-            press the Info button to see the notes that are in that chord. The
-            first letter of a note name must be a capital (uppercase letter).
-            Enable the option Use sharps if you prefer to see sharps (#) instead
-            of flats (b). All chord formats are supported. If you want to get
-            the information (for example) about the Sol chord, the Output format
-            has to be set to Do Re Mi. There is information available for 816
-            chords. There are many ways to write the same chord, so if you don't
-            get information, you can try to write the chord in a different way.
-            Don't use a slash in a chord name like D6/9. You can use D69
-            instead. A bass note like the G in C/G will be ignored.
+            press the Info button to see the notes that are in that chord. You
+            can also see how to play the chord on a piano. For the keyboard
+            picture, the selected chord position (root, 1st inversion, 2nd
+            inversion or 3rd inversion) is used. Chords with three notes have
+            only two inversions. If you select "3rd inv" for these chords, you
+            will see the chord in root position, but one octave higher. If you
+            have entered a valid chord and you change the position, you don't
+            need to press the Info button. The first letter of a note name must
+            be a capital (uppercase letter). Enable the option Use sharps if you
+            prefer to see sharps (#) instead of flats (b). All chord formats are
+            supported. If you want to get the information (for example) about
+            the Sol chord, the Output format has to be set to Do Re Mi. There is
+            information available for 816 chords. There are many ways to write
+            the same chord, so if you don't get information, you can try to
+            write the chord in a different way. Don't use a slash in a chord
+            name like D6/9. You can use D69 instead. A bass note like the G in
+            C/G will be ignored.
           </p>
         </div>
       </main>
