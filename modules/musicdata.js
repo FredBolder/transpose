@@ -173,6 +173,7 @@ class MusicData {
     const names = [
       { key: "maj", value: "M" },
       { key: "min", value: "m" },
+      { key: "omit", value: "no" },
     ];
 
     // Lowercase except M (maj)
@@ -315,8 +316,24 @@ class MusicData {
       case "11":
         result = [0, 4, 7, 10, 14, 17];
         break;
+      case "11no3":
+      case "11(no3)":
+        result = [0, 7, 10, 14, 17];
+        break;
+      case "11no5":
+      case "11(no5)":
+        result = [0, 4, 10, 14, 17];
+        break;
+      case "11no9":
+      case "11(no9)":
+        result = [0, 4, 7, 10, 17];
+        break;
       case "m11":
         result = [0, 3, 7, 10, 14, 17];
+        break;
+      case "m11no5":
+      case "m11(no5)":
+        result = [0, 3, 10, 14, 17];
         break;
       case "M11":
         result = [0, 4, 7, 11, 14, 17];
@@ -333,6 +350,15 @@ class MusicData {
       case "M13#11":
         result = [0, 4, 7, 11, 14, 18, 21];
         break;
+      case "13no3":
+      case "13(no3)":
+        result = [0, 7, 10, 14, 17, 21];
+        break;
+      case "13no5":
+      case "13(no5)":
+        result = [0, 4, 10, 14, 17, 21];
+        break;
+      case "13no9":
       case "13(no9)":
         result = [0, 4, 7, 10, 17, 21];
         break;
@@ -443,15 +469,6 @@ class MusicData {
       case "M7#9":
       case "M7+9":
         result = [0, 4, 7, 11, 15];
-        break;
-      case "11omit3":
-        result = [0, 7, 10, 14, 17];
-        break;
-      case "11omit5":
-        result = [0, 4, 10, 14, 17];
-        break;
-      case "m11omit5":
-        result = [0, 3, 10, 14, 17];
         break;
       default:
         break;

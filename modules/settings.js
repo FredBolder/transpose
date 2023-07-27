@@ -13,6 +13,7 @@ class Settings {
     this.key = document.getElementById("key");
     this.keyboard = document.getElementById("keyboard");
     this.lowerIsMinor = document.getElementById("lowerIsMinor");
+    this.numberOfChords = document.getElementById("numberOfChords");
     this.outputArea = document.getElementById("output");
     this.outputChordInfo = document.getElementById("outputChordInfo")
     this.outputFormat = document.getElementById("outputFormat");

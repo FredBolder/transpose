@@ -337,15 +337,15 @@ function drawKeyboard(idx, notes) {
   let x = 0;
   let y = 0;
   const keyboard = Glob.settings.keyboard;
+  keyboard.height =
+    keyboard.width * (keyboard.clientHeight / keyboard.clientWidth);
   const kb = keyboard.getContext("2d");
-
   kb.reset();
-  keyboard.width =
-    keyboard.height * (keyboard.clientWidth / keyboard.clientHeight);
+
   ch = keyboard.height;
   cw = keyboard.width;
   dx1 = cw / 21;
-  kb.lineWidth = 5;
+  kb.lineWidth = 1;
   // White keys
   kb.fillStyle = "white";
   kb.strokeStyle = "black";
@@ -360,16 +360,16 @@ function drawKeyboard(idx, notes) {
     if (![2, 6, 9, 13, 16].includes(i)) {
       dx2 = 0;
       if ([0, 7, 14].includes(i)) {
-        dx2 = -2;
+        dx2 = -1;
       }
       if ([1, 8, 15].includes(i)) {
-        dx2 = 2;
+        dx2 = 1;
       }
       if ([3, 10, 17].includes(i)) {
-        dx2 = -4;
+        dx2 = -2;
       }
       if ([5, 12, 19].includes(i)) {
-        dx2 = 4;
+        dx2 = 2;
       }
       kb.beginPath;
       kb.fillRect(i * dx1 + 2 + dx1 / 2 + dx2, 0, dx1 - 4, ch / 1.7);
@@ -395,13 +395,13 @@ function drawKeyboard(idx, notes) {
     for (let i = 0; i < 36; i++) {
       n1 = ((i + 1) % 12) - 1;
       if (n1 === 1) {
-        dx2 = -2;
+        dx2 = -1;
       } else if (n1 === 3) {
-        dx2 = 2;
+        dx2 = 1;
       } else if (n1 === 6) {
-        dx2 = -4;
+        dx2 = -2;
       } else if (n1 === 10) {
-        dx2 = 4;
+        dx2 = 2;
       } else {
         dx2 = 0;
       }
@@ -421,7 +421,7 @@ function drawKeyboard(idx, notes) {
         }, false)
       ) {
         kb.beginPath();
-        kb.arc(x + dx2, y, 7, 0, 2 * Math.PI);
+        kb.arc(x + dx2, y, 3, 0, 2 * Math.PI);
         kb.fill();
       }
       x += dx1 / 2;
@@ -464,6 +464,18 @@ function getDirective(s) {
     name: s2,
     value: s3,
   };
+}
+
+function getNumberOfChords() {
+  let n = 0;
+  let arrSourceCode = MusicData.intervals.toString().split("\n");
+  for (let i = 0; i < arrSourceCode.length; i++) {
+    const element = arrSourceCode[i].trim();
+    if (element.startsWith("result =")) {
+      n++;
+    }
+  }
+  return (n * 12).toString();
 }
 
 function header(title) {
@@ -1622,6 +1634,7 @@ try {
       Glob.settings = new Settings();
       //console.log("Settings loaded");
       drawKeyboard(-1, []);
+      Glob.settings.numberOfChords.innerHTML = getNumberOfChords();
       Glob.settings.position.addEventListener("change", (e) => {
         if (Glob.settings.inputChordInfo.value.trim() !== "") {
           chordInfoClicked();
