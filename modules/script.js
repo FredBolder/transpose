@@ -337,15 +337,19 @@ function drawKeyboard(idx, notes) {
   let x = 0;
   let y = 0;
   const keyboard = Glob.settings.keyboard;
-  keyboard.height =
-    keyboard.width * (keyboard.clientHeight / keyboard.clientWidth);
+  keyboard.height = keyboard.clientHeight * 2;
+  keyboard.width = keyboard.clientWidth * 2;
   const kb = keyboard.getContext("2d");
   kb.reset();
+
+  // console.log(
+  //   `Width: ${keyboard.width}, Height: ${keyboard.height}, ClientWidth: ${keyboard.clientWidth}, ClientHeight: ${keyboard.clientHeight}`
+  // );
 
   ch = keyboard.height;
   cw = keyboard.width;
   dx1 = cw / 21;
-  kb.lineWidth = 1;
+  kb.lineWidth = 2;
   // White keys
   kb.fillStyle = "white";
   kb.strokeStyle = "black";
@@ -360,16 +364,16 @@ function drawKeyboard(idx, notes) {
     if (![2, 6, 9, 13, 16].includes(i)) {
       dx2 = 0;
       if ([0, 7, 14].includes(i)) {
-        dx2 = -1;
-      }
-      if ([1, 8, 15].includes(i)) {
-        dx2 = 1;
-      }
-      if ([3, 10, 17].includes(i)) {
         dx2 = -2;
       }
-      if ([5, 12, 19].includes(i)) {
+      if ([1, 8, 15].includes(i)) {
         dx2 = 2;
+      }
+      if ([3, 10, 17].includes(i)) {
+        dx2 = -4;
+      }
+      if ([5, 12, 19].includes(i)) {
+        dx2 = 4;
       }
       kb.beginPath;
       kb.fillRect(i * dx1 + 2 + dx1 / 2 + dx2, 0, dx1 - 4, ch / 1.7);
@@ -395,13 +399,13 @@ function drawKeyboard(idx, notes) {
     for (let i = 0; i < 36; i++) {
       n1 = ((i + 1) % 12) - 1;
       if (n1 === 1) {
-        dx2 = -1;
-      } else if (n1 === 3) {
-        dx2 = 1;
-      } else if (n1 === 6) {
         dx2 = -2;
-      } else if (n1 === 10) {
+      } else if (n1 === 3) {
         dx2 = 2;
+      } else if (n1 === 6) {
+        dx2 = -4;
+      } else if (n1 === 10) {
+        dx2 = 4;
       } else {
         dx2 = 0;
       }
@@ -421,7 +425,7 @@ function drawKeyboard(idx, notes) {
         }, false)
       ) {
         kb.beginPath();
-        kb.arc(x + dx2, y, 3, 0, 2 * Math.PI);
+        kb.arc(x + dx2, y, 4, 0, 2 * Math.PI);
         kb.fill();
       }
       x += dx1 / 2;
@@ -478,7 +482,7 @@ function getNumberOfChords() {
   return (n * 12).toString();
 }
 
-function header(title) {
+function header(title, dark = false) {
   let s = "";
 
   s += `<!DOCTYPE html>\n`;
@@ -488,6 +492,14 @@ function header(title) {
   s += `    <meta http-equiv="X-UA-Compatible" content="IE=edge" />\n`;
   s += `    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n`;
   s += `    <title>${title}</title>\n`;
+  if (dark) {
+    s += `      <style>\n`;
+    s += `        body {\n`;
+    s += `          color: white;\n`;
+    s += `          background-color: black;\n`;
+    s += `        }\n`;
+    s += `      </style>\n`;
+  }
   s += `  </head>\n`;
   s += `  <body>\n`;
   return s;
@@ -697,6 +709,7 @@ function printClicked() {
 }
 
 function exportClicked() {
+  let dark = false;
   let data = "";
   let filename = prompt("Filename without path").trim();
   if (filename !== "") {
@@ -707,9 +720,12 @@ function exportClicked() {
         filename += ".html";
       }
       data = Glob.settings.outputArea.innerHTML;
-      data = data.split("</div><").join("</div>\n    <");
-      data = header(filename) + "    " + data;
-      data += `\n  </body>\n`;
+      data = data.split("</div><").join("</div>\n      <");
+      dark = Glob.settings.theme.value === "DARK";
+      console.log(dark);
+      data = header(filename, dark) + "    <main>\n" + "      " + data;
+      data += `\n    </main>\n`;
+      data += `  </body>\n`;
       data += `</html>\n`;
       element.setAttribute(
         "href",
