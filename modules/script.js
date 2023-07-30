@@ -57,65 +57,6 @@ function capitalize(s) {
   return result;
 }
 
-function createInputOrOutputObject(chordSystem) {
-  let result = null;
-  switch (chordSystem) {
-    case "CDE":
-      result = new CDE();
-      break;
-    case "DOREMI":
-      result = new DoReMi();
-      break;
-    case "GERMAN1":
-      result = new German1();
-      break;
-    case "GERMAN2":
-      result = new German2();
-      break;
-    case "GREEK":
-      result = new Greek();
-      break;
-    case "INLINE":
-      result = new Inline();
-      break;
-    case "ROMAN":
-      result = new Roman();
-      break;
-    case "NASHVILLE":
-      result = new Nashville();
-      break;
-    case "NOCHORDS":
-      result = new CDE();
-      break;
-    default:
-      break;
-  }
-  return result;
-}
-
-function greekToNormal(s) {
-  let c = "";
-  let result = "";
-  for (let i = 0; i < s.length; i++) {
-    c = s[i];
-    switch (c) {
-      case "Α":
-        c = "A";
-        break;
-      case "Β":
-        c = "B";
-        break;
-      case "Ε":
-        c = "E";
-        break;
-      default:
-        break;
-    }
-    result += c;
-  }
-  return result;
-}
-
 function changeBass(input, semiTones, options, inputObj, outputObj) {
   let error = false;
   let note = "";
@@ -327,6 +268,42 @@ function convertTypeToCompact(s, options) {
   return result;
 }
 
+function createInputOrOutputObject(chordSystem) {
+  let result = null;
+  switch (chordSystem) {
+    case "CDE":
+      result = new CDE();
+      break;
+    case "DOREMI":
+      result = new DoReMi();
+      break;
+    case "GERMAN1":
+      result = new German1();
+      break;
+    case "GERMAN2":
+      result = new German2();
+      break;
+    case "GREEK":
+      result = new Greek();
+      break;
+    case "INLINE":
+      result = new Inline();
+      break;
+    case "ROMAN":
+      result = new Roman();
+      break;
+    case "NASHVILLE":
+      result = new Nashville();
+      break;
+    case "NOCHORDS":
+      result = new CDE();
+      break;
+    default:
+      break;
+  }
+  return result;
+}
+
 function drawKeyboard(idx, notes) {
   let ch = 0;
   let cw = 0;
@@ -480,6 +457,29 @@ function getNumberOfChords() {
     }
   }
   return (n * 12).toString();
+}
+
+function greekToNormal(s) {
+  let c = "";
+  let result = "";
+  for (let i = 0; i < s.length; i++) {
+    c = s[i];
+    switch (c) {
+      case "Α":
+        c = "A";
+        break;
+      case "Β":
+        c = "B";
+        break;
+      case "Ε":
+        c = "E";
+        break;
+      default:
+        break;
+    }
+    result += c;
+  }
+  return result;
 }
 
 function header(title, dark = false) {
@@ -686,6 +686,77 @@ function noteToIndex(note, options, start, bass, inputObj) {
   return idx;
 }
 
+function searchNotes(input) {
+  let result = "";
+  let arrSourceCode = [];
+  let c = 0;
+  let d = 0;
+  let ct = "";
+  let intervals = "";
+  let note = "";
+  let notes1 = [];
+  let notes2 = [];
+  let notes3 = [];
+
+  const options = new Options();
+  Glob.settings.saveToOptions(options);
+  options.inputFormat = options.outputFormat;
+  const inputObj = createInputOrOutputObject(options.inputFormat);
+
+  notes1 = input.split(",");
+  for (let i = 0; i < notes1.length; i++) {
+    notes1[i] = noteToIndex(notes1[i].trim(), options, false, true, inputObj);
+  }
+  arrSourceCode = MusicData.intervals.toString().split("\n");
+  ct = "*";
+  result = "";
+  c = 0;
+  while (c < arrSourceCode.length) {
+    const element = arrSourceCode[c].trim();
+    if (element.startsWith("case")) {
+      if (ct === "*") {
+        ct = element.substring(6, element.length - 2);
+      }
+    } else if (element.startsWith("result =")) {
+      intervals = element.substring(10, element.length - 2);
+      notes2 = intervals.split(",");
+      for (let i = 0; i < notes2.length; i++) {
+        notes2[i] = fixNoteIndex(Number(notes2[i].trim()));
+      }
+      notes1.sort();
+      d = 0;
+      while (d < 11) {
+        notes3 = notes2.map((current) => {
+          return fixNoteIndex(current + d);
+        });
+        notes3.sort();
+        if (notes1.join(",") === notes3.join(",")) {
+          if (result !== "") {
+            result += ", ";
+          }
+          note = noteIndexToString(d, options, false, inputObj);
+          if (options.outputFormat === "GREEK") {
+            ct = inputObj.convertType(ct, options);
+          }
+          if (options.outputFormat === "ROMAN") {
+            if (isRomanLower(ct)) {
+              note = note.toLowerCase();
+              if (ct.startsWith("m")) {
+                ct = ct.slice(1);
+              }
+            }
+          }
+          result += note + ct;
+        }
+        d++;
+      }
+      ct = "*";
+    }
+    c++;
+  }
+  return result;
+}
+
 function printClicked() {
   let data = "";
   transposeClicked(true);
@@ -780,59 +851,69 @@ function chordInfoClicked() {
   options.inputFormat = options.outputFormat;
   const outputObj = createInputOrOutputObject(options.outputFormat);
 
-  // Remove spaces and square brackets
-  s1 = "";
-  for (let i = 0; i < input.length; i++) {
-    if (input[i] !== " " && input[i] !== "[" && input[i] !== "]") {
-      s1 += input[i];
+  if (input.includes(",")) {
+    // Search chord by notes
+    s1 = searchNotes(input);
+    if (s1 === "") {
+      s1 = "No matching chord found";
     }
-  }
-  input = s1;
-
-  if (options.outputFormat === "NOCHORDS") {
-    options.outputFormat = "CDE";
-  }
-  notes = outputObj.notes(false, false);
-  note = outputObj.readNote(input);
-  if (note !== "") {
-    idx = noteToIndex(note, options, false, false, outputObj);
-    if (idx >= 0) {
-      chordType = input.substring(note.length);
-      p1 = chordType.lastIndexOf("/");
-      if (p1 >= 0) {
-        chordType = chordType.substring(0, p1);
-      }
-      if (options.outputFormat === "GREEK") {
-        chordType = convertGreekType(chordType);
-      }
-      if (options.outputFormat === "ROMAN") {
-        if (
-          note === note.toLowerCase() &&
-          !chordType.startsWith("°") &&
-          !chordType.toLowerCase().startsWith("dim")
-        ) {
-          chordType = "m" + chordType;
-        }
-      }
-      chordNotes = MusicData.intervals(chordType);
-    }
-  }
-  info = "";
-  for (let i = 0; i < chordNotes.length; i++) {
-    if (i > 0) {
-      info += ", ";
-    }
-    noteIdx = fixNoteIndex(chordNotes[i] + idx);
-    note = noteIndexToString(noteIdx, options, true, outputObj);
-    info += note;
-  }
-
-  if (info === "") {
-    info = "No info available for this chord yet";
+    output.innerHTML = s1;
+    drawKeyboard(0, []);
   } else {
-    drawKeyboard(idx, chordNotes);
+    // Remove spaces and square brackets
+    s1 = "";
+    for (let i = 0; i < input.length; i++) {
+      if (input[i] !== " " && input[i] !== "[" && input[i] !== "]") {
+        s1 += input[i];
+      }
+    }
+    input = s1;
+
+    if (options.outputFormat === "NOCHORDS") {
+      options.outputFormat = "CDE";
+    }
+    notes = outputObj.notes(false, false);
+    note = outputObj.readNote(input);
+    if (note !== "") {
+      idx = noteToIndex(note, options, false, false, outputObj);
+      if (idx >= 0) {
+        chordType = input.substring(note.length);
+        p1 = chordType.lastIndexOf("/");
+        if (p1 >= 0) {
+          chordType = chordType.substring(0, p1);
+        }
+        if (options.outputFormat === "GREEK") {
+          chordType = convertGreekType(chordType);
+        }
+        if (options.outputFormat === "ROMAN") {
+          if (
+            note === note.toLowerCase() &&
+            !chordType.startsWith("°") &&
+            !chordType.toLowerCase().startsWith("dim")
+          ) {
+            chordType = "m" + chordType;
+          }
+        }
+        chordNotes = MusicData.intervals(chordType);
+      }
+    }
+    info = "";
+    for (let i = 0; i < chordNotes.length; i++) {
+      if (i > 0) {
+        info += ", ";
+      }
+      noteIdx = fixNoteIndex(chordNotes[i] + idx);
+      note = noteIndexToString(noteIdx, options, true, outputObj);
+      info += note;
+    }
+
+    if (info === "") {
+      info = "No info available for this chord yet";
+    } else {
+      drawKeyboard(idx, chordNotes);
+    }
+    output.innerHTML = info;
   }
-  output.innerHTML = info;
 }
 
 function simplifyNote(note) {
@@ -1649,7 +1730,7 @@ try {
     if (Glob.settings === null) {
       Glob.settings = new Settings();
       //console.log("Settings loaded");
-      drawKeyboard(-1, []);
+      drawKeyboard(0, []);
       Glob.settings.numberOfChords.innerHTML = getNumberOfChords();
       Glob.settings.position.addEventListener("change", (e) => {
         if (Glob.settings.inputChordInfo.value.trim() !== "") {

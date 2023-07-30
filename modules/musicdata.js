@@ -228,8 +228,8 @@ class MusicData {
       case "7-5":
         result = [0, 4, 6, 10];
         break;
-      case "+7":
       case "aug7":
+      case "+7":
       case "7#5":
       case "7+5":
         result = [0, 4, 8, 10];
@@ -263,25 +263,25 @@ class MusicData {
       case "mM7":
         result = [0, 3, 7, 11];
         break;
-      case "+":
       case "aug":
+      case "+":
         result = [0, 4, 8];
         break;
-      case "+6":
       case "aug6":
+      case "+6":
         result = [0, 4, 8, 9];
         break;
-      case "+9":
       case "aug9":
+      case "+9":
       case "9#5":
         result = [0, 4, 8, 10, 14];
         break;
-      case "°":
       case "dim":
+      case "°":
         result = [0, 3, 6];
         break;
-      case "°7":
       case "dim7":
+      case "°7":
         result = [0, 3, 6, 9];
         break;
       case "5":
