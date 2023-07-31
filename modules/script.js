@@ -94,51 +94,11 @@ function changeBass(input, semiTones, options, inputObj, outputObj) {
 }
 
 function checkChordType(s) {
-  let arrType = [];
-  let ct1 = "";
-  let ct2 = "";
-  let found = false;
   let p = s.indexOf("/");
   if (p >= 0) {
     s = s.slice(0, p);
   }
-  if (s.endsWith("(b5)") || s.endsWith("(5-)") || s.endsWith("(-5)")) {
-    s = s.slice(0, s.length - 4) + "b5";
-  }
-  if (s.endsWith("(#5)") || s.endsWith("(5+)") || s.endsWith("(+5)")) {
-    s = s.slice(0, s.length - 4) + "#5";
-  }
-  if (s.endsWith("(b9)") || s.endsWith("(9-)") || s.endsWith("(-9)")) {
-    s = s.slice(0, s.length - 4) + "b9";
-  }
-  if (s.endsWith("(#9)") || s.endsWith("(9+)") || s.endsWith("(+9)")) {
-    s = s.slice(0, s.length - 4) + "#9";
-  }
-  let i = 0;
-  while (i < MusicData.chordTypes.length && !found) {
-    ct1 = MusicData.chordTypes[i];
-    ct2 = "";
-    if (ct1.startsWith("minor")) {
-      arrType = ["minor", "min", "mi", "m", "-"];
-      ct2 = ct1.slice(5);
-    } else if (ct1.startsWith("maj")) {
-      arrType = ["maj", "M", "Δ"];
-      ct2 = ct1.slice(3);
-    } else if (ct1.startsWith("minmaj")) {
-      arrType = ["minmaj", "mM", "-M", "-Δ"];
-      ct2 = ct1.slice(6);
-    } else {
-      arrType = [];
-      arrType.push(ct1);
-    }
-    for (let j = 0; j < arrType.length; j++) {
-      if (s === arrType[j] + ct2) {
-        found = true;
-      }
-    }
-    i++;
-  }
-  return found;
+  return (MusicData.intervals(s).length > 0);
 }
 
 function convertGreekType(s) {

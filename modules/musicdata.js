@@ -1,95 +1,6 @@
 "use strict";
 
 class MusicData {
-  static chordTypes = [
-    "",
-    "2",
-    "5",
-    "6",
-    "6b5",
-    "69",
-    "7",
-    "7b5",
-    "7#5",
-    "7b9",
-    "7#9",
-    "7#9#11",
-    "9",
-    "11",
-    "11omit3",
-    "11omit5",
-    "13",
-    "minor",
-    "minor2",
-    "minoradd2",
-    "minoradd4",
-    "minor6",
-    "minor69",
-    "minor7",
-    "minor7b5",
-    "minor7#5",
-    "minor7b9",
-    "minor7#9",
-    "minor9",
-    "minoradd9",
-    "minor11",
-    "minor11omit5",
-    "minor11b5b9",
-    "minor11b9",
-    "minor13",
-    "maj7",
-    "Δ",
-    "maj7b5",
-    "Δb5",
-    "maj7#9",
-    "Δ#9",
-    "maj9",
-    "maj11",
-    "maj13",
-    "minmaj7",
-    "-Δ",
-    "minmaj9",
-    "+",
-    "+7",
-    "aug",
-    "aug6",
-    "aug7",
-    "dim",
-    "°",
-    "dim7",
-    "°7",
-    "dim9",
-    "°9",
-    "sus",
-    "sus2",
-    "sus4",
-    "sus24",
-    "sus42",
-    "6sus2",
-    "6sus4",
-    "69sus4",
-    "7sus",
-    "7sus2",
-    "7sus4",
-    "7sus24",
-    "7sus42",
-    "9sus",
-    "9sus4",
-    "maj7sus2",
-    "maj7sus4",
-    "maj7sus24",
-    "maj7sus42",
-    "Δsus2",
-    "Δsus4",
-    "Δsus24",
-    "Δsus42",
-    "maj9sus4",
-    "add2",
-    "add4",
-    "add9",
-    "add11",
-  ];
-
   static simpleNotes = [
     "B#,C",
     "E#,F",
@@ -160,6 +71,7 @@ class MusicData {
   ];
 
   static intervals(chordType) {
+    // TODO: dim9
     let ct = chordType;
     let foundKey = "";
     let foundValue = "";
@@ -172,12 +84,20 @@ class MusicData {
 
     const names = [
       { key: "maj", value: "M" },
+      { key: "Δ", value: "M" },
+      { key: "minor", value: "m" },
       { key: "min", value: "m" },
+      { key: "mi", value: "m" },
       { key: "omit", value: "no" },
       { key: "(add2)", value: "add2" },
       { key: "(add4)", value: "add4" },
       { key: "(add9)", value: "add9" },
+      { key: "°", value: "dim" },
     ];
+
+    if (ct.startsWith("-")) {
+      ct = "m" + ct.slice(1);
+    }
 
     // Lowercase except M (maj)
     idxM = ct.indexOf("M");
@@ -193,7 +113,7 @@ class MusicData {
     while (p < ct.length) {
       foundKey = "";
       foundValue = "";
-      for (let i = 0; i < names.length; i++) {
+      for (let i = 0; i < names.length && foundKey === ""; i++) {
         key = names[i].key;
         value = names[i].value;
         if (p + (key.length - 1) < ct.length) {
@@ -284,11 +204,9 @@ class MusicData {
         result = [0, 4, 8, 10, 14];
         break;
       case "dim":
-      case "°":
         result = [0, 3, 6];
         break;
       case "dim7":
-      case "°7":
         result = [0, 3, 6, 9];
         break;
       case "5":
