@@ -174,6 +174,9 @@ class MusicData {
       { key: "maj", value: "M" },
       { key: "min", value: "m" },
       { key: "omit", value: "no" },
+      { key: "(add2)", value: "add2" },
+      { key: "(add4)", value: "add4" },
+      { key: "(add9)", value: "add9" },
     ];
 
     // Lowercase except M (maj)
@@ -249,6 +252,10 @@ class MusicData {
       case "m7":
         result = [0, 3, 7, 10];
         break;
+      case "m7no5":
+      case "m7(no5)":
+        result = [0, 3, 10];
+        break;
       case "m7b5":
       case "m7(b5)":
         result = [0, 3, 6, 10];
@@ -285,9 +292,13 @@ class MusicData {
         result = [0, 3, 6, 9];
         break;
       case "5":
+      case "no3":
+      case "(no3)":
         result = [0, 7];
         break;
       case "57":
+      case "7no3":
+      case "7(no3)":
         result = [0, 7, 10];
         break;
       case "6":
@@ -299,6 +310,10 @@ class MusicData {
         break;
       case "9":
         result = [0, 4, 7, 10, 14];
+        break;
+      case "9no3":
+      case "9(no3)":
+        result = [0, 7, 10, 14];
         break;
       case "m9":
         result = [0, 3, 7, 10, 14];
@@ -330,6 +345,14 @@ class MusicData {
         break;
       case "m11":
         result = [0, 3, 7, 10, 14, 17];
+        break;
+      case "m11b9":
+      case "m11-9":
+        result = [0, 3, 7, 10, 13, 17];
+        break;
+      case "m11b5b9":
+      case "m11-5-9":
+        result = [0, 3, 6, 10, 13, 17];
         break;
       case "m11no5":
       case "m11(no5)":
@@ -423,11 +446,17 @@ class MusicData {
       case "add2":
         result = [0, 2, 4, 7];
         break;
+      case "madd2":
+        result = [0, 2, 3, 7];
+        break;
       case "add4":
         result = [0, 4, 5, 7];
         break;
       case "madd4":
         result = [0, 3, 5, 7];
+        break;
+      case "add11":
+        result = [0, 4, 7, 17];
         break;
       case "add9":
         result = [0, 4, 7, 14];

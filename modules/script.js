@@ -921,6 +921,7 @@ function chordInfoClicked() {
 
     if (info === "") {
       info = "No info available for this chord yet";
+      drawKeyboard(0, []);
     } else {
       drawKeyboard(idx, chordNotes);
     }
