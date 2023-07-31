@@ -693,6 +693,8 @@ function searchNotes(input) {
   let d = 0;
   let ct = "";
   let intervals = "";
+  let p1 = -1;
+  let p2 = -1;
   let note = "";
   let notes1 = [];
   let notes2 = [];
@@ -715,40 +717,50 @@ function searchNotes(input) {
     const element = arrSourceCode[c].trim();
     if (element.startsWith("case")) {
       if (ct === "*") {
-        ct = element.substring(6, element.length - 2);
+        p1 = element.indexOf('"');
+        p2 = element.lastIndexOf('"');
+        if (p1 >= 0 && p2 >= 0 && p1 !== p2) {
+          ct = element.substring(p1 + 1, p2).trim();
+        }
       }
     } else if (element.startsWith("result =")) {
-      intervals = element.substring(10, element.length - 2);
-      notes2 = intervals.split(",");
-      for (let i = 0; i < notes2.length; i++) {
-        notes2[i] = fixNoteIndex(Number(notes2[i].trim()));
-      }
-      notes1.sort();
-      d = 0;
-      while (d < 11) {
-        notes3 = notes2.map((current) => {
-          return fixNoteIndex(current + d);
-        });
-        notes3.sort();
-        if (notes1.join(",") === notes3.join(",")) {
-          if (result !== "") {
-            result += ", ";
-          }
-          note = noteIndexToString(d, options, false, inputObj);
-          if (options.outputFormat === "GREEK") {
-            ct = inputObj.convertType(ct, options);
-          }
-          if (options.outputFormat === "ROMAN") {
-            if (isRomanLower(ct)) {
-              note = note.toLowerCase();
-              if (ct.startsWith("m")) {
-                ct = ct.slice(1);
+      p1 = element.indexOf("[");
+      p2 = element.indexOf("]");
+      if (p1 >= 0 && p2 >= 0 && p2 > p1) {
+        intervals = element.substring(p1 + 1, p2).trim();
+        notes2 = intervals.split(",");
+        for (let i = 0; i < notes2.length; i++) {
+          notes2[i] = fixNoteIndex(Number(notes2[i].trim()));
+        }
+        notes1.sort();
+        d = 0;
+        while (d < 11) {
+          notes3 = notes2.map((current) => {
+            return fixNoteIndex(current + d);
+          });
+          notes3.sort();
+          if (notes1.join(",") === notes3.join(",")) {
+            if (result !== "") {
+              result += ", ";
+            }
+            note = noteIndexToString(d, options, false, inputObj);
+            if (options.outputFormat === "GREEK") {
+              ct = inputObj.convertType(ct, options);
+            }
+            if (options.outputFormat === "ROMAN") {
+              if (isRomanLower(ct)) {
+                note = note.toLowerCase();
+                if (ct.startsWith("m")) {
+                  ct = ct.slice(1);
+                }
               }
             }
+            if (ct != "*") {
+              result += note + ct;
+            }
           }
-          result += note + ct;
+          d++;
         }
-        d++;
       }
       ct = "*";
     }

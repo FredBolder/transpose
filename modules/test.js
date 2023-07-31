@@ -38,11 +38,15 @@ function createTestData(n) {
 }
 
 function test() {
+  let ct = "";
   let data = "";
   let duplicate = false;
   let inputData = [];
+  let intervals = "";
   let n1 = 0;
   let outputData = [];
+  let p1 = -1;
+  let p2 = -1;
   let semitones = 0;
   let testOptions = new Options();
   let arrSourceCode = [];
@@ -395,21 +399,29 @@ function test() {
   for (let i = 0; i < arrSourceCode.length; i++) {
     const element = arrSourceCode[i].trim();
     if (element.startsWith("case")) {
-      if (arrChordSymbols.includes(element)) {
+      p1 = element.indexOf('"');
+      p2 = element.lastIndexOf('"');
+      if (p1 >= 0 && p2 >= 0 && p1 !== p2) {
+        ct = element.substring(p1 + 1, p2).trim();
+      }
+      if (arrChordSymbols.includes(ct)) {
         duplicate = true;
-        data = element.substring(5, element.length - 1);
-        console.log(`You have defined the chord type ${data} more times :)`);
+        console.log(`You have defined the chord type ${ct} more times :)`);
       } else {
-        arrChordSymbols.push(element);
+        arrChordSymbols.push(ct);
       }
     } else if (element.startsWith("result =")) {
       n1++;
-      if (arrIntervals.includes(element)) {
-        duplicate = true;
-        data = element.substring(9, element.length - 1);
-        console.log(`Same result ${data} found :)`);
-      } else {
-        arrIntervals.push(element);
+      p1 = element.indexOf("[");
+      p2 = element.indexOf("]");
+      if (p1 >= 0 && p2 >= 0 && p2 > p1) {
+        intervals = element.substring(p1 + 1, p2).trim();
+        if (arrIntervals.includes(intervals)) {
+          duplicate = true;
+          console.log(`Same result [${intervals}] found :)`);
+        } else {
+          arrIntervals.push(intervals);
+        }
       }
     }
   }
