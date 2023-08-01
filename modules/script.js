@@ -279,6 +279,8 @@ function drawKeyboard(idx, notes) {
   const kb = keyboard.getContext("2d");
   kb.reset();
 
+
+  console.log(notes);
   // console.log(
   //   `Width: ${keyboard.width}, Height: ${keyboard.height}, ClientWidth: ${keyboard.clientWidth}, ClientHeight: ${keyboard.clientHeight}`
   // );
@@ -778,7 +780,6 @@ function chordInfoClicked() {
   let idx = -1;
   let info = "";
   let note = "";
-  let notes = [];
   let noteIdx = 0;
   let p1 = -1;
   let s1 = "";
@@ -802,7 +803,7 @@ function chordInfoClicked() {
     // Remove spaces and square brackets
     s1 = "";
     for (let i = 0; i < input.length; i++) {
-      if (input[i] !== " " && input[i] !== "[" && input[i] !== "]") {
+      if (!" []".includes(input[i])) {
         s1 += input[i];
       }
     }
@@ -811,7 +812,6 @@ function chordInfoClicked() {
     if (options.outputFormat === "NOCHORDS") {
       options.outputFormat = "CDE";
     }
-    notes = outputObj.notes(false, false);
     note = outputObj.readNote(input);
     if (note !== "") {
       idx = noteToIndex(note, options, false, false, outputObj);

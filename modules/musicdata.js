@@ -258,12 +258,12 @@ class MusicData {
       ct = "_";
     }
     if (this.intervals[ct]) {
-      result = this.intervals[ct];
+      result = [...this.intervals[ct]];
     } else {
       result = [];
     }
     if (result.length === 0) {
-      console.log("ct", ct)
+      //console.log("ct", ct)
     }
     return result;
   }
