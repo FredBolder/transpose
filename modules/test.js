@@ -408,6 +408,12 @@ function test() {
     MusicData.getInterval("min").toString()
   );
 
+  checkResult(
+    "Test 38",
+    [0, 3, 7, 10, 15].toString(),
+    MusicData.getInterval("m7+9").toString()
+  );
+
   // Extra test
   testOptions.key = 0;
   testOptions.inputFormat = "INLINE";

@@ -70,16 +70,6 @@ class MusicData {
     "Fes,E",
   ];
 
-  // TODO:
-  // aug7 = 7#5
-  // aug9 = 9#5
-  // 5 = no3
-  // 57 = 7no3
-  // 6 = add6
-  // sus4 = sus
-  // sus24 = sus42
-  // 59 = 5add9
-  // 69 = 6add9
   static intervals = {
     "_": [0, 4, 7],
     "11": [0, 4, 7, 10, 14, 17],
@@ -135,6 +125,7 @@ class MusicData {
     "aug9": [0, 4, 8, 10, 14],
     "dim": [0, 3, 6],
     "dim7": [0, 3, 6, 9],
+    "dim9": [0, 3, 6, 9, 14],
     "m": [0, 3, 7],
     "m11": [0, 3, 7, 10, 14, 17],
     "m11b5b9": [0, 3, 6, 10, 13, 17],
@@ -161,7 +152,6 @@ class MusicData {
   }
 
   static getInterval(chordType) {
-    // TODO: dim9
     let ct = chordType;
     let foundKey = "";
     let foundValue = "";
@@ -179,17 +169,38 @@ class MusicData {
       { key: "min", value: "m" },
       { key: "mi", value: "m" },
       { key: "omit", value: "no" },
-      { key: "(add2)", value: "add2" },
-      { key: "(add4)", value: "add4" },
-      { key: "(add9)", value: "add9" },
       { key: "°", value: "dim" },
+      { key: "sus42", value: "sus24" },
+      { key: "+5", value: "#5" },
+      { key: "-5", value: "b5" },
+      { key: "+9", value: "#9" },
+      { key: "-9", value: "b9" },
+      { key: "+11", value: "#11" },
+      { key: "-11", value: "b11" },
+      { key: "+13", value: "#13" },
+      { key: "-13", value: "b13" },
     ];
 
+    // Remove characters
+    s1 = "";
+    for (let i = 0; i < ct.length; i++) {
+      if (!"()".includes(ct[i])) {
+        s1 += ct[i];
+      }
+    }
+    ct = s1;
+
+    // minor
     if (ct.startsWith("-")) {
       ct = "m" + ct.slice(1);
     }
+    // aug
     if (ct.startsWith("+")) {
       ct = "aug" + ct.slice(1);
+    }
+    // sus
+    if (ct.endsWith("sus")) {
+      ct += "4";
     }
 
     // Lowercase except M (maj)
@@ -213,7 +224,6 @@ class MusicData {
           if (ct.substring(p, p + key.length) === key) {
             foundKey = key;
             foundValue = value;
-            //console.log(key, value);
           }
         }
       }
@@ -225,10 +235,24 @@ class MusicData {
         p++;
       }
     }
-    if (s1 !== ct) {
-      //console.log(ct, s1);
-    }
     ct = s1;
+
+    // Other names
+    if (ct === "7#5") {
+      ct = "aug7";
+    } else if (ct === "9#5") {
+      ct = "aug9";
+    } else if (ct === "no3") {
+      ct = "5";
+    } else if (ct === "7no3") {
+      ct = "57";
+    } else if (ct === "add6") {
+      ct = "6";
+    } else if (ct === "5add9") {
+      ct = "59";
+    } else if (ct === "6add9") {
+      ct = "69";
+    }
 
     if (ct === "") {
       ct = "_";
