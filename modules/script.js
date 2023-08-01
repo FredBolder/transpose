@@ -98,7 +98,7 @@ function checkChordType(s) {
   if (p >= 0) {
     s = s.slice(0, p);
   }
-  return (MusicData.intervals(s).length > 0);
+  return (MusicData.getInterval(s).length > 0);
 }
 
 function convertGreekType(s) {
@@ -408,15 +408,7 @@ function getDirective(s) {
 }
 
 function getNumberOfChords() {
-  let n = 0;
-  let arrSourceCode = MusicData.intervals.toString().split("\n");
-  for (let i = 0; i < arrSourceCode.length; i++) {
-    const element = arrSourceCode[i].trim();
-    if (element.startsWith("result =")) {
-      n++;
-    }
-  }
-  return (n * 12).toString();
+  return (Object.keys(MusicData.intervals).length * 12).toString();
 }
 
 function greekToNormal(s) {
@@ -648,13 +640,8 @@ function noteToIndex(note, options, start, bass, inputObj) {
 
 function searchNotes(input) {
   let result = "";
-  let arrSourceCode = [];
-  let c = 0;
   let d = 0;
   let ct = "";
-  let intervals = "";
-  let p1 = -1;
-  let p2 = -1;
   let note = "";
   let notes1 = [];
   let notes2 = [];
@@ -669,62 +656,42 @@ function searchNotes(input) {
   for (let i = 0; i < notes1.length; i++) {
     notes1[i] = noteToIndex(notes1[i].trim(), options, false, true, inputObj);
   }
-  arrSourceCode = MusicData.intervals.toString().split("\n");
-  ct = "*";
-  result = "";
-  c = 0;
-  while (c < arrSourceCode.length) {
-    const element = arrSourceCode[c].trim();
-    if (element.startsWith("case")) {
-      if (ct === "*") {
-        p1 = element.indexOf('"');
-        p2 = element.lastIndexOf('"');
-        if (p1 >= 0 && p2 >= 0 && p1 !== p2) {
-          ct = element.substring(p1 + 1, p2).trim();
+  notes1.sort();
+  const keys = Object.keys(MusicData.intervals);
+  for (let i = 0; i < keys.length; i++) {
+    notes2 = MusicData.intervals[keys[i]];
+    d = 0;
+    while (d < 11) {
+      notes3 = notes2.map((current) => {
+        return fixNoteIndex(current + d);
+      });
+      notes3.sort();
+      if (notes1.join(",") === notes3.join(",")) {
+        if (result !== "") {
+          result += ", ";
         }
-      }
-    } else if (element.startsWith("result =")) {
-      p1 = element.indexOf("[");
-      p2 = element.indexOf("]");
-      if (p1 >= 0 && p2 >= 0 && p2 > p1) {
-        intervals = element.substring(p1 + 1, p2).trim();
-        notes2 = intervals.split(",");
-        for (let i = 0; i < notes2.length; i++) {
-          notes2[i] = fixNoteIndex(Number(notes2[i].trim()));
+        ct = keys[i];
+        if (ct === "_") {
+          ct = "";
         }
-        notes1.sort();
-        d = 0;
-        while (d < 11) {
-          notes3 = notes2.map((current) => {
-            return fixNoteIndex(current + d);
-          });
-          notes3.sort();
-          if (notes1.join(",") === notes3.join(",")) {
-            if (result !== "") {
-              result += ", ";
-            }
-            note = noteIndexToString(d, options, false, inputObj);
-            if (options.outputFormat === "GREEK") {
-              ct = inputObj.convertType(ct, options);
-            }
-            if (options.outputFormat === "ROMAN") {
-              if (isRomanLower(ct)) {
-                note = note.toLowerCase();
-                if (ct.startsWith("m")) {
-                  ct = ct.slice(1);
-                }
-              }
-            }
-            if (ct != "*") {
-              result += note + ct;
+        note = noteIndexToString(d, options, false, inputObj);
+        if (options.outputFormat === "GREEK") {
+          ct = inputObj.convertType(ct, options);
+        }
+        if (options.outputFormat === "ROMAN") {
+          if (isRomanLower(ct)) {
+            note = note.toLowerCase();
+            if (ct.startsWith("m")) {
+              ct = ct.slice(1);
             }
           }
-          d++;
+        }
+        if (ct != "*") {
+          result += note + ct;
         }
       }
-      ct = "*";
+      d++;
     }
-    c++;
   }
   return result;
 }
@@ -866,7 +833,7 @@ function chordInfoClicked() {
             chordType = "m" + chordType;
           }
         }
-        chordNotes = MusicData.intervals(chordType);
+        chordNotes = MusicData.getInterval(chordType);
       }
     }
     info = "";
@@ -1257,9 +1224,8 @@ function transposeClicked(print = false) {
   for (let i = 0; i < outputData2.length; i++) {
     ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
-      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${
-        outputData2[i]
-      }</div>`;
+      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${outputData2[i]
+        }</div>`;
     } else {
       changed = false;
       if (options.outputFormat !== "INLINE") {
@@ -1359,13 +1325,11 @@ function transposeClicked(print = false) {
       }
       if (!changed) {
         if (options.outputFormat !== "INLINE" && outputInfo[i]) {
-          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${
-            outputData2[i]
-          }</div>`;
+          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${outputData2[i]
+            }</div>`;
         } else {
-          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${
-            outputData2[i]
-          }</div>`;
+          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${outputData2[i]
+            }</div>`;
         }
       }
     }

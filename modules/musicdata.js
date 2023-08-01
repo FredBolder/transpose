@@ -70,7 +70,97 @@ class MusicData {
     "Fes,E",
   ];
 
-  static intervals(chordType) {
+  // TODO:
+  // aug7 = 7#5
+  // aug9 = 9#5
+  // 5 = no3
+  // 57 = 7no3
+  // 6 = add6
+  // sus4 = sus
+  // sus24 = sus42
+  // 59 = 5add9
+  // 69 = 6add9
+  static intervals = {
+    "_": [0, 4, 7],
+    "11": [0, 4, 7, 10, 14, 17],
+    "11no3": [0, 7, 10, 14, 17],
+    "11no5": [0, 4, 10, 14, 17],
+    "11no9": [0, 4, 7, 10, 17],
+    "13": [0, 4, 7, 10, 14, 17, 21],
+    "13#11": [0, 4, 7, 10, 14, 18, 21],
+    "13b9": [0, 4, 7, 10, 13, 17, 21],
+    "13no3": [0, 7, 10, 14, 17, 21],
+    "13no5": [0, 4, 10, 14, 17, 21],
+    "13no9": [0, 4, 7, 10, 17, 21],
+    "5": [0, 7],
+    "57": [0, 7, 10],
+    "59": [0, 7, 14],
+    "6": [0, 4, 7, 9],
+    "69": [0, 4, 7, 9, 14],
+    "69#11": [0, 4, 7, 9, 14, 18],
+    "69sus4": [0, 5, 7, 9, 14],
+    "6sus2": [0, 2, 7, 9],
+    "6sus4": [0, 5, 7, 9],
+    "7": [0, 4, 7, 10],
+    "7#9": [0, 4, 7, 10, 15],
+    "7b5": [0, 4, 6, 10],
+    "7b9": [0, 4, 7, 10, 13],
+    "7b9#9": [0, 4, 7, 10, 13, 15],
+    "7sus2": [0, 2, 7, 10],
+    "7sus24": [0, 2, 5, 7, 10],
+    "7sus4": [0, 5, 7, 10],
+    "7sus4b9b13": [0, 5, 7, 10, 13, 20],
+    "9": [0, 4, 7, 10, 14],
+    "9no3": [0, 7, 10, 14],
+    "9sus4": [0, 5, 7, 10, 14],
+    "M11": [0, 4, 7, 11, 14, 17],
+    "M13": [0, 4, 7, 11, 14, 17, 21],
+    "M13#11": [0, 4, 7, 11, 14, 18, 21],
+    "M7": [0, 4, 7, 11],
+    "M7#9": [0, 4, 7, 11, 15],
+    "M7b5": [0, 4, 6, 11],
+    "M7b9": [0, 4, 7, 11, 13],
+    "M7sus2": [0, 2, 7, 11],
+    "M7sus24": [0, 2, 5, 7, 11],
+    "M7sus4": [0, 5, 7, 11],
+    "M9": [0, 4, 7, 11, 14],
+    "M9sus4": [0, 5, 7, 11, 14],
+    "add11": [0, 4, 7, 17],
+    "add2": [0, 2, 4, 7],
+    "add4": [0, 4, 5, 7],
+    "add9": [0, 4, 7, 14],
+    "aug": [0, 4, 8],
+    "aug6": [0, 4, 8, 9],
+    "aug7": [0, 4, 8, 10],
+    "aug9": [0, 4, 8, 10, 14],
+    "dim": [0, 3, 6],
+    "dim7": [0, 3, 6, 9],
+    "m": [0, 3, 7],
+    "m11": [0, 3, 7, 10, 14, 17],
+    "m11b5b9": [0, 3, 6, 10, 13, 17],
+    "m11b9": [0, 3, 7, 10, 13, 17],
+    "m11no5": [0, 3, 10, 14, 17],
+    "m13": [0, 3, 7, 10, 14, 17, 21],
+    "m6": [0, 3, 7, 9],
+    "m69": [0, 3, 7, 9, 14],
+    "m7": [0, 3, 7, 10],
+    "m7#9": [0, 3, 7, 10, 15],
+    "m7b5": [0, 3, 6, 10],
+    "m7b9": [0, 3, 7, 10, 13],
+    "m7no5": [0, 3, 10],
+    "m9": [0, 3, 7, 10, 14],
+    "m9b5": [0, 3, 6, 10, 14],
+    "mM7": [0, 3, 7, 11],
+    "mM9": [0, 3, 7, 11, 14],
+    "madd2": [0, 2, 3, 7],
+    "madd4": [0, 3, 5, 7],
+    "madd9": [0, 3, 7, 14],
+    "sus2": [0, 2, 7],
+    "sus24": [0, 2, 5, 7],
+    "sus4": [0, 5, 7],
+  }
+
+  static getInterval(chordType) {
     // TODO: dim9
     let ct = chordType;
     let foundKey = "";
@@ -97,6 +187,9 @@ class MusicData {
 
     if (ct.startsWith("-")) {
       ct = "m" + ct.slice(1);
+    }
+    if (ct.startsWith("+")) {
+      ct = "aug" + ct.slice(1);
     }
 
     // Lowercase except M (maj)
@@ -137,288 +230,16 @@ class MusicData {
     }
     ct = s1;
 
-    switch (ct) {
-      case "":
-        result = [0, 4, 7];
-        break;
-      case "m":
-        result = [0, 3, 7];
-        break;
-      case "7":
-        result = [0, 4, 7, 10];
-        break;
-      case "7b5":
-      case "7-5":
-        result = [0, 4, 6, 10];
-        break;
-      case "aug7":
-      case "+7":
-      case "7#5":
-      case "7+5":
-        result = [0, 4, 8, 10];
-        break;
-      case "7b9":
-      case "7-9":
-        result = [0, 4, 7, 10, 13];
-        break;
-      case "7#9":
-      case "7+9":
-        result = [0, 4, 7, 10, 15];
-        break;
-      case "7b9#9":
-      case "7-9+9":
-        result = [0, 4, 7, 10, 13, 15];
-        break;
-      case "m7":
-        result = [0, 3, 7, 10];
-        break;
-      case "m7no5":
-      case "m7(no5)":
-        result = [0, 3, 10];
-        break;
-      case "m7b5":
-      case "m7(b5)":
-        result = [0, 3, 6, 10];
-        break;
-      case "M7":
-        result = [0, 4, 7, 11];
-        break;
-      case "M7b5":
-      case "M7-5":
-        result = [0, 4, 6, 11];
-        break;
-      case "mM7":
-        result = [0, 3, 7, 11];
-        break;
-      case "aug":
-      case "+":
-        result = [0, 4, 8];
-        break;
-      case "aug6":
-      case "+6":
-        result = [0, 4, 8, 9];
-        break;
-      case "aug9":
-      case "+9":
-      case "9#5":
-        result = [0, 4, 8, 10, 14];
-        break;
-      case "dim":
-        result = [0, 3, 6];
-        break;
-      case "dim7":
-        result = [0, 3, 6, 9];
-        break;
-      case "5":
-      case "no3":
-      case "(no3)":
-        result = [0, 7];
-        break;
-      case "57":
-      case "7no3":
-      case "7(no3)":
-        result = [0, 7, 10];
-        break;
-      case "6":
-      case "add6":
-        result = [0, 4, 7, 9];
-        break;
-      case "m6":
-        result = [0, 3, 7, 9];
-        break;
-      case "9":
-        result = [0, 4, 7, 10, 14];
-        break;
-      case "9no3":
-      case "9(no3)":
-        result = [0, 7, 10, 14];
-        break;
-      case "m9":
-        result = [0, 3, 7, 10, 14];
-        break;
-      case "m9b5":
-      case "m9-5":
-        result = [0, 3, 6, 10, 14];
-        break;
-      case "M9":
-        result = [0, 4, 7, 11, 14];
-        break;
-      case "mM9":
-        result = [0, 3, 7, 11, 14];
-        break;
-      case "11":
-        result = [0, 4, 7, 10, 14, 17];
-        break;
-      case "11no3":
-      case "11(no3)":
-        result = [0, 7, 10, 14, 17];
-        break;
-      case "11no5":
-      case "11(no5)":
-        result = [0, 4, 10, 14, 17];
-        break;
-      case "11no9":
-      case "11(no9)":
-        result = [0, 4, 7, 10, 17];
-        break;
-      case "m11":
-        result = [0, 3, 7, 10, 14, 17];
-        break;
-      case "m11b9":
-      case "m11-9":
-        result = [0, 3, 7, 10, 13, 17];
-        break;
-      case "m11b5b9":
-      case "m11-5-9":
-        result = [0, 3, 6, 10, 13, 17];
-        break;
-      case "m11no5":
-      case "m11(no5)":
-        result = [0, 3, 10, 14, 17];
-        break;
-      case "M11":
-        result = [0, 4, 7, 11, 14, 17];
-        break;
-      case "13":
-        result = [0, 4, 7, 10, 14, 17, 21];
-        break;
-      case "m13":
-        result = [0, 3, 7, 10, 14, 17, 21];
-        break;
-      case "M13":
-        result = [0, 4, 7, 11, 14, 17, 21];
-        break;
-      case "M13#11":
-        result = [0, 4, 7, 11, 14, 18, 21];
-        break;
-      case "13no3":
-      case "13(no3)":
-        result = [0, 7, 10, 14, 17, 21];
-        break;
-      case "13no5":
-      case "13(no5)":
-        result = [0, 4, 10, 14, 17, 21];
-        break;
-      case "13no9":
-      case "13(no9)":
-        result = [0, 4, 7, 10, 17, 21];
-        break;
-      case "13b9":
-      case "13-9":
-        result = [0, 4, 7, 10, 13, 17, 21];
-        break;
-      case "13#11":
-      case "13+11":
-      case "13(#11)":
-        result = [0, 4, 7, 10, 14, 18, 21];
-        break;
-      case "sus2":
-        result = [0, 2, 7];
-        break;
-      case "sus4":
-      case "sus":
-        result = [0, 5, 7];
-        break;
-      case "sus24":
-      case "sus42":
-        result = [0, 2, 5, 7];
-        break;
-      case "6sus2":
-        result = [0, 2, 7, 9];
-        break;
-      case "6sus4":
-      case "6sus":
-        result = [0, 5, 7, 9];
-        break;
-      case "7sus2":
-        result = [0, 2, 7, 10];
-        break;
-      case "7sus4":
-      case "7sus":
-        result = [0, 5, 7, 10];
-        break;
-      case "7sus4b9b13":
-        result = [0, 5, 7, 10, 13, 20];
-        break;
-      case "7sus24":
-      case "7sus42":
-        result = [0, 2, 5, 7, 10];
-        break;
-      case "M7sus2":
-        result = [0, 2, 7, 11];
-        break;
-      case "M7sus4":
-      case "M7sus":
-        result = [0, 5, 7, 11];
-        break;
-      case "M7sus24":
-      case "M7sus42":
-        result = [0, 2, 5, 7, 11];
-        break;
-      case "9sus4":
-        result = [0, 5, 7, 10, 14];
-        break;
-      case "M9sus4":
-        result = [0, 5, 7, 11, 14];
-        break;
-      case "add2":
-        result = [0, 2, 4, 7];
-        break;
-      case "madd2":
-        result = [0, 2, 3, 7];
-        break;
-      case "add4":
-        result = [0, 4, 5, 7];
-        break;
-      case "madd4":
-        result = [0, 3, 5, 7];
-        break;
-      case "add11":
-        result = [0, 4, 7, 17];
-        break;
-      case "add9":
-        result = [0, 4, 7, 14];
-        break;
-      case "madd9":
-        result = [0, 3, 7, 14];
-        break;
-      case "5add9":
-      case "59":
-        result = [0, 7, 14];
-        break;
-      case "6add9":
-      case "69":
-        result = [0, 4, 7, 9, 14];
-        break;
-      case "69#11":
-      case "69+11":
-        result = [0, 4, 7, 9, 14, 18];
-        break;
-      case "m69":
-        result = [0, 3, 7, 9, 14];
-        break;
-      case "69sus4":
-      case "69sus":
-        result = [0, 5, 7, 9, 14];
-        break;
-      case "m7b9":
-      case "m7-9":
-        result = [0, 3, 7, 10, 13];
-        break;
-      case "m7#9":
-      case "m7+9":
-        result = [0, 3, 7, 10, 15];
-        break;
-      case "M7b9":
-      case "M7-9":
-        result = [0, 4, 7, 11, 13];
-        break;
-      case "M7#9":
-      case "M7+9":
-        result = [0, 4, 7, 11, 15];
-        break;
-      default:
-        break;
+    if (ct === "") {
+      ct = "_";
+    }
+    if (this.intervals[ct]) {
+      result = this.intervals[ct];
+    } else {
+      result = [];
+    }
+    if (result.length === 0) {
+      console.log("ct", ct)
     }
     return result;
   }
