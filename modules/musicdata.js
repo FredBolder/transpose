@@ -126,8 +126,10 @@ class MusicData {
     "dim": [0, 3, 6],
     "dim7": [0, 3, 6, 9],
     "dim9": [0, 3, 6, 9, 14],
+    "dim11": [0, 3, 6, 9, 14, 17],
     "m": [0, 3, 7],
     "m11": [0, 3, 7, 10, 14, 17],
+    "m11b5": [0, 3, 6, 10, 14, 17],
     "m11b5b9": [0, 3, 6, 10, 13, 17],
     "m11b9": [0, 3, 7, 10, 13, 17],
     "m11no5": [0, 3, 10, 14, 17],
@@ -198,10 +200,6 @@ class MusicData {
     if (ct.startsWith("+")) {
       ct = "aug" + ct.slice(1);
     }
-    // sus
-    if (ct.endsWith("sus")) {
-      ct += "4";
-    }
 
     // Lowercase except M (maj)
     idxM = ct.indexOf("M");
@@ -209,6 +207,11 @@ class MusicData {
       ct = ct.substring(0, idxM + 1) + ct.substring(idxM + 1).toLowerCase();
     } else {
       ct = ct.toLowerCase();
+    }
+
+    // sus
+    if (ct.endsWith("sus")) {
+      ct += "4";
     }
 
     // Convert names
