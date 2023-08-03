@@ -391,6 +391,7 @@ function test() {
     for (let j = 0; j < keys.length && !duplicate; j++) {
       if (MusicData.intervals[keys[j]].toString() === value && j != i) {
         duplicate = true;
+        console.log(`Duplicate intervals: ${value}`);
       }
     }
   }
