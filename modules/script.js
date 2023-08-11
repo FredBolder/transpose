@@ -1034,11 +1034,11 @@ function commentClicked() {
     p3 = input.selectionStart;
     p1 = value.lastIndexOf("\n", p3);
     if (p1 === -1) {
-      p1 = 0;
+      p1 = -1;
     }
     p2 = value.indexOf("\n", p3);
     if (p2 === -1) {
-      p2 = value.length - 1;
+      p2 = value.length;
     }
     s1 = value.slice(p1 + 1, p2);
     s2 = s1.trim();
@@ -1709,6 +1709,7 @@ try {
   document.getElementById("btHelp").addEventListener("click", () => {
     document.getElementById("main").classList.add("hidden");
     document.getElementById("links").classList.add("hidden");
+    document.getElementById("menuBar").classList.add("hidden");
     document.getElementById("help").classList.remove("hidden");
     document.querySelector("h1").innerText = "Transpose - Help";
   });
@@ -1718,6 +1719,7 @@ try {
   document.getElementById("btBack").addEventListener("click", () => {
     document.getElementById("main").classList.remove("hidden");
     document.getElementById("links").classList.remove("hidden");
+    document.getElementById("menuBar").classList.remove("hidden");
     document.getElementById("help").classList.add("hidden");
     document.querySelector("h1").innerText = "Transpose by Fred Bolder";
   });

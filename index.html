@@ -11,6 +11,109 @@
     <div class="container">
       <header>
         <h1>Transpose by Fred Bolder</h1>
+        <div id="menuBar">
+          <div class="menu">
+            <button class="menu-button">Commands</button>
+            <div class="menu-content">
+              <div>
+                <select name="commentType" id="commentType">
+                  <option value="comment" selected="selected">Bold</option>
+                  <option value="comment_italic">Italic</option>
+                  <option value="comment_box">Box</option>
+                </select>
+                <button id="btComment">Comment</button>
+              </div>
+              <div>
+                <button id="btTitle">Title</button>
+              </div>
+            </div>
+          </div>
+          <div class="menu">
+            <button class="menu-button">Preferences</button>
+            <div class="menu-content">
+              <div>
+                <input
+                  type="checkbox"
+                  id="chordsBold"
+                  name="chordsBold"
+                  value="bold"
+                  checked
+                />
+                <label for="chordsBold">Chords=bold</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="ignoreColors"
+                  name="ignoreColors"
+                  value="ignoreColors"
+                />
+                <label for="ignoreColors">Ignore colors</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="compact"
+                  name="compact"
+                  value="compact"
+                />
+                <label for="compact">Compact</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="spaceBetween"
+                  name="spaceBetween"
+                  value="space"
+                  checked
+                />
+                <label for="spaceBetween">Space between chords</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="strict"
+                  name="strict"
+                  value="strict"
+                  checked
+                />
+                <label for="strict">Strict</label>
+              </div>
+              <div>
+                <label for="textSize">Text size:</label>
+                <select name="textSize" id="textSize">
+                  <option value="XS">XS</option>
+                  <option value="SMALL">Small</option>
+                  <option value="NORMAL" selected="selected">Normal</option>
+                  <option value="LARGE">Large</option>
+                  <option value="XL">XL</option>
+                </select>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="uppercase"
+                  name="uppercase"
+                  value="upper"
+                />
+                <label for="uppercase">Uppercase notes</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="useSpecial"
+                  name="useSpecial"
+                  value="special"
+                />
+                <label for="useSpecial">Special chars</label>
+              </div>
+              <div>
+                <input type="checkbox" id="useTi" name="useTi" value="ti" />
+                <label for="useTi">Use Ti</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </header>
       <main>
         <div id="main">
@@ -31,17 +134,6 @@
             </div>
             <div>
               <button id="btClear">Clear</button>
-            </div>
-            <div>
-              <button id="btTitle">Title</button>
-            </div>
-            <div>
-              <select name="commentType" id="commentType">
-                <option value="comment" selected="selected">Bold</option>
-                <option value="comment_italic">Italic</option>
-                <option value="comment_box">Box</option>
-              </select>
-              <button id="btComment">Comment</button>
             </div>
             <div>
               <button id="btSurpriseMe">Surprise me</button>
@@ -76,16 +168,6 @@
             <div>
               <input
                 type="checkbox"
-                id="strict"
-                name="strict"
-                value="strict"
-                checked
-              />
-              <label for="strict">Strict</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
                 id="lowerIsMinor"
                 name="lowerIsMinor"
                 value="lowerIsMinor"
@@ -111,47 +193,6 @@
                 value="sharps"
               />
               <label for="useSharps">Use sharps (#)</label>
-            </div>
-            <div>
-              <input type="checkbox" id="useTi" name="useTi" value="ti" />
-              <label for="useTi">Use Ti</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="useSpecial"
-                name="useSpecial"
-                value="special"
-              />
-              <label for="useSpecial">Special chars</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="spaceBetween"
-                name="spaceBetween"
-                value="space"
-                checked
-              />
-              <label for="spaceBetween">Space between chords</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="compact"
-                name="compact"
-                value="compact"
-              />
-              <label for="compact">Compact</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="uppercase"
-                name="uppercase"
-                value="upper"
-              />
-              <label for="uppercase">Uppercase notes</label>
             </div>
             <div>
               <label for="key">Key:</label>
@@ -225,35 +266,6 @@
               </select>
             </div>
             <div>
-              <input
-                type="checkbox"
-                id="chordsBold"
-                name="chordsBold"
-                value="bold"
-                checked
-              />
-              <label for="chordsBold">Chords=bold</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="ignoreColors"
-                name="ignoreColors"
-                value="ignoreColors"
-              />
-              <label for="ignoreColors">Ignore colors</label>
-            </div>
-            <div>
-              <label for="textSize">Text size:</label>
-              <select name="textSize" id="textSize">
-                <option value="XS">XS</option>
-                <option value="SMALL">Small</option>
-                <option value="NORMAL" selected="selected">Normal</option>
-                <option value="LARGE">Large</option>
-                <option value="XL">XL</option>
-              </select>
-            </div>
-            <div>
               <button id="btTranspose">Transpose / Convert</button>
             </div>
             <div>
@@ -317,22 +329,77 @@
             <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
             (fgh.bolder@gmail.com) for questions or feedback.
           </p>
-          <h2>Clear</h2>
+          <h2>Commands: Comment</h2>
           <p>
-            Press the Clear button to clear the input. After that you can easily
-            paste or type a new text.
+            Select the command type that you want, put the cursor in the line
+            (not at the end) that you want to change into a comment and press
+            the Comment button. Keep in mind that Box is not always supported.
           </p>
-          <h2>Title</h2>
+          <h2>Commands: Title</h2>
           <p>
             Press the Title button to find the title and create a directive for
             a better styling. Make sure that you have selected the Input format
             that matches with the input for the best result.
           </p>
-          <h2>Comment</h2>
+          <h2>Preferences: Chords=bold</h2>
           <p>
-            Select the command type that you want, put the cursor in the line
-            (not at the end) that you want to change into a comment and press
-            the Comment button. Keep in mind that Box is not always supported.
+            Enable this option if you want the chords to be bold. When the
+            Output format is set to Inline the chords will not be bold.
+          </p>
+          <h2>Preferences: Compact</h2>
+          <p>
+            Enable this option if you want compact chord symbols. If in the
+            original text long chord names are used, they will be converted to
+            short chord names. For example minor will be converted to m and maj7
+            will be converted to M7 or even just a delta symbol when Special
+            chars is enabled.
+          </p>
+          <h2>Preferences: Ignore colors</h2>
+          <p>
+            If this option is enabled, color changes from directives are
+            ignored, so all text will be black.
+          </p>
+          <h2>Preferences: Space between chords</h2>
+          <p>
+            When this option is enabled, there will be always at least one space
+            character between two chords. When the Output format is set to Roman
+            there will be always at least one space character between two chords
+            independent of the "Space between chords" setting, because when
+            there is no space between the I chord and the V chord, it is in fact
+            the IV chord.
+          </p>
+          <h2>Preferences: Special chars</h2>
+          <p>
+            Enable Special chars if you prefer real music symbols for sharps
+            (#), flats (b) etc., but keep in mind that if you want to use the
+            result in other software these characters might not be supported.
+          </p>
+          <h2>Preferences: Strict</h2>
+          <p>
+            Normally it is best to have Strict enabled to prevent normal text
+            from being changed. If there are unusual chords in the text, you can
+            disable Strict and correct some text later if needed.
+          </p>
+          <h2>Preferences: Text size</h2>
+          <p>The Text size setting is used for the output and for printing.</p>
+          <h2>Preferences: Uppercase notes</h2>
+          <p>
+            When this option is enabled, the letters of the note names will be
+            in capitals. This option has only influence on the result when the
+            Output format is set to "Do Re Mi" or Greek. For example, Solm7 will
+            be converted to SOLm7.
+          </p>
+          <h2>Preferences: Use Ti</h2>
+          <p>
+            If the Output format is set to "Do Re Mi" and you want Ti instead of
+            Si on the result, enable Use Ti. If the Input format is set to "Do
+            Re Mi", both Ti and Si are recognized independently of the Use Ti
+            setting.
+          </p>
+          <h2>Clear</h2>
+          <p>
+            Press the Clear button to clear the input. After that you can easily
+            paste or type a new text.
           </p>
           <h2>Surprise me</h2>
           <p>
@@ -356,12 +423,6 @@
             when there are chords within the text lines, the Input format need
             to be set to "[C] Inline".
           </p>
-          <h2>Strict</h2>
-          <p>
-            Normally it is best to have Strict enabled to prevent normal text
-            from being changed. If there are unusual chords in the text, you can
-            disable Strict and correct some text later if needed.
-          </p>
           <h2>Lowercase=minor</h2>
           <p>
             When this option is enabled, the lowercase notes in the input will
@@ -384,43 +445,6 @@
             in the note name, but if Use sharps is enabled, you will see for
             example Cis instead of Des.
           </p>
-          <h2>Use Ti</h2>
-          <p>
-            If the Output format is set to "Do Re Mi" and you want Ti instead of
-            Si on the result, enable Use Ti. If the Input format is set to "Do
-            Re Mi", both Ti and Si are recognized independently of the Use Ti
-            setting.
-          </p>
-          <h2>Special chars</h2>
-          <p>
-            Enable Special chars if you prefer real music symbols for sharps
-            (#), flats (b) etc., but keep in mind that if you want to use the
-            result in other software these characters might not be supported.
-          </p>
-          <h2>Space between chords</h2>
-          <p>
-            When this option is enabled, there will be always at least one space
-            character between two chords. When the Output format is set to Roman
-            there will be always at least one space character between two chords
-            independent of the "Space between chords" setting, because when
-            there is no space between the I chord and the V chord, it is in fact
-            the IV chord.
-          </p>
-          <h2>Compact</h2>
-          <p>
-            Enable this option if you want compact chord symbols. If in the
-            original text long chord names are used, they will be converted to
-            short chord names. For example minor will be converted to m and maj7
-            will be converted to M7 or even just a delta symbol when Special
-            chars is enabled.
-          </p>
-          <h2>Uppercase notes</h2>
-          <p>
-            When this option is enabled, the letters of the note names will be
-            in capitals. This option has only influence on the result when the
-            Output format is set to "Do Re Mi" or Greek. For example, Solm7 will
-            be converted to SOLm7.
-          </p>
           <h2>Key</h2>
           <p>
             The "Key" setting is only used for Roman numerals and the Nashville
@@ -436,18 +460,6 @@
           </p>
           <h2>Output format</h2>
           <p>With this setting you can adjust the format of the result.</p>
-          <h2>Chords=bold</h2>
-          <p>
-            Enable this option if you want the chords to be bold. When the
-            Output format is set to Inline the chords will not be bold.
-          </p>
-          <h2>Ignore colors</h2>
-          <p>
-            If this option is enabled, color changes from directives are
-            ignored, so all text will be black.
-          </p>
-          <h2>Text size</h2>
-          <p>The Text size setting is used for the output and for printing.</p>
           <h2>Transpose / Convert</h2>
           <p>Press this button to generate a result in the second text area.</p>
           <h2>Down</h2>
