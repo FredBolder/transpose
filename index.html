@@ -285,6 +285,13 @@
           </div>
           <div id="output" class="output"></div>
           <fieldset>
+            <legend>Auto scroll</legend>
+            <button id="btScroll">Start/Stop</button>
+            <button id="btScrollSlower">Slower</button>
+            <span id="interval"></span>
+            <button id="btScrollFaster">Faster</button>
+          </fieldset>
+          <fieldset>
             <legend>Chord information</legend>
             <input
               id="inputChordInfo"
@@ -510,6 +517,13 @@
           <p>
             Press the Export button to download the complete result in plain
             text format or in HTML format.
+          </p>
+          <h2>Auto Scroll</h2>
+          <p>
+            If the lyrics don't fit on the screen, it is handy to use Auto
+            Scroll. Press the Start/Stop button to start or stop the scrolling.
+            Press Slower to scroll slower or Faster to scroll faster. The number
+            indicates the time (msec) per pixel.
           </p>
           <h2>Chord information</h2>
           <p>

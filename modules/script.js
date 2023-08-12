@@ -279,7 +279,7 @@ function drawKeyboard(idx, notes) {
   const kb = keyboard.getContext("2d");
   kb.reset();
 
-  console.log(notes);
+  //console.log(notes);
   // console.log(
   //   `Width: ${keyboard.width}, Height: ${keyboard.height}, ClientWidth: ${keyboard.clientWidth}, ClientHeight: ${keyboard.clientHeight}`
   // );
@@ -720,6 +720,22 @@ function showHide() {
   }
 }
 
+function startScroll() {
+  Glob.scrollID = setInterval(function () {
+    window.scrollBy(0, 1);
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      stopScroll();
+    }
+  }, Glob.scrollInterval);
+}
+
+function stopScroll() {
+  if (Glob.scrollID !== null) {
+    clearInterval(Glob.scrollID);
+    Glob.scrollID = null;
+  }
+}
+
 function printClicked() {
   let data = "";
   transposeClicked(true);
@@ -1070,6 +1086,34 @@ function commentClicked() {
   }
 }
 
+function scrollClicked() {
+  if (Glob.scrollID === null) {
+    startScroll();
+  } else {
+    stopScroll();
+  }
+}
+
+function setScrollInterval(deltaInterval) {
+  const minInterval = 5;
+  const maxInterval = 500;
+  let newInterval = Glob.scrollInterval + deltaInterval;
+  if (newInterval < minInterval) {
+    newInterval = minInterval;
+  }
+  if (newInterval > maxInterval) {
+    newInterval = maxInterval;
+  }
+  if (Glob.scrollID === null) {
+    Glob.scrollInterval = newInterval;
+  } else {
+    stopScroll();
+    Glob.scrollInterval = newInterval;
+    startScroll();
+  }
+  Glob.settings.interval.innerText = Glob.scrollInterval.toString();
+}
+
 function surpriseMeClicked() {
   const input = Glob.settings.inputArea;
   let isInt = true;
@@ -1088,13 +1132,16 @@ function surpriseMeClicked() {
     }
     if (isInt) {
       n = parseInt(value);
-      if (n < 1 || n > Songs.numberOfSongs()) {
+      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 101))) {
         n = 0;
       }
     }
   }
   if (value === "index" || value === "?") {
     song = Songs.loadSong(0);
+    input.value = song.join("\n");
+  } else if (value === "!") {
+    song = Songs.loadSong(100);
     input.value = song.join("\n");
   } else {
     if (n === 0) {
@@ -1109,6 +1156,7 @@ function surpriseMeClicked() {
     song = Songs.loadSong(n);
     input.value = song.join("\n");
     Glob.settings.inputFormat.value = "CDE";
+    Glob.settings.semitones.value = 0;
     transposeClicked();
   }
 }
@@ -1697,6 +1745,7 @@ try {
           chordInfoClicked();
         }
       });
+      Glob.settings.interval.innerText = Glob.scrollInterval.toString();
     }
   });
   document.getElementById("theme").addEventListener("change", (e) => {
@@ -1748,6 +1797,13 @@ try {
   });
   document.getElementById("inputFormat").addEventListener("change", showHide);
   document.getElementById("outputFormat").addEventListener("change", showHide);
+  document.getElementById("btScroll").addEventListener("click", scrollClicked);
+  document.getElementById("btScrollSlower").addEventListener("click", () => {
+    setScrollInterval(5);
+  });
+  document.getElementById("btScrollFaster").addEventListener("click", () => {
+    setScrollInterval(-5);
+  });
 } catch (e) {
   //console.log(e);
 }
