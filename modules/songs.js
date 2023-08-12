@@ -499,7 +499,7 @@ class Songs {
         d.push("Και τώρα πια για ποιαν θα τραγουδώ");
         d.push("   A7       Dm        B7    E");
         d.push("Νωρίς που βράδιασε ο κόσμος άδειασε");
-        d.push("Dm              Bdim  E         Am");
+        d.push("        Dm              Bdim  E         Am");
         d.push("Αγάπη μου δε θα σε ξαναδώ δε θα σε ξαναδώ");
         d.push("");
         d.push("Am  G6  FM7  Esus4  E");
@@ -519,7 +519,7 @@ class Songs {
         d.push("Και τώρα πια για ποιαν θα τραγουδώ");
         d.push("   A7       Dm        B7    E");
         d.push("Νωρίς που βράδιασε ο κόσμος άδειασε");
-        d.push("Dm              Bdim  E         Am");
+        d.push("        Dm              Bdim  E         Am");
         d.push("Αγάπη μου δε θα σε ξαναδώ δε θα σε ξαναδώ");
         d.push("");
         d.push("Am  G6  FM7  Esus4  E  Am");
