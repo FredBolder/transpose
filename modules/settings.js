@@ -2,6 +2,7 @@ class Settings {
   constructor() {
     this.bracketsInput = document.getElementById("bracketsInput");
     this.bracketsOutput = document.getElementById("bracketsOutput");
+    this.btScroll = document.getElementById("btScroll");
     this.chordsIsBold = document.getElementById("chordsBold");
     this.commentType = document.getElementById("commentType");
     this.compact = document.getElementById("compact");

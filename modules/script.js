@@ -721,6 +721,7 @@ function showHide() {
 }
 
 function startScroll() {
+  Glob.settings.btScroll.innerText = "Stop";
   Glob.scrollID = setInterval(function () {
     window.scrollBy(0, 1);
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -733,6 +734,7 @@ function stopScroll() {
   if (Glob.scrollID !== null) {
     clearInterval(Glob.scrollID);
     Glob.scrollID = null;
+    Glob.settings.btScroll.innerText = "Start";
   }
 }
 
