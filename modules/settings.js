@@ -6,6 +6,7 @@ class Settings {
     this.commentType = document.getElementById("commentType");
     this.compact = document.getElementById("compact");
     this.exportFormat = document.getElementById("exportFormat")
+    this.groupKey = document.getElementById("groupKey");
     this.ignoreColors = document.getElementById("ignoreColors");
     this.inputArea = document.getElementById("input");
     this.inputChordInfo = document.getElementById("inputChordInfo")

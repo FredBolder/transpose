@@ -98,7 +98,7 @@ function checkChordType(s) {
   if (p >= 0) {
     s = s.slice(0, p);
   }
-  return (MusicData.getInterval(s).length > 0);
+  return MusicData.getInterval(s).length > 0;
 }
 
 function convertGreekType(s) {
@@ -278,7 +278,6 @@ function drawKeyboard(idx, notes) {
   keyboard.width = keyboard.clientWidth * 2;
   const kb = keyboard.getContext("2d");
   kb.reset();
-
 
   console.log(notes);
   // console.log(
@@ -698,6 +697,29 @@ function searchNotes(input) {
   return result;
 }
 
+function showHide() {
+  if (Glob.settings.inputFormat.value === "INLINE") {
+    Glob.settings.bracketsInput.classList.remove("hidden");
+  } else {
+    Glob.settings.bracketsInput.classList.add("hidden");
+  }
+  if (Glob.settings.outputFormat.value === "INLINE") {
+    Glob.settings.bracketsOutput.classList.remove("hidden");
+  } else {
+    Glob.settings.bracketsOutput.classList.add("hidden");
+  }
+  if (
+    Glob.settings.inputFormat.value === "ROMAN" ||
+    Glob.settings.inputFormat.value === "NASHVILLE" ||
+    Glob.settings.outputFormat.value === "ROMAN" ||
+    Glob.settings.outputFormat.value === "NASHVILLE"
+  ) {
+    Glob.settings.groupKey.classList.remove("hidden");
+  } else {
+    Glob.settings.groupKey.classList.add("hidden");
+  }
+}
+
 function printClicked() {
   let data = "";
   transposeClicked(true);
@@ -1033,9 +1055,7 @@ function commentClicked() {
   if (value !== "") {
     p3 = input.selectionStart;
     p1 = value.lastIndexOf("\n", p3);
-    if (p1 === -1) {
-      p1 = -1;
-    }
+    // No need to change p1 when it is -1
     p2 = value.indexOf("\n", p3);
     if (p2 === -1) {
       p2 = value.length;
@@ -1224,8 +1244,9 @@ function transposeClicked(print = false) {
   for (let i = 0; i < outputData2.length; i++) {
     ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
-      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${outputData2[i]
-        }</div>`;
+      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${
+        outputData2[i]
+      }</div>`;
     } else {
       changed = false;
       if (options.outputFormat !== "INLINE") {
@@ -1325,11 +1346,13 @@ function transposeClicked(print = false) {
       }
       if (!changed) {
         if (options.outputFormat !== "INLINE" && outputInfo[i]) {
-          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${outputData2[i]
-            }</div>`;
+          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${
+            outputData2[i]
+          }</div>`;
         } else {
-          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${outputData2[i]
-            }</div>`;
+          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${
+            outputData2[i]
+          }</div>`;
         }
       }
     }
@@ -1723,6 +1746,8 @@ try {
     document.getElementById("help").classList.add("hidden");
     document.querySelector("h1").innerText = "Transpose by Fred Bolder";
   });
+  document.getElementById("inputFormat").addEventListener("change", showHide);
+  document.getElementById("outputFormat").addEventListener("change", showHide);
 } catch (e) {
   //console.log(e);
 }

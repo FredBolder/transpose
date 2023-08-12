@@ -164,6 +164,10 @@
                 <option value="ROMAN">Roman</option>
                 <option value="NASHVILLE">Nashville</option>
               </select>
+              <select name="bracketsInput" id="bracketsInput" class="hidden">
+                <option value="SQUARE" selected="selected">[C]</option>
+                <option value="ROUND">(C)</option>
+              </select>
             </div>
             <div>
               <input
@@ -175,17 +179,6 @@
               <label for="lowerIsMinor">Lowercase=minor</label>
             </div>
             <div>
-              <label for="bracketsInput">Brackets:</label>
-              <select name="bracketsInput" id="bracketsInput">
-                <option value="SQUARE" selected="selected">[C]</option>
-                <option value="ROUND">(C)</option>
-              </select>
-              <select name="bracketsOutput" id="bracketsOutput">
-                <option value="SQUARE" selected="selected">[C]</option>
-                <option value="ROUND">(C)</option>
-              </select>
-            </div>
-            <div>
               <input
                 type="checkbox"
                 id="useSharps"
@@ -194,7 +187,7 @@
               />
               <label for="useSharps">Use sharps (#)</label>
             </div>
-            <div>
+            <div id="groupKey" class="hidden">
               <label for="key">Key:</label>
               <select name="key" id="key">
                 <option value="0" selected="selected">C</option>
@@ -264,6 +257,10 @@
                 <option value="NASHVILLE">Nashville</option>
                 <option value="NOCHORDS">No chords</option>
               </select>
+              <select name="bracketsOutput" id="bracketsOutput" class="hidden">
+                <option value="SQUARE" selected="selected">[C]</option>
+                <option value="ROUND">(C)</option>
+              </select>
             </div>
             <div>
               <button id="btTranspose">Transpose / Convert</button>
@@ -321,8 +318,8 @@
             When the Output format is set to Roman, the note names for minor and
             diminished chords will be in lowercase.<br />
             The text after a slash is interpreted as a bass note, so don't use
-            chord names like D6/9. You can use D69 instead. Inversions that are
-            sometimes used in Roman numerals are not supported.
+            chord names like D6/9. You can use D69 or D6add9 instead. Inversions
+            that are sometimes used in Roman numerals are not supported.
           </p>
           <p>
             Feel free to contact me by
@@ -421,18 +418,13 @@
           <p>
             It is important to choose the correct Input format. For example,
             when there are chords within the text lines, the Input format need
-            to be set to "[C] Inline".
+            to be set to "[C] Inline". If the format is set to "[C] Inline", you
+            can change the type of the brackets (square or round).
           </p>
           <h2>Lowercase=minor</h2>
           <p>
             When this option is enabled, the lowercase notes in the input will
             be capitalized and the chord type will be changed to minor.
-          </p>
-          <h2>Brackets</h2>
-          <p>
-            The Brackets settings are used for the inline formats. The first
-            bracket setting is for the input and the second bracket setting is
-            for the output (result).
           </p>
           <h2>Use sharps (#)</h2>
           <p>
@@ -459,7 +451,11 @@
             is set to Roman, the Semitones setting is ignored.
           </p>
           <h2>Output format</h2>
-          <p>With this setting you can adjust the format of the result.</p>
+          <p>
+            With this setting you can adjust the format of the result. If the
+            format is set to "[C] Inline", you can change the type of the
+            brackets (square or round).
+          </p>
           <h2>Transpose / Convert</h2>
           <p>Press this button to generate a result in the second text area.</p>
           <h2>Down</h2>
@@ -534,12 +530,14 @@
             <span id="numberOfChords"></span> chords. There are many ways to
             write the same chord, so if you don't get information, you can try
             to write the chord in a different way. Don't use a slash in a chord
-            name like D6/9. You can use D69 instead. A bass note like the G in
-            C/G will be ignored. You can also enter the notes of a chord in the
-            left input box to find the matching chord(s). The notes have to be
-            separated by a comma. The order of the notes have no influence on
-            the result. For example C, F#, D, A will give the chord D7 and A, B,
-            E will give the chords A59, Asus2 and Esus4.
+            name like D6/9. You can use D69 or D6add9 instead. A bass note like
+            the G in C/G will be ignored. Keep in mind that Ab5 is not the same
+            as A(b5). Ab5 is an Ab chord without the third and A(b5) is an A
+            chord with a lowered fifth. You can also enter the notes of a chord
+            in the left input box to find the matching chord(s). The notes have
+            to be separated by a comma. The order of the notes have no influence
+            on the result. For example C, F#, D, A will give the chord D7 and A,
+            B, E will give the chords A59, Asus2 and Esus4.
           </p>
         </div>
       </main>

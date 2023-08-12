@@ -208,6 +208,10 @@ th {
   column-gap: 2rem;
 }
 
+#numberOfChords {
+  font-weight: bold;
+}
+
 .menu-button {
   background-color: #0000FF;
   color: white;
