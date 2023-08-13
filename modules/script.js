@@ -664,7 +664,7 @@ function searchNotes(input) {
     d = 0;
     while (d < 11) {
       notes3 = notes2.map((current) => {
-        return fixNoteIndex(current + d);
+        return fixNoteIndex(Math.abs(current) + d);
       });
       notes3.sort();
       if (notes1.join(",") === notes3.join(",")) {
@@ -819,6 +819,7 @@ function chordInfoClicked() {
   let chordType = "";
   let idx = -1;
   let info = "";
+  let mayBeOmitted = false;
   let note = "";
   let noteIdx = 0;
   let p1 = -1;
@@ -833,6 +834,8 @@ function chordInfoClicked() {
 
   if (input.includes(",")) {
     // Search chord by notes
+    // Remove round brackets
+    input = Glob.removeChars(input, "()");
     s1 = searchNotes(input);
     if (s1 === "") {
       s1 = "No matching chord found";
@@ -841,13 +844,7 @@ function chordInfoClicked() {
     drawKeyboard(0, []);
   } else {
     // Remove spaces and square brackets
-    s1 = "";
-    for (let i = 0; i < input.length; i++) {
-      if (!" []".includes(input[i])) {
-        s1 += input[i];
-      }
-    }
-    input = s1;
+    input = Glob.removeChars(input, " []");
 
     if (options.outputFormat === "NOCHORDS") {
       options.outputFormat = "CDE";
@@ -881,8 +878,13 @@ function chordInfoClicked() {
       if (i > 0) {
         info += ", ";
       }
+      mayBeOmitted = (chordNotes[i] < 0);
+      chordNotes[i] = Math.abs(chordNotes[i]);
       noteIdx = fixNoteIndex(chordNotes[i] + idx);
       note = noteIndexToString(noteIdx, options, true, outputObj);
+      if (mayBeOmitted) {
+        note = "(" + note + ")";
+      }
       info += note;
     }
 

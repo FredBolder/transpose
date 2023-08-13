@@ -1,6 +1,8 @@
 import { keyToSemitones, transpose, getDirective } from "./script.js";
 import { Options } from "./options.js";
 import { MusicData } from "./musicdata.js";
+import { Glob } from "./glob.js";
+
 
 function checkResult(testName, expected, result) {
   if (result !== expected) {
@@ -387,9 +389,9 @@ function test() {
   duplicate = false;
   const keys = Object.keys(MusicData.intervals);
   for (let i = 0; i < keys.length && !duplicate; i++) {
-    value = MusicData.intervals[keys[i]].toString();
+    value = Glob.removeChars(MusicData.intervals[keys[i]].toString(), "-");
     for (let j = 0; j < keys.length && !duplicate; j++) {
-      if (MusicData.intervals[keys[j]].toString() === value && j != i) {
+      if (Glob.removeChars(MusicData.intervals[keys[j]].toString(), "-") === value && j != i) {
         duplicate = true;
         console.log(`Duplicate intervals: ${value}`);
       }
