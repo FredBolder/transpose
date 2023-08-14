@@ -439,6 +439,7 @@ class Songs {
         d.push("104 Νύχτωσε χωρίς φεγγάρι");
         break;
       case 101:
+        d.push("{scroll: 200}");
         d.push("{title: Φύλακας Άγγελος}");
         d.push("{comment_italic: Γιάννης Κότσιρας}");
         d.push("");
@@ -481,6 +482,7 @@ class Songs {
         d.push("  ο φύλακας ο άγγελος σου");
         break;
       case 102:
+        d.push("{scroll: 200}");
         d.push("{title: Ποια νύχτα σ’ έκλεψε}");
         d.push("{comment_italic: Γιάννης Πουλόπουλος}");
         d.push("");
@@ -527,6 +529,7 @@ class Songs {
         d.push("Am  G6  FM7  Esus4  E  Am");
         break;
       case 103:
+        d.push("{scroll: 200}");
         d.push("{title: Hello}");
         d.push("{comment_italic: Lionel Richie}");
         d.push("");
@@ -583,6 +586,7 @@ class Songs {
         d.push("But let me start by saying, I love you ...");
         break;
       case 104:
+        d.push("{scroll: 360}");
         d.push("{title: Νύχτωσε χωρίς φεγγάρι}");
         d.push("{comment_italic: Γιώργος Νταλάρας}");
         d.push("");

@@ -18,7 +18,18 @@ class Glob {
     }
     return result;
   }
-    
+
+  static tryParseInt(str, defaultValue) {
+    let result = defaultValue;
+    if (str !== null) {
+      if (str.length > 0) {
+        if (!isNaN(str)) {
+          result = parseInt(str);
+        }
+      }
+    }
+    return result;
+  }
 }
 
 export { Glob };

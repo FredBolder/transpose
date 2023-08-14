@@ -878,7 +878,7 @@ function chordInfoClicked() {
       if (i > 0) {
         info += ", ";
       }
-      mayBeOmitted = (chordNotes[i] < 0);
+      mayBeOmitted = chordNotes[i] < 0;
       chordNotes[i] = Math.abs(chordNotes[i]);
       noteIdx = fixNoteIndex(chordNotes[i] + idx);
       note = noteIndexToString(noteIdx, options, true, outputObj);
@@ -1098,10 +1098,18 @@ function scrollClicked() {
   }
 }
 
-function setScrollInterval(deltaInterval) {
+function setScrollInterval(value) {
   const minInterval = 5;
   const maxInterval = 500;
-  let newInterval = Glob.scrollInterval + deltaInterval;
+  let newInterval = 200;
+
+  if (value <= 50) {
+    // increase / decrease
+    newInterval = Glob.scrollInterval + value;
+  } else {
+    // set
+    newInterval = value;
+  }
   if (newInterval < minInterval) {
     newInterval = minInterval;
   }
@@ -1197,6 +1205,7 @@ function transposeClicked(print = false) {
   let outputData3 = [];
   let outputInfo = [];
   let options = new Options();
+  let scrollTime = 200;
   let semitones = 0;
   let style = "";
   let styleBold = "";
@@ -1307,6 +1316,14 @@ function transposeClicked(print = false) {
           changed = true;
           //value = convertSpacesAndLF(directive.value, style);
           value = directive.value;
+          if (directive.name === "scroll") {
+            ignore = true;
+            scrollTime = Glob.tryParseInt(value, 200);
+            if (scrollTime < 50 || scrollTime > 1000) {
+              scrollTime = 200;
+            }
+            setScrollInterval(scrollTime);
+          }
           if (
             directive.name === "chordcolour" ||
             directive.name === "chordcolor"
