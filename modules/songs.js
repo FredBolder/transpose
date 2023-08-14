@@ -435,6 +435,7 @@ class Songs {
         d.push("");
         d.push("101 Φύλακας Άγγελος");
         d.push("102 Ποια νύχτα σ’ έκλεψε");
+        d.push("102 Hello");
         break;
       case 101:
         d.push("{title: Φύλακας Άγγελος}");
@@ -523,6 +524,62 @@ class Songs {
         d.push("Αγάπη μου δε θα σε ξαναδώ δε θα σε ξαναδώ");
         d.push("");
         d.push("Am  G6  FM7  Esus4  E  Am");
+        break;
+      case 103:
+        d.push("{title: Hello}");
+        d.push("{comment_italic: Lionel Richie}");
+        d.push("");
+        d.push("Fm  Fm/Eb Fm/Db Fm/Eb Fm/Db");
+        d.push("");
+        d.push("     Fm              Fm/Eb        Fm/Db Fm/Eb Fm/Db");
+        d.push("I've been alone with you inside my mind");
+        d.push(
+          "    Fm                Fm/Eb           Fm/Db        Fm/Eb Fm/Db"
+        );
+        d.push("And in my dreams I've kissed your lips a thousand times");
+        d.push("  Fm                Fm/Eb          Fm/Db Fm/Eb Fm/Db");
+        d.push("I sometimes see you pass outside my door");
+        d.push("   Fm Fm/Eb  Fm/Db                F");
+        d.push("Hello, is it me you're looking for?");
+        d.push("");
+        d.push("      Bbm                Eb");
+        d.push("I can see it in your eyes");
+        d.push("      Ab             Db");
+        d.push("I can see it in your smile");
+        d.push(
+          "       Gb           Csus4 C           Fm       Fm/G Fm/Ab Fm/G"
+        );
+        d.push("You're all I've ever wanted, (and) my arms are open wide");
+        d.push("           Bbm                  Eb");
+        d.push("'Cause you know just what to say");
+        d.push("        Ab                 Db");
+        d.push("And you know just what to do");
+        d.push("      Gb                Csus4  C       Fm Fm/Eb Fm/Db Fm/Eb Fm/Db");
+        d.push("And I want to tell you so much, I love you ...");
+        d.push("");
+        d.push("  Fm              Fm/Eb           Fm/Db Fm/Eb Fm/Db");
+        d.push("I long to see the sunlight in your hair");
+        d.push("    Fm                Fm/Eb     Fm/Db          Fm/Eb Fm/Db");
+        d.push("And tell you time and time again how much I care");
+        d.push("     Fm             Fm/Eb          Fm/Db Fm/Eb Fm/Db");
+        d.push("Sometimes I feel my heart will overflow");
+        d.push("   Fm Fm/Eb      Fm/Db              F");
+        d.push("Hello, I've just got to let you know");
+        d.push("");
+        d.push("         Bbm              Eb");
+        d.push("'Cause I wonder where you are");
+        d.push("      Ab              Db");
+        d.push("And I wonder what you do");
+        d.push("Gb                Csus4 C       Fm     Fm/G   Fm/Ab Fm/G");
+        d.push("Are you somewhere feeling lonely, or is someone loving you?");
+        d.push("Bbm               Eb");
+        d.push("Tell me how to win your heart");
+        d.push("      Ab            Db");
+        d.push("For I haven't got a clue");
+        d.push(
+          "    Gb              Csus4 C        Fm Fm/Eb Fm/Db Fm/Eb Fadd2"
+        );
+        d.push("But let me start by saying, I love you ...");
         break;
       default:
         break;
