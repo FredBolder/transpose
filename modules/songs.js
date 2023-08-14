@@ -435,7 +435,8 @@ class Songs {
         d.push("");
         d.push("101 Φύλακας Άγγελος");
         d.push("102 Ποια νύχτα σ’ έκλεψε");
-        d.push("102 Hello");
+        d.push("103 Hello");
+        d.push("104 Νύχτωσε χωρίς φεγγάρι");
         break;
       case 101:
         d.push("{title: Φύλακας Άγγελος}");
@@ -554,7 +555,9 @@ class Songs {
         d.push("'Cause you know just what to say");
         d.push("        Ab                 Db");
         d.push("And you know just what to do");
-        d.push("      Gb                Csus4  C       Fm Fm/Eb Fm/Db Fm/Eb Fm/Db");
+        d.push(
+          "      Gb                Csus4  C       Fm Fm/Eb Fm/Db Fm/Eb Fm/Db"
+        );
         d.push("And I want to tell you so much, I love you ...");
         d.push("");
         d.push("  Fm              Fm/Eb           Fm/Db Fm/Eb Fm/Db");
@@ -572,14 +575,40 @@ class Songs {
         d.push("And I wonder what you do");
         d.push("Gb                Csus4 C       Fm     Fm/G   Fm/Ab Fm/G");
         d.push("Are you somewhere feeling lonely, or is someone loving you?");
-        d.push("Bbm               Eb");
+        d.push("        Bbm               Eb");
         d.push("Tell me how to win your heart");
         d.push("      Ab            Db");
         d.push("For I haven't got a clue");
-        d.push(
-          "    Gb              Csus4 C        Fm Fm/Eb Fm/Db Fm/Eb Fadd2"
-        );
+        d.push("    Gb              Csus4 C        Fm Fm/Eb Fm/Db Fm/Eb Fadd2");
         d.push("But let me start by saying, I love you ...");
+        break;
+      case 104:
+        d.push("{title: Νύχτωσε χωρίς φεγγάρι}");
+        d.push("{comment_italic: Γιώργος Νταλάρας}");
+        d.push("");
+        d.push(" D                                      Cm  D");
+        d.push("Intro");
+        d.push("");
+        d.push("D     Cm          D         Gm D");
+        d.push("Νύχτωσε χωρίς φεγγάρι, το σκο-τάδι είναι βαθύ");
+        d.push("Gm      D                     Cm          D");
+        d.push("κι όμως ένα παλικάρι δεν μπορεί να κοιμηθεί   ] 2x");
+        d.push("");
+        d.push(" D                                      Cm  D");
+        d.push("Instrumental");
+        d.push("");
+        d.push("D   Cm        D         Gm  D");
+        d.push("Άραγε τι περιμένει απ' το βράδυ ως το πρωί");
+        d.push("Gm      D                    Cm         D");
+        d.push("στο στενό το παραθύρι που φωτίζει με κερί   ] 2x");
+        d.push("");
+        d.push(" D                                      Cm  D");
+        d.push("Instrumental");
+        d.push("");
+        d.push("D        Cm             D        Gm D");
+        d.push("Πόρτα ανοίγει, πόρτα κλείνει με βαρ-ύ αναστεναγμό");
+        d.push("Gm      D                       Cm             D");
+        d.push("ας μπορούσα να μαντέψω της καρδιάς του τον καημό  ] 2x");
         break;
       default:
         break;
