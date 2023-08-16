@@ -439,7 +439,7 @@ class Songs {
         d.push("104 Νύχτωσε χωρίς φεγγάρι");
         break;
       case 101:
-        d.push("{scroll: 200}");
+        d.push("{scroll: 190}");
         d.push("{title: Φύλακας Άγγελος}");
         d.push("{comment_italic: Γιάννης Κότσιρας}");
         d.push("");
