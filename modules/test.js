@@ -3,7 +3,6 @@ import { Options } from "./options.js";
 import { MusicData } from "./musicdata.js";
 import { Glob } from "./glob.js";
 
-
 function checkResult(testName, expected, result) {
   if (result !== expected) {
     console.log(`*** ${testName} failed!!! ***`);
@@ -391,7 +390,11 @@ function test() {
   for (let i = 0; i < keys.length && !duplicate; i++) {
     value = Glob.removeChars(MusicData.intervals[keys[i]].toString(), "-");
     for (let j = 0; j < keys.length && !duplicate; j++) {
-      if (Glob.removeChars(MusicData.intervals[keys[j]].toString(), "-") === value && j != i) {
+      if (
+        Glob.removeChars(MusicData.intervals[keys[j]].toString(), "-") ===
+          value &&
+        j != i
+      ) {
         duplicate = true;
         console.log(`Duplicate intervals: ${value}`);
       }
@@ -415,6 +418,17 @@ function test() {
     "Test 38",
     [0, 3, 7, 10, 15].toString(),
     MusicData.getInterval("m7+9").toString()
+  );
+
+  // Test 39
+  initTest("CDE", false, false, false, true, false, false, "CDE");
+  inputData.push("Cdim7 Caug6 Dm7#11 A5");
+  testOptions.simplifyChords = true;
+  outputData = transpose(inputData, 0, testOptions).data;
+  checkResult(
+    "Test 39",
+    "Cdim  Caug  Dm     A",
+    outputData.join("\n")
   );
 
   // Extra test

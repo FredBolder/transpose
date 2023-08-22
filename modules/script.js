@@ -228,6 +228,28 @@ function convertTypeToCompact(s, options) {
   return result;
 }
 
+function convertTypeToSimple(s, options) {
+  let result = s;
+
+  if (options.simplifyChords) {
+    if (s.startsWith("dim") || s.startsWith("°")) {
+      result = "dim";
+    } else if (
+      s.startsWith("aug") ||
+      (s.startsWith("+") && options.outputFormat !== "GREEK")
+    ) {
+      result = "aug";
+    } else if (s.startsWith("+")) {
+      result = "+";
+    } else if (s.startsWith("m") && !s.startsWith("ma")) {
+      result = "m";
+    } else {
+      result = "";
+    }
+  }
+  return result;
+}
+
 function createInputOrOutputObject(chordSystem) {
   let result = null;
   switch (chordSystem) {
@@ -1671,6 +1693,7 @@ function transposeLine(
         s += bracket(options, true);
         s += noteStr;
         chordType = outputObj.convertType(chordType, options);
+        chordType = convertTypeToSimple(chordType, options);
         chordType = convertTypeToCompact(chordType, options);
         s += chordType;
         s += bracket(options, false);

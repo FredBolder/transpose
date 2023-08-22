@@ -25,6 +25,7 @@ class Settings {
     this.semitones = document.getElementById("semitones");
     this.spaceBetween = document.getElementById("spaceBetween");
     this.strict = document.getElementById("strict");
+    this.simplifyChords = document.getElementById("simplifyChords");
     this.textSize = document.getElementById("textSize");
     this.theme = document.getElementById("theme");
     this.uppercase = document.getElementById("uppercase");
@@ -43,6 +44,7 @@ class Settings {
     options.preferSharps = this.preferSharps.checked;
     options.spaceBetween = this.spaceBetween.checked;
     options.strict = this.strict.checked;
+    options.simplifyChords = this.simplifyChords.checked;
     options.uppercase = this.uppercase.checked;
     options.useSpecial = this.useSpecial.checked;
     options.useTi = this.useTi.checked;
