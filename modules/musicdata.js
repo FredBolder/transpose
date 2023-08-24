@@ -256,8 +256,10 @@ class MusicData {
     }
     // Lowercase except M (maj)
     idxM = ct.indexOf("M");
-    if (idxM === 0 || idxM === 1 || (ct.startsWith("aug") && idxM === 3)) {
+    if (idxM === 0 || idxM === 1) {
       ct = ct.substring(0, idxM + 1) + ct.substring(idxM + 1).toLowerCase();
+    } else if (ct.toLowerCase().startsWith("aug") && idxM === 3) {
+        ct = "augM" + ct.substring(idxM + 1).toLowerCase();
     } else {
       ct = ct.toLowerCase();
     }
@@ -300,6 +302,18 @@ class MusicData {
       ct = "7#5b9";
     } else if (ct === "9#5") {
       ct = "aug9";
+    } else if (ct === "11#5") {
+      ct = "aug11";
+    } else if (ct === "13#5") {
+      ct = "aug13";
+    } else if (ct === "M7#5") {
+      ct = "augM7";
+    } else if (ct === "M9#5") {
+      ct = "augM9";
+    } else if (ct === "M11#5") {
+      ct = "augM11";
+    } else if (ct === "M13#5") {
+      ct = "augM13";
     } else if (ct === "no3") {
       ct = "5";
     } else if (ct === "7no3") {

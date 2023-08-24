@@ -431,6 +431,12 @@ function test() {
     outputData.join("\n")
   );
 
+  checkResult(
+    "Test 40",
+    [0, 4, 8, 11].toString(),
+    MusicData.getInterval("AugM7").toString()
+  );
+
   // Extra test
   testOptions.key = 0;
   testOptions.inputFormat = "INLINE";
