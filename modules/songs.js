@@ -635,7 +635,7 @@ class Songs {
         d.push("ας μπορούσα να μαντέψω της καρδιάς του τον καημό  ] 2x");
         break;
       case 105:
-        d.push("{scroll: 360}");
+        d.push("{scroll: 150}");
         d.push("{title: Το κύμα}");
         d.push("{comment_italic: Μέλισσες}");
         d.push("");
