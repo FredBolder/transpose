@@ -38,6 +38,25 @@ class Songs {
       d.push("We wish you a merry Christmas and a happy new year");
     }
 
+    function toKymaChorus() {
+      d.push("C                Em");
+      d.push(" Πάρε με μαζί σου");
+      d.push("        D");
+      d.push("στο πιο όμορφο όνειρο");
+      d.push("C                  Em");
+      d.push(" πάνω στο κορμί σου");
+      d.push("          D            C");
+      d.push("στου φιλιού σου τον βυθό");
+      d.push("                   Em");
+      d.push("να 'σαι εσύ το κύμα");
+      d.push("                     D");
+      d.push("θα 'μαι αέρας που φυσά");
+      d.push("                 C");
+      d.push("σου υπόσχομαι ταξίδια");
+      d.push("    D            Em");
+      d.push("ασημένια και χρυσά");
+    }
+
     switch (n) {
       case 0:
         d.push("INDEX");
@@ -437,6 +456,7 @@ class Songs {
         d.push("102 Ποια νύχτα σ’ έκλεψε");
         d.push("103 Hello");
         d.push("104 Νύχτωσε χωρίς φεγγάρι");
+        d.push("105 Το κύμα");
         break;
       case 101:
         d.push("{scroll: 190}");
@@ -613,6 +633,53 @@ class Songs {
         d.push("Πόρτα ανοίγει, πόρτα κλείνει με βαρ-ύ αναστεναγμό");
         d.push("Gm      D                       Cm             D");
         d.push("ας μπορούσα να μαντέψω της καρδιάς του τον καημό  ] 2x");
+        break;
+      case 105:
+        d.push("{scroll: 360}");
+        d.push("{title: Το κύμα}");
+        d.push("{comment_italic: Μέλισσες}");
+        d.push("");
+        d.push("                         Em    D");
+        d.push("Αγάπη μου σου γράφω ένα ποίημα");
+        d.push("Em            D           Em  D");
+        d.push(" θα 'θελα να ζήσω σ' ένα κύμα");
+        d.push("Am      D              C    D");
+        d.push(" να με πάει και να με φέρνει");
+        d.push("Am          D               C   D");
+        d.push(" και στις σκέψεις σου να μπαίνει");
+        d.push("Em        D           Em");
+        d.push(" να γλιστράω στα μαλλιά σου");
+        d.push("         D             Em");
+        d.push("στον λαιμό σου να κρυφτώ");
+        d.push("      D            Em");
+        d.push("να μεθάω με το άρωμα σου");
+        d.push("       D         C D");
+        d.push("να χορεύω στο κενό");
+        d.push("");
+        toKymaChorus();
+        d.push("");
+        d.push("Solo");
+        d.push("");
+        d.push("C  Em   D   C  Em   D   C");
+        d.push("");
+        d.push("Em               D           Em  D");
+        d.push(" Αγάπη μου στα δυο υγρά σου μάτια");
+        d.push("Em               D        Em  D");
+        d.push(" ανοίγονται θλιμμένα μονοπάτια");
+        d.push("Am          D         C  D");
+        d.push(" μες στην θλίψη θα βαδίσω");
+        d.push("Am       D                C  D");
+        d.push(" τις πληγές σου για να κλείσω");
+        d.push("Em         D          Em");
+        d.push(" κι όταν φτάσω ως την άκρη");
+        d.push("         D            Em");
+        d.push("και το μαύρο έχει χαθεί");
+        d.push("      D        Em");
+        d.push("θα χαράξω ένα δάκρυ");
+        d.push("      D           C D");
+        d.push("μια υπόσχεση ακριβή");
+        d.push("");
+        toKymaChorus();
         break;
       default:
         break;
