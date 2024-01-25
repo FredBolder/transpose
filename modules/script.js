@@ -1166,7 +1166,7 @@ function surpriseMeClicked() {
     }
     if (isInt) {
       n = parseInt(value);
-      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 105))) {
+      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 106))) {
         n = 0;
       }
     }

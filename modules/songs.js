@@ -38,6 +38,17 @@ class Songs {
       d.push("We wish you a merry Christmas and a happy new year");
     }
 
+    function chorisEsenaChorus() {
+      d.push("Dm          Dm/C   Gm");
+      d.push(" Χωρίς εσένα δεν υπάρχω");
+      d.push("C                   F Em A");
+      d.push(" είμαι ένα τίποτα εγώ");
+      d.push("Dm               Dm/C     Gm");
+      d.push(" κι αν θέλεις σου το υπογράφω");
+      d.push("Gm/E       A           Dm Gm A Dm");
+      d.push(" πως μια ζωή θα σ’ αγαπώ");
+    }
+
     function toKymaChorus() {
       d.push("C                Em");
       d.push(" Πάρε με μαζί σου");
@@ -457,6 +468,7 @@ class Songs {
         d.push("103 Hello");
         d.push("104 Νύχτωσε χωρίς φεγγάρι");
         d.push("105 Το κύμα");
+        d.push("106 Χωρίς εσένα δεν υπάρχω");
         break;
       case 101:
         d.push("{scroll: 190}");
@@ -680,6 +692,54 @@ class Songs {
         d.push("μια υπόσχεση ακριβή");
         d.push("");
         toKymaChorus();
+        break;
+      case 106:
+        d.push("{scroll: 150}");
+        d.push("{title: Χωρίς εσένα δεν υπάρχω}");
+        d.push("{comment_italic: Γιάννης Πάριος}");
+        d.push("");
+        d.push("Dm  Gm");
+        d.push("C  F  Em  A");
+        d.push("Dm  Gm");
+        d.push("Gm/E  A  Dm Gm A Dm");
+        d.push("");
+        d.push("Dm");
+        d.push("Είσαι ο τελευταίος μου σταθμός");
+        d.push("Dm/C                       C");
+        d.push("φεύγεις και με πιάνει πανικός");
+        d.push("Bb");
+        d.push("κι ώσπου να γυρίσεις συνεχώς");
+        d.push("               Asus4  A");
+        d.push("μετρώ την απουσία σου");
+        d.push("Dm");
+        d.push("Ποιός να το πιστέψει πες μου ποιός");
+        d.push("Dm/C                     C");
+        d.push("τι μου κάνει ο έρωτας αυτός");
+        d.push("Bb");
+        d.push("και κοίτα κάτι πράγματα");
+        d.push("                      Asus4       A");
+        d.push("να βάζω εγώ τα κλάματα για σένανε");
+        d.push("");
+        chorisEsenaChorus();
+        d.push("");
+        d.push("Dm");
+        d.push("Είσαι ο τελευταίος μου σταθμός");
+        d.push("Dm/C                   C");
+        d.push("μάρτυράς μου είναι ο Θεός");
+        d.push("Bb");
+        d.push("είδα μεσ’ στα μάτια σου το φως");
+        d.push("                  Asus4 A");
+        d.push("στα μάτια σου γεννήθηκα");
+        d.push("Dm");
+        d.push("Κοίτα πώς αλλάζουν οι καιροί");
+        d.push("Dm/C                  C");
+        d.push("χτες ακόμα έκλαιγες εσύ");
+        d.push("   Bb");
+        d.push("ποτέ δε το περίμενα πως κάποτε");
+        d.push("          Asus4     A");
+        d.push("θα πέθαινα για σένα");
+        d.push("");
+        chorisEsenaChorus();
         break;
       default:
         break;
