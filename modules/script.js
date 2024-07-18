@@ -606,28 +606,36 @@ function loadOtherIndex() {
   input.value = d.join("\n");
 }
 
-function loadSongFromFile(n) {
+async function loadSongFromFile(n) {
   let fn = '';
-
   Songs.setShown(n);
   fn = n.toString();
   while (fn.length < 3) {
     fn = '0' + fn;
   }
-  fn = '../songs/' + fn + '.txt';
-    fetch(fn)
-    .then(response => {
+  fn = 'songs/' + fn + '.txt';
+
+  try {
+    let text;
+    if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
+      // Running in the browser
+      const response = await fetch(fn);
       if (!response.ok) {
         throw new Error('Response is not ok');
       }
-      return response.text();
-    })
-    .then(text => {
-      copyToInput(text);
-    })
-    .catch(error => {
-      console.log('Error while reading file ' + fn + ': ', error);
-    });    
+      text = await response.text();
+    } else {
+      // Running in Node.js
+      const fs = require('fs').promises;
+      const path = require('path');
+      const basePath = path.dirname(require.main.filename);
+      const filePath = path.join(basePath, fn);
+      text = await fs.readFile(filePath, 'utf8');
+    }
+    copyToInput(text);
+  } catch (error) {
+    console.log('Error while reading file ' + fn + ': ', error);
+  }
 }
 
 function noteIndexToString(index, options, bass, outputObj) {
@@ -1250,7 +1258,11 @@ function surpriseMeClicked() {
     }
   }
   if (n > 0) {
-    loadSongFromFile(n);
+    loadSongFromFile(n).then(() => {
+      console.log('File loaded successfully');
+    }).catch((error) => {
+      console.error('Error:', error);
+    });
   }
 }
 
