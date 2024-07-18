@@ -1,0 +1,24 @@
+{title: Χρόνια πολλά}
+{comment_italic: Greek birthday song}
+
+{chordcolour: deeppink}
+{comment: Birthday woman/girl}
+    D                  Em
+Να ζήσεις (name) και χρόνια πολλά,
+   Em               A7         D
+μεγάλη να γίνεις με άσπρα μαλλιά
+     D                     Em
+Παντού να σκορπίζεις της γνώσης το φως
+    Em               A7    D
+και όλοι να λένε να μία σοφός
+
+{chordcolour: blue}
+{comment: Birthday man/boy}
+    D                  Em
+Να ζήσεις (name) και χρόνια πολλά,
+   Em                A7         D
+μεγάλος να γίνεις με άσπρα μαλλιά
+     D                     Em
+Παντού να σκορπίζεις της γνώσης το φως
+    Em              A7      D
+και όλοι να λένε να ένας σοφός

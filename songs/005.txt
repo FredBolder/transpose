@@ -1,0 +1,46 @@
+{chordcolour: green}
+{title: Greensleeves}
+
+{comment: Verse 1:}
+ Am     C         G     Em
+Alas my love, you do me wrong,
+   Am             E
+to cast me off discourteously.
+    Am     C         G        Em
+For I have loved you well and long,
+  Am       E7      Am
+delighting in your company.
+
+{comment: Chorus:}
+C                G      Em
+Greensleeves was all my joy,
+Am               E
+Greensleeves was my delight,
+C                   G        Em
+Greensleeves was my heart of gold,
+    Am         E7   Am
+and who but my lady Greensleeves.
+
+{comment: Verse 2:}
+  Am        C     G       Em
+I have been ready at your hand
+   Am             E
+to grant whatever you would crave.
+  Am        C       G        Em
+I have both wagered life and land,
+     Am       E7        Am
+your love and good-will for to have.
+
+{comment: Chorus}
+
+{comment: Verse 3:}
+      Am     C       G      Em
+Well, I will pray to God on high,
+     Am              E
+that thou my constancy mayst see,
+    Am       C      G      Em
+and that yet once before I die,
+     Am        E7      Am
+thou wilt vouchsafe to love me.
+
+{comment: Chorus}

@@ -1,0 +1,44 @@
+{chordcolour: green}
+{title: Silent night}
+
+{comment: Verse 1:}
+C
+Silent night, holy night
+G7           C
+All is calm, all is bright
+F                C
+Round yon virgin mother and child
+F              C
+Holy infant so tender and mild
+G7                C
+Sleep in heavenly peace
+C        G7       C
+Sleep in heavenly peace
+
+{comment: Verse 2:}
+C
+Silent night, holy night
+G7              C
+Shepherds quake at the sight
+F                   C
+Glories stream from heaven afar
+F                   C
+Heavenly hosts sing alleluia
+G7                    C
+Christ the Savior, is born!
+C          G7         C
+Christ the Savior, is born!
+
+{comment: Verse 3:}
+C
+Silent night, holy night
+G7          C
+Son of God, love's pure light
+F                      C
+Radiant beams from thy holy face
+F                  C
+with the dawn of redeeming grace
+G7                  C
+Jesus, Lord, at thy birth
+C      G7           C
+Jesus, Lord, at thy birth

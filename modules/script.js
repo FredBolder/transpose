@@ -250,6 +250,13 @@ function convertTypeToSimple(s, options) {
   return result;
 }
 
+function copyToInput(data) {
+  input.value = data;
+  Glob.settings.inputFormat.value = "CDE";
+  Glob.settings.semitones.value = 0;
+  transposeClicked();
+}
+
 function createInputOrOutputObject(chordSystem) {
   let result = null;
   switch (chordSystem) {
@@ -562,6 +569,65 @@ function keyToSemitones(key) {
   }
   semitones *= -1;
   return semitones;
+}
+
+function loadIndex() {
+  let d = [];
+
+  d.push("INDEX");
+  d.push("");
+  d.push("001 Μήλο μου κόκκινο (Greek folk song)");
+  d.push("002 Happy Birthday");
+  d.push("003 Χρόνια πολλά (Greek birthday song)");
+  d.push("004 Silent night");
+  d.push("005 Greensleeves");
+  d.push("006 We wish you a merry Christmas");
+  d.push("007 Slaap, kindje slaap (Dutch lullaby)");
+  d.push("008 Σήμερα γάμος γίνεται (Greek wedding song)");
+  d.push("009 Ωραία που ‘ναι η νύφη μας (Greek wedding song)");
+  d.push("010 Are you lonesome tonight?");
+  d.push("011 Yes sir, that's my baby");
+  d.push("012 Ένας αϊτός (Greek folk song)");
+  d.push("013 Σ’ αγαπώ γιατί είσαι ωραία");
+  input.value = d.join("\n");
+}
+
+function loadOtherIndex() {
+  let d = [];
+
+  d.push("INDEX");
+  d.push("");
+  d.push("101 Φύλακας Άγγελος");
+  d.push("102 Ποια νύχτα σ’ έκλεψε");
+  d.push("103 Hello");
+  d.push("104 Νύχτωσε χωρίς φεγγάρι");
+  d.push("105 Το κύμα");
+  d.push("106 Χωρίς εσένα δεν υπάρχω");
+  input.value = d.join("\n");
+}
+
+function loadSongFromFile(n) {
+  let fn = '';
+
+  Songs.setShown(n);
+  fn = n.toString();
+  while (fn.length < 3) {
+    fn = '0' + fn;
+  }
+  fn = '../songs/' + fn + '.txt';
+    fetch(fn)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Response is not ok');
+      }
+      return response.text();
+    })
+    .then(text => {
+      copyToInput(text);
+    })
+    .catch(error => {
+      console.log('Error while reading file ' + fn + ': ', error);
+    });    
 }
 
 function noteIndexToString(index, options, bass, outputObj) {
@@ -1152,7 +1218,6 @@ function surpriseMeClicked() {
   const input = Glob.settings.inputArea;
   let isInt = true;
   let n = 0;
-  let song = {};
   let value = "";
 
   n = 0;
@@ -1172,11 +1237,9 @@ function surpriseMeClicked() {
     }
   }
   if (value === "index" || value === "?") {
-    song = Songs.loadSong(0);
-    input.value = song.join("\n");
+    loadIndex();
   } else if (value === "!") {
-    song = Songs.loadSong(100);
-    input.value = song.join("\n");
+    loadOtherIndex();
   } else {
     if (n === 0) {
       if (confirm("Load a random example song?")) {
@@ -1187,11 +1250,7 @@ function surpriseMeClicked() {
     }
   }
   if (n > 0) {
-    song = Songs.loadSong(n);
-    input.value = song.join("\n");
-    Glob.settings.inputFormat.value = "CDE";
-    Glob.settings.semitones.value = 0;
-    transposeClicked();
+    loadSongFromFile(n);
   }
 }
 
@@ -1327,9 +1386,8 @@ function transposeClicked(print = false) {
   for (let i = 0; i < outputData2.length; i++) {
     ignore = false;
     if (chordsIsBold && options.outputFormat !== "INLINE" && outputInfo[i]) {
-      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${
-        outputData2[i]
-      }</div>`;
+      outputData2[i] = `<div ${addColor(styleBold, chordColor, theme)}>${outputData2[i]
+        }</div>`;
     } else {
       changed = false;
       if (options.outputFormat !== "INLINE") {
@@ -1437,13 +1495,11 @@ function transposeClicked(print = false) {
       }
       if (!changed) {
         if (options.outputFormat !== "INLINE" && outputInfo[i]) {
-          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${
-            outputData2[i]
-          }</div>`;
+          outputData2[i] = `<div ${addColor(style, chordColor, theme)}>${outputData2[i]
+            }</div>`;
         } else {
-          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${
-            outputData2[i]
-          }</div>`;
+          outputData2[i] = `<div ${addColor(style, textColor, theme)}>${outputData2[i]
+            }</div>`;
         }
       }
     }

@@ -1,0 +1,55 @@
+{scroll: 200}
+{title: Hello}
+{comment_italic: Lionel Richie}
+
+Fm  Fm/Eb Fm/Db Fm/Eb Fm/Db
+
+     Fm              Fm/Eb        Fm/Db Fm/Eb Fm/Db
+I've been alone with you inside my mind
+        d.push(
+          "    Fm                Fm/Eb           Fm/Db        Fm/Eb Fm/Db"
+        );
+And in my dreams I've kissed your lips a thousand times
+  Fm                Fm/Eb          Fm/Db Fm/Eb Fm/Db
+I sometimes see you pass outside my door
+   Fm Fm/Eb  Fm/Db                F
+Hello, is it me you're looking for?
+
+      Bbm                Eb
+I can see it in your eyes
+      Ab             Db
+I can see it in your smile
+        d.push(
+          "       Gb           Csus4 C           Fm       Fm/G Fm/Ab Fm/G"
+        );
+You're all I've ever wanted, (and) my arms are open wide
+           Bbm                  Eb
+'Cause you know just what to say
+        Ab                 Db
+And you know just what to do
+        d.push(
+          "      Gb                Csus4  C       Fm Fm/Eb Fm/Db Fm/Eb Fm/Db"
+        );
+And I want to tell you so much, I love you ...
+
+  Fm              Fm/Eb           Fm/Db Fm/Eb Fm/Db
+I long to see the sunlight in your hair
+    Fm                Fm/Eb     Fm/Db          Fm/Eb Fm/Db
+And tell you time and time again how much I care
+     Fm             Fm/Eb          Fm/Db Fm/Eb Fm/Db
+Sometimes I feel my heart will overflow
+   Fm Fm/Eb      Fm/Db              F
+Hello, I've just got to let you know
+
+         Bbm              Eb
+'Cause I wonder where you are
+      Ab              Db
+And I wonder what you do
+Gb                Csus4 C       Fm     Fm/G   Fm/Ab Fm/G
+Are you somewhere feeling lonely, or is someone loving you?
+        Bbm               Eb
+Tell me how to win your heart
+      Ab            Db
+For I haven't got a clue
+    Gb              Csus4 C        Fm Fm/Eb Fm/Db Fm/Eb Fadd2
+But let me start by saying, I love you ...
