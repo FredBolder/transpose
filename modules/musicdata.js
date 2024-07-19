@@ -326,6 +326,10 @@ class MusicData {
       ct = "augM11";
     } else if (ct === "M13#5") {
       ct = "augM13";
+    } else if (ct === "2") {
+      ct = "add2";
+    } else if (ct === "m2") {
+      ct = "madd2";
     } else if (ct === "no3") {
       ct = "5";
     } else if (ct === "7no3") {
