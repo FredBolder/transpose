@@ -6,9 +6,7 @@ Fm  Fm/Eb Fm/Db Fm/Eb Fm/Db
 
      Fm              Fm/Eb        Fm/Db Fm/Eb Fm/Db
 I've been alone with you inside my mind
-        d.push(
-          "    Fm                Fm/Eb           Fm/Db        Fm/Eb Fm/Db"
-        );
+    Fm                Fm/Eb           Fm/Db        Fm/Eb Fm/Db
 And in my dreams I've kissed your lips a thousand times
   Fm                Fm/Eb          Fm/Db Fm/Eb Fm/Db
 I sometimes see you pass outside my door
@@ -19,17 +17,13 @@ Hello, is it me you're looking for?
 I can see it in your eyes
       Ab             Db
 I can see it in your smile
-        d.push(
-          "       Gb           Csus4 C           Fm       Fm/G Fm/Ab Fm/G"
-        );
+       Gb           Csus4 C           Fm       Fm/G Fm/Ab Fm/G
 You're all I've ever wanted, (and) my arms are open wide
            Bbm                  Eb
 'Cause you know just what to say
         Ab                 Db
 And you know just what to do
-        d.push(
-          "      Gb                Csus4  C       Fm Fm/Eb Fm/Db Fm/Eb Fm/Db"
-        );
+      Gb               Csus4 C         Fm Fm/Eb Fm/Db Fm/Eb Fm/Db
 And I want to tell you so much, I love you ...
 
   Fm              Fm/Eb           Fm/Db Fm/Eb Fm/Db

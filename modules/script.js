@@ -603,6 +603,8 @@ function loadOtherIndex() {
   d.push("104 Νύχτωσε χωρίς φεγγάρι");
   d.push("105 Το κύμα");
   d.push("106 Χωρίς εσένα δεν υπάρχω");
+  d.push("107 Γλυκά μου μάτια");
+  d.push("108 Περνάς καλά");
   input.value = d.join("\n");
 }
 
@@ -1239,7 +1241,7 @@ function surpriseMeClicked() {
     }
     if (isInt) {
       n = parseInt(value);
-      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 106))) {
+      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 108))) {
         n = 0;
       }
     }
