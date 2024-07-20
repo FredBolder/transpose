@@ -818,9 +818,11 @@ function showHide() {
   }
 }
 
-function startScroll() {
-  // Go to top of song
-  window.scrollBy(0, Glob.settings.outputArea.getBoundingClientRect().top);
+function startScroll(gotoTop = false) {
+  if (gotoTop) {
+    // Go to top of song
+    window.scrollBy(0, Glob.settings.outputArea.getBoundingClientRect().top);
+  }
 
   Glob.settings.btScroll.innerText = "Stop";
   Glob.scrollID = setInterval(function () {
@@ -1198,7 +1200,7 @@ function commentClicked() {
 
 function scrollClicked() {
   if (Glob.scrollID === null) {
-    startScroll();
+    startScroll(true);
   } else {
     stopScroll();
   }
