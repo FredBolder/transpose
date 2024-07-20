@@ -819,6 +819,9 @@ function showHide() {
 }
 
 function startScroll() {
+  // Go to top of song
+  window.scrollBy(0, Glob.settings.outputArea.getBoundingClientRect().top);
+
   Glob.settings.btScroll.innerText = "Stop";
   Glob.scrollID = setInterval(function () {
     window.scrollBy(0, 1);
@@ -826,7 +829,7 @@ function startScroll() {
       stopScroll();
     } else {
       let rect = Glob.settings.outputArea.getBoundingClientRect();
-      if (rect.bottom < (window.innerHeight / 2)) {
+      if (rect.bottom < (window.innerHeight / 1.5)) {
         stopScroll();
       }
     }
