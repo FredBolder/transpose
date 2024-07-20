@@ -1,6 +1,8 @@
 {chordcolour: red}
 {title: Σ’ αγαπώ γιατί είσαι ωραία}
 
+Am E7 Am  Am Dbdim Dm  E7  Am  E7  Am
+
 Am               E7               A7 Dm
 Σ’ αγαπώ, σ’ αγαπώ γιατί είσαι ωραί--α
        E7               Am

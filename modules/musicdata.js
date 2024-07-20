@@ -94,6 +94,7 @@ class MusicData {
     59: [0, 7, 14],
     6: [0, 4, 7, 9],
     69: [0, 4, 7, 9, 14],
+    "6no3": [0, 7, 9],
     "69#11": [0, 4, 7, 9, 14, 18],
     "69sus4": [0, 5, 7, 9, 14],
     "6sus2": [0, 2, 7, 9],
@@ -330,6 +331,10 @@ class MusicData {
       ct = "add2";
     } else if (ct === "m2") {
       ct = "madd2";
+    } else if (ct === "4") {
+      ct = "add4";
+    } else if (ct === "m4") {
+      ct = "madd4";
     } else if (ct === "no3") {
       ct = "5";
     } else if (ct === "7no3") {
