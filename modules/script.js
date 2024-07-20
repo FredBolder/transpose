@@ -824,6 +824,11 @@ function startScroll() {
     window.scrollBy(0, 1);
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
       stopScroll();
+    } else {
+      let rect = Glob.settings.outputArea.getBoundingClientRect();
+      if (rect.bottom < (window.innerHeight / 2)) {
+        stopScroll();
+      }
     }
   }, Glob.scrollInterval);
 }
