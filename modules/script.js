@@ -589,6 +589,7 @@ function loadIndex() {
   d.push("011 Yes sir, that's my baby");
   d.push("012 Ένας αϊτός (Greek folk song)");
   d.push("013 Σ’ αγαπώ γιατί είσαι ωραία");
+  d.push("014 The House of the Rising Sun");
   input.value = d.join("\n");
 }
 

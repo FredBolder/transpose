@@ -3,7 +3,7 @@ class Songs {
     static shownIndex = 0;
   
     static numberOfSongs() {
-      return 13;
+      return 14;
     }
   
     static recentlyShow(n) {
