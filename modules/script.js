@@ -1297,6 +1297,33 @@ function upClicked() {
   }
 }
 
+async function keyboardClicked() {
+  // Initialize AudioContext
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  // URLs of the WAV files
+  const urls = ['/wav/01.wav', '/wav/02.wav'];
+
+  // Function to fetch and decode audio data
+  const loadAudioData = async (url) => {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    return audioContext.decodeAudioData(arrayBuffer);
+  };
+
+  // Load and decode all audio files
+  const audioBuffers = await Promise.all(urls.map(url => loadAudioData(url)));
+
+  // Create and configure BufferSource nodes for each audio buffer
+  audioBuffers.forEach(audioBuffer => {
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+  });
+
+}
+
 function transposeClicked(print = false) {
   let changed = false;
   let chordColor = "";
@@ -1896,6 +1923,9 @@ try {
   document.getElementById("btTranspose").addEventListener("click", () => {
     transposeClicked();
   });
+  document.getElementById("keyboard").addEventListener("click", () => {
+    keyboardClicked();
+  });
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
   document
@@ -1930,7 +1960,7 @@ try {
     setScrollInterval(-5);
   });
 } catch (e) {
-  //console.log(e);
+  console.log(e);
 }
 
 export { Options, keyToSemitones, transpose, getDirective };
