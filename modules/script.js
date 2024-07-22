@@ -1302,7 +1302,7 @@ async function keyboardClicked() {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
   // URLs of the WAV files
-  const urls = ['../wav/01.wav', '../wav/02.wav'];
+  const urls = ['wav/01.wav', 'wav/02.wav'];
 
   // Function to fetch and decode audio data
   const loadAudioData = async (url) => {
