@@ -398,6 +398,10 @@ function drawKeyboard(idx, notes) {
       x += dx1 / 2;
     }
   }
+  Glob.lastChord = [];
+  for (let i = 0; i < notes.length; i++) {
+    Glob.lastChord.push(notes[i]);
+  }
 }
 
 function fixNoteIndex(n) {
@@ -1298,30 +1302,46 @@ function upClicked() {
 }
 
 async function keyboardClicked() {
-  // Initialize AudioContext
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  if (Glob.lastChord.length > 0) {
+    // Initialize AudioContext
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-  // URLs of the WAV files
-  const urls = ['wav/01.wav', 'wav/02.wav'];
+    const urls = [];
+    for (let i = 0; i < Glob.lastChord.length; i++) {
+      let url = (Glob.lastChord[i] + 1).toString();
+      if (url.length < 2) {
+        url = '0' + url;
+      }
+      url = 'wav/' + url + '.wav';
+      urls.push(url);
+    }
 
-  // Function to fetch and decode audio data
-  const loadAudioData = async (url) => {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    return audioContext.decodeAudioData(arrayBuffer);
-  };
+    // Function to fetch and decode audio data
+    const loadAudioData = async (url) => {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      return audioContext.decodeAudioData(arrayBuffer);
+    };
 
-  // Load and decode all audio files
-  const audioBuffers = await Promise.all(urls.map(url => loadAudioData(url)));
+    // Load and decode all audio files
+    const audioBuffers = await Promise.all(urls.map(url => loadAudioData(url)));
 
-  // Create and configure BufferSource nodes for each audio buffer
-  audioBuffers.forEach(audioBuffer => {
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-  });
+    // Create and configure BufferSource nodes for each audio buffer
+    audioBuffers.forEach(audioBuffer => {
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
 
+      // Create a GainNode to control the volume
+      const gainNode = audioContext.createGain();
+      // Reduce the gain to avoid clipping. Adjust this value as necessary.
+      gainNode.gain.value = 0.9 / audioBuffers.length; // Reduce volume based on the number of sources
+
+      // Connect the source to the gain node and then to the destination
+      source.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      source.start();
+    });
+  }
 }
 
 function transposeClicked(print = false) {
