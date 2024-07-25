@@ -1,11 +1,13 @@
 class Glob {
   static lastChord;
+  static lastChordIdx;
   static scrollID;
   static scrollInterval;
   static settings;
 
   static init() {
     this.lastChord = [];
+    this.lastChordIdx = 0;
     this.scrollID = null;
     this.scrollInterval = 200;
     this.settings = null;

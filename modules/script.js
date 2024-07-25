@@ -299,7 +299,9 @@ function drawKeyboard(idx, notes) {
   let dx1 = 0;
   let dx2 = 0;
   let n1 = 0;
+  let drop = "";
   let position = "";
+  let up = false;
   let x = 0;
   let y = 0;
   const keyboard = Glob.settings.keyboard;
@@ -348,6 +350,7 @@ function drawKeyboard(idx, notes) {
   }
   // Notes
   if (notes.length > 1) {
+    // Inversion
     position = Glob.settings.position.value;
     if (position === "INV1" || position === "INV2" || position === "INV3") {
       notes[0] += 12;
@@ -362,6 +365,41 @@ function drawKeyboard(idx, notes) {
         notes[0] += 12;
       }
     }
+    notes.sort(function(a, b) {
+      return a - b;
+    });
+
+    // Drop
+    drop = Glob.settings.drop.value;
+    if ((drop === "DROP2") && (notes.length >= 2)) {
+      notes[notes.length - 2] -= 12;
+    }
+    if ((drop === "DROP3") && (notes.length >= 3)) {
+      notes[notes.length - 3] -= 12;
+    }
+    if ((drop === "DROP1AND3") && (notes.length >= 3)) {
+      notes[notes.length - 1] -= 12;
+      notes[notes.length - 3] -= 12;
+    }
+    if ((drop === "DROP2AND4") && (notes.length >= 4)) {
+      notes[notes.length - 2] -= 12;
+      notes[notes.length - 4] -= 12;
+    }
+
+    // Check if chord needs to be transposed one octave up
+    up = false;
+    for (let i = 0; i < notes.length; i++) {
+      if (notes[i] < -idx) {
+        up = true;
+      }
+    }
+    if (up) {
+      for (let i = 0; i < notes.length; i++) {
+        notes[i] += 12;
+      }
+    }
+
+    // Draw note dots
     x = 0;
     for (let i = 0; i < 36; i++) {
       n1 = ((i + 1) % 12) - 1;
@@ -398,6 +436,7 @@ function drawKeyboard(idx, notes) {
       x += dx1 / 2;
     }
   }
+  Glob.lastChordIdx = idx;
   Glob.lastChord = [];
   for (let i = 0; i < notes.length; i++) {
     Glob.lastChord.push(notes[i]);
@@ -1308,7 +1347,7 @@ async function keyboardClicked() {
 
     const urls = [];
     for (let i = 0; i < Glob.lastChord.length; i++) {
-      let url = (Glob.lastChord[i] + 1).toString();
+      let url = (Glob.lastChord[i] + Glob.lastChordIdx + 1).toString();
       if (url.length < 2) {
         url = '0' + url;
       }
@@ -1913,6 +1952,11 @@ try {
       drawKeyboard(0, []);
       Glob.settings.numberOfChords.innerHTML = getNumberOfChords();
       Glob.settings.position.addEventListener("change", (e) => {
+        if (Glob.settings.inputChordInfo.value.trim() !== "") {
+          chordInfoClicked();
+        }
+      });
+      Glob.settings.drop.addEventListener("change", (e) => {
         if (Glob.settings.inputChordInfo.value.trim() !== "") {
           chordInfoClicked();
         }

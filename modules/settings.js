@@ -6,6 +6,7 @@ class Settings {
     this.chordsIsBold = document.getElementById("chordsBold");
     this.commentType = document.getElementById("commentType");
     this.compact = document.getElementById("compact");
+    this.drop = document.getElementById("drop");
     this.exportFormat = document.getElementById("exportFormat")
     this.groupKey = document.getElementById("groupKey");
     this.ignoreColors = document.getElementById("ignoreColors");
