@@ -12,6 +12,7 @@ import { Roman } from "./roman.js";
 import { Songs } from "./songs.js";
 import { Glob } from "./glob.js";
 import { Settings } from "./settings.js";
+import { Audio } from "./audio.js";
 
 Glob.init();
 
@@ -1378,9 +1379,6 @@ async function keyboardClicked(e) {
         break;
     }
 
-    // Initialize AudioContext
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
     const urls = [];
     for (let i = 0; i < Glob.lastChord.length; i++) {
       let url = (Glob.lastChord[i] + Glob.lastChordIdx + 1).toString();
@@ -1391,26 +1389,22 @@ async function keyboardClicked(e) {
       urls.push(url);
     }
 
-    // Function to fetch and decode audio data
-    const loadAudioData = async (url) => {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-      return audioContext.decodeAudioData(arrayBuffer);
-    };
-
-    // Load and decode all audio files
-    const audioBuffers = await Promise.all(urls.map(url => loadAudioData(url)));
+    // Check if all URLs are cached
+    if (!urls.every(url => Audio.audioCache.has(url))) {
+      await Audio.preloadAudioFiles(urls);
+    }
 
     // Create and configure BufferSource nodes for each audio buffer and store them
-    const sources = audioBuffers.map(audioBuffer => {
-      const source = audioContext.createBufferSource();
+    const sources = urls.map(url => {
+      const audioBuffer = Audio.getCachedAudioBuffer(url);
+      const source = Audio.audioContext.createBufferSource();
       source.buffer = audioBuffer;
 
-      const gainNode = audioContext.createGain();
-      gainNode.gain.value = 0.9 / audioBuffers.length;
+      const gainNode = Audio.audioContext.createGain();
+      gainNode.gain.value = 0.9 / urls.length;
 
       source.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(Audio.audioContext.destination);
 
       return source;
     });
@@ -2065,6 +2059,7 @@ try {
   document.getElementById("btScrollFaster").addEventListener("click", () => {
     setScrollInterval(-5);
   });
+  Audio.init();
 } catch (e) {
   console.log(e);
 }
