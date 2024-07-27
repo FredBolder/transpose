@@ -1401,24 +1401,25 @@ async function keyboardClicked(e) {
     // Load and decode all audio files
     const audioBuffers = await Promise.all(urls.map(url => loadAudioData(url)));
 
-    // Create and configure BufferSource nodes for each audio buffer
-    for (let i = 0; i < audioBuffers.length; i++) {
-      const audioBuffer = audioBuffers[i];
+    // Create and configure BufferSource nodes for each audio buffer and store them
+    const sources = audioBuffers.map(audioBuffer => {
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
 
-      // Create a GainNode to control the volume
       const gainNode = audioContext.createGain();
-      // Reduce the gain to avoid clipping. Adjust this value as necessary.
-      gainNode.gain.value = 0.9 / audioBuffers.length; // Reduce volume based on the number of sources
+      gainNode.gain.value = 0.9 / audioBuffers.length;
 
-      // Connect the source to the gain node and then to the destination
       source.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      source.start();
-      if ((playMode > 1) && (i < audioBuffers.length - 1)) {
-        await Glob.sleep(timeBetweenNotes);
+      return source;
+    });
+
+    // Play the pre-configured sources with the specified delay
+    for (let i = 0; i < sources.length; i++) {
+      sources[i].start();
+      if (i < sources.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, timeBetweenNotes));
       }
     }
   }
