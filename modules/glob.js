@@ -13,6 +13,10 @@ class Glob {
     this.settings = null;
   }
 
+  static sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   static removeChars(input, chars) {
     let result = "";
     for (let i = 0; i < input.length; i++) {

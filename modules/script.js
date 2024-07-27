@@ -365,7 +365,9 @@ function drawKeyboard(idx, notes) {
         notes[0] += 12;
       }
     }
-    notes.sort(function(a, b) {
+
+    // Sort the notes
+    notes.sort(function (a, b) {
       return a - b;
     });
 
@@ -398,6 +400,11 @@ function drawKeyboard(idx, notes) {
         notes[i] += 12;
       }
     }
+
+    // Sort the notes
+    notes.sort(function (a, b) {
+      return a - b;
+    });
 
     // Draw note dots
     x = 0;
@@ -1340,8 +1347,37 @@ function upClicked() {
   }
 }
 
-async function keyboardClicked() {
+async function keyboardClicked(e) {
   if (Glob.lastChord.length > 0) {
+    const rect = keyboard.getBoundingClientRect();
+    const xMouse = e.clientX - rect.left;
+    const p1 = rect.width / 3;
+    const p2 = p1 * 2;
+    let playMode = 0;
+    let timeBetweenNotes = 1000;
+
+    if (xMouse < p1) {
+      playMode = 1;
+    } else if ((xMouse >= p1) && (xMouse < p2)) {
+      playMode = 2;
+    } else {
+      playMode = 3;
+    }
+
+    switch (playMode) {
+      case 1:
+        timeBetweenNotes = 0;
+        break;
+      case 2:
+        timeBetweenNotes = 50;
+        break;
+      case 3:
+        timeBetweenNotes = 250;
+        break;
+      default:
+        break;
+    }
+
     // Initialize AudioContext
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -1366,7 +1402,8 @@ async function keyboardClicked() {
     const audioBuffers = await Promise.all(urls.map(url => loadAudioData(url)));
 
     // Create and configure BufferSource nodes for each audio buffer
-    audioBuffers.forEach(audioBuffer => {
+    for (let i = 0; i < audioBuffers.length; i++) {
+      const audioBuffer = audioBuffers[i];
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
 
@@ -1378,8 +1415,12 @@ async function keyboardClicked() {
       // Connect the source to the gain node and then to the destination
       source.connect(gainNode);
       gainNode.connect(audioContext.destination);
+
       source.start();
-    });
+      if ((playMode > 1) && (i < audioBuffers.length - 1)) {
+        await Glob.sleep(timeBetweenNotes);
+      }
+    }
   }
 }
 
@@ -1987,8 +2028,8 @@ try {
   document.getElementById("btTranspose").addEventListener("click", () => {
     transposeClicked();
   });
-  document.getElementById("keyboard").addEventListener("click", () => {
-    keyboardClicked();
+  document.getElementById("keyboard").addEventListener("mousedown", (e) => {
+    keyboardClicked(e);
   });
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
