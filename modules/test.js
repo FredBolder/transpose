@@ -392,7 +392,7 @@ function test() {
     for (let j = 0; j < keys.length && !duplicate; j++) {
       if (
         Glob.removeChars(MusicData.intervals[keys[j]].toString(), "-") ===
-          value &&
+        value &&
         j != i
       ) {
         duplicate = true;
@@ -435,6 +435,36 @@ function test() {
     "Test 40",
     [0, 4, 8, 11].toString(),
     MusicData.getInterval("AugM7").toString()
+  );
+
+  // Test 41
+  initTest("CDE", true, false, false, true, false, false, "CDE");
+  inputData.push("C C# D D# E F F# G G# A A# B 2x");
+  outputData = transpose(inputData, 1, testOptions).data;
+  checkResult(
+    "Test 41",
+    "C# D D# E F F# G G# A A# B C 2x",
+    outputData.join("\n")
+  );
+
+  // Test 42
+  initTest("CDE", true, false, false, true, false, false, "CDE");
+  inputData.push("C C# D D# 2X E F F# G G# A A# B >2x");
+  outputData = transpose(inputData, 1, testOptions).data;
+  checkResult(
+    "Test 42",
+    "C# D D# E 2X F F# G G# A A# B C >2x",
+    outputData.join("\n")
+  );
+
+  // Test 43
+  initTest("CDE", true, false, false, true, false, false, "CDE");
+  inputData.push("This is a [test] C D");
+  outputData = transpose(inputData, 1, testOptions).data;
+  checkResult(
+    "Test 43",
+    "This is a [test] C D",
+    outputData.join("\n")
   );
 
   // Extra test

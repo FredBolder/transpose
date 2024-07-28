@@ -1693,6 +1693,20 @@ function transposeLine(
   let sAdd = "";
   let skip = 0;
   let sNewChord = "";
+  let text = "";
+
+  function findIgnored(s, index) {
+    const ignoreList = ['[', ']', '<', '>', '2x', '2X'];
+    let result = '';
+    let i = 0;
+    while ((i < ignoreList.length) && (result === '')) {
+      if (s.indexOf(ignoreList[i], index) === index) {
+        result = ignoreList[i];
+      }
+      i++;
+    }
+    return result;
+  }
 
   inlineToInline =
     options.inputFormat === "INLINE" && options.outputFormat === "INLINE";
@@ -1718,10 +1732,17 @@ function transposeLine(
     newChord = false;
     sNewChord = "";
     if (!readChord) {
-      if (options.inputFormat !== "INLINE" && s[i] !== " " && s[i] !== "|") {
-        readChord = true;
-        position = i;
-        chord = "";
+      if (options.inputFormat !== "INLINE") {
+        text = findIgnored(s, i);
+        if (text != "") {
+          chords.push(new Chord(i, - 1, text));
+          i += text.length - 1;
+        }
+        if (s[i] !== " " && s[i] !== "|" && text === "") {
+          readChord = true;
+          position = i;
+          chord = "";
+        }
       }
       if (
         options.inputFormat === "INLINE" &&
@@ -1862,57 +1883,62 @@ function transposeLine(
       n = fixNoteIndex(chords[i].noteIndex + semiTones);
       noteStr = noteIndexToString(n, options, false, outputObj);
       chordType = chords[i].chordType;
-      if (options.strict) {
-        if (!checkChordType(chordType)) {
-          hasText = true;
-        }
-      }
-      if (!hasText) {
-        chordType = changeBass(
-          chordType,
-          semiTones,
-          options,
-          inputObj,
-          outputObj
-        );
-        if (chordType === "ERROR") {
-          hasText = true;
-        }
-      }
-      if (!hasText) {
-        if (options.inputFormat === "GREEK") {
-          chordType = convertGreekType(chordType);
-        }
-        if (options.outputFormat === "ROMAN") {
-          if (isRomanLower(chordType)) {
-            noteStr = noteStr.toLowerCase();
-          } else {
-            noteStr = noteStr.toUpperCase();
-          }
-          if (noteStr.startsWith("B")) {
-            noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
+      if (chords[i].noteIndex === -1) {
+        // Used for ignored text
+        s += chords[i].chordType;
+      } else {
+        if (options.strict) {
+          if (!checkChordType(chordType)) {
+            hasText = true;
           }
         }
-        s += bracket(options, true);
-        s += noteStr;
-        chordType = outputObj.convertType(chordType, options);
-        chordType = convertTypeToSimple(chordType, options);
-        chordType = convertTypeToCompact(chordType, options);
-        s += chordType;
-        s += bracket(options, false);
-        if (
-          options.spaceBetween ||
-          options.outputFormat === "ROMAN" ||
-          options.outputFormat === "NASHVILLE"
-        ) {
-          s += " ";
+        if (!hasText) {
+          chordType = changeBass(
+            chordType,
+            semiTones,
+            options,
+            inputObj,
+            outputObj
+          );
+          if (chordType === "ERROR") {
+            hasText = true;
+          }
         }
-        if (mergeWithNextLine) {
-          outputInline +=
-            bracket(options, true) +
-            noteStr +
-            chordType +
-            bracket(options, false);
+        if (!hasText) {
+          if (options.inputFormat === "GREEK") {
+            chordType = convertGreekType(chordType);
+          }
+          if (options.outputFormat === "ROMAN") {
+            if (isRomanLower(chordType)) {
+              noteStr = noteStr.toLowerCase();
+            } else {
+              noteStr = noteStr.toUpperCase();
+            }
+            if (noteStr.startsWith("B")) {
+              noteStr = noteStr[0].toLowerCase() + noteStr.slice(1);
+            }
+          }
+          s += bracket(options, true);
+          s += noteStr;
+          chordType = outputObj.convertType(chordType, options);
+          chordType = convertTypeToSimple(chordType, options);
+          chordType = convertTypeToCompact(chordType, options);
+          s += chordType;
+          s += bracket(options, false);
+          if (
+            options.spaceBetween ||
+            options.outputFormat === "ROMAN" ||
+            options.outputFormat === "NASHVILLE"
+          ) {
+            s += " ";
+          }
+          if (mergeWithNextLine) {
+            outputInline +=
+              bracket(options, true) +
+              noteStr +
+              chordType +
+              bracket(options, false);
+          }
         }
       }
     }
@@ -2061,7 +2087,9 @@ try {
   });
   Audio.init();
 } catch (e) {
-  console.log(e);
+  if (typeof window !== 'undefined') {
+    console.log(e);
+  }
 }
 
 export { Options, keyToSemitones, transpose, getDirective };
