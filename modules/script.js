@@ -641,6 +641,7 @@ function loadIndex() {
   d.push("012 Ένας αϊτός (Greek folk song)");
   d.push("013 Σ’ αγαπώ γιατί είσαι ωραία");
   d.push("014 The House of the Rising Sun");
+  d.push("015 Πάει ο παλιός ο χρόνος");
   input.value = d.join("\n");
 }
 
