@@ -658,6 +658,7 @@ function loadOtherIndex() {
   d.push("106 Χωρίς εσένα δεν υπάρχω");
   d.push("107 Γλυκά μου μάτια");
   d.push("108 Περνάς καλά");
+  d.push("109 Ξανά");
   input.value = d.join("\n");
 }
 
@@ -1304,7 +1305,7 @@ function surpriseMeClicked() {
     }
     if (isInt) {
       n = parseInt(value);
-      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 108))) {
+      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 109))) {
         n = 0;
       }
     }
