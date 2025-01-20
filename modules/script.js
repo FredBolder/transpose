@@ -659,6 +659,7 @@ function loadOtherIndex() {
   d.push("107 Γλυκά μου μάτια");
   d.push("108 Περνάς καλά");
   d.push("109 Ξανά");
+  d.push("110 Δεν ξέρω πόσο σ’ αγαπώ");
   input.value = d.join("\n");
 }
 
@@ -1305,7 +1306,7 @@ function surpriseMeClicked() {
     }
     if (isInt) {
       n = parseInt(value);
-      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 109))) {
+      if (n < 1 || (n > Songs.numberOfSongs() && (n < 101 || n > 110))) {
         n = 0;
       }
     }
