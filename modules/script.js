@@ -519,6 +519,38 @@ function drawUkulele(idx, notes) {
       }
     }
 
+    // Missing notes
+    for (let i = 0; i < transposed.length; i++) {
+      found = false;
+      for (let j = 0; j < snares.length; j++) {
+        if (snares[j].fret >= 0) {
+          if (((snares[j].note + snares[j].fret) === transposed[i]) || ((snares[j].note + snares[j].fret + 12) === transposed[i])) {
+            found = true;
+          }
+        }
+      }
+      if (!found) {
+        for (let j = 1; j <= rows; j++) {
+          for (let k = 0; k < snares.length; k++) {
+            if (((snares[k].note + j) === transposed[i]) || ((snares[k].note + j) === (transposed[i] + 12))) {
+              // Check if the original note is played by another snare
+              for (let l = 0; l < snares.length; l++) {
+                if (k !== l) {
+                  let n = Math.abs((snares[k].note + snares[k].fret) - (snares[l].note + snares[l].fret));
+                  if ((n === 0) || (n === 12)) {
+                    if (!found) {
+                      snares[k].fret = j
+                    }
+                    found = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     // Draw dots and crosses
     uku.lineWidth = 2;
     uku.fillStyle = "black";
