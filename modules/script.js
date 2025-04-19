@@ -451,6 +451,106 @@ function drawKeyboard(idx, notes) {
   }
 }
 
+function drawUkulele(idx, notes) {
+  const columns = 3;
+  const rows = 5;
+  let ch = 0;
+  let cw = 0;
+  let dx1 = 0;
+  let dy1 = 0;
+  let found = false;
+  let snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
+
+  const ukulele = Glob.settings.ukulele;
+  ukulele.height = ukulele.clientHeight * 2;
+  ukulele.width = ukulele.clientWidth * 2;
+  const uku = ukulele.getContext("2d");
+  uku.reset();
+
+  //console.log(notes);
+  // console.log(
+  //   `Width: ${ukulele.width}, Height: ${ukulele.height}, ClientWidth: ${ukulele.clientWidth}, ClientHeight: ${ukulele.clientHeight}`
+  // );
+
+  ch = ukulele.height;
+  cw = ukulele.width;
+  dx1 = cw / (columns + 1);
+  dy1 = ch / (rows + 2);
+
+  // Draw raster
+  uku.lineWidth = 2;
+  uku.fillStyle = "white";
+  uku.strokeStyle = "black";
+  for (let col = 0; col < columns; col++) {
+    for (let row = 0; row < rows; row++) {
+      uku.beginPath;
+      uku.fillRect((col * dx1) + (0.5 * dx1), (row * dy1) + (1.5 * dy1), dx1, dy1);
+      uku.strokeRect((col * dx1) + (0.5 * dx1), (row * dy1) + (1.5 * dy1), dx1, dy1);
+    }
+  }
+  uku.lineWidth = 6;
+  uku.beginPath();
+  uku.moveTo(0.5 * dx1, 1.5 * dy1);
+  uku.lineTo((columns * dx1) + (0.5 * dx1), 1.5 * dy1);
+  uku.stroke();
+
+  if (notes.length > 0) {
+    let transposed = [];
+    for (let i = 0; i < notes.length; i++) {
+      let note = notes[i] + idx;
+      if (note >= 12) {
+        note -= 12;
+      }
+      transposed.push(note);
+    }
+
+    // Fret position
+    for (let snare = 0; snare < snares.length; snare++) {
+      const note = snares[snare].note;
+      if (!transposed.includes(note)) {
+        found = false;
+        while (!found && (snares[snare].fret <= rows)) {
+          snares[snare].fret++;
+          found = (transposed.includes(note + snares[snare].fret) || transposed.includes(note + snares[snare].fret - 12));
+        }
+        if (!found) {
+          snares[snare].fret = -1;
+        }
+      }
+    }
+
+    // Draw dots and crosses
+    uku.lineWidth = 2;
+    uku.fillStyle = "black";
+    uku.strokeStyle = "black";
+    for (let col = 0; col <= columns; col++) {
+      if (snares[col].fret === 0) {
+        uku.beginPath();
+        uku.arc((col * dx1) + (0.5 * dx1), (dy1 * 0.7), 6, 0, 2 * Math.PI);
+        uku.stroke();
+      }
+      if (snares[col].fret === -1) {
+        uku.beginPath();
+        uku.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) - 5);
+        uku.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) + 5);
+        uku.stroke();
+        uku.beginPath();
+        uku.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) + 5);
+        uku.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) - 5);
+        uku.stroke();
+      }
+      for (let row = 0; row < rows; row++) {
+        if (snares[col].fret === (row + 1)) {
+          uku.beginPath();
+          uku.arc((col * dx1) + (0.5 * dx1), (row * dy1) + dy1 + dy1, 6, 0, 2 * Math.PI);
+          uku.fill();
+          uku.stroke();
+        }
+      }
+    }
+  }
+}
+
 function fixNoteIndex(n) {
   while (n > 11) {
     n -= 12;
@@ -1005,6 +1105,7 @@ function chordInfoClicked() {
     }
     output.innerHTML = s1;
     drawKeyboard(0, []);
+    drawUkulele(0, []);
   } else {
     // Remove spaces and square brackets
     input = Glob.removeChars(input, " []");
@@ -1054,8 +1155,10 @@ function chordInfoClicked() {
     if (info === "") {
       info = "No info available for this chord yet";
       drawKeyboard(0, []);
+      drawUkulele(0, []);
     } else {
       drawKeyboard(idx, chordNotes);
+      drawUkulele(idx, chordNotes);
     }
     output.innerHTML = info;
   }
@@ -2015,6 +2118,7 @@ try {
       Glob.settings = new Settings();
       //console.log("Settings loaded");
       drawKeyboard(0, []);
+      drawUkulele(0, []);
       Glob.settings.numberOfChords.innerHTML = getNumberOfChords();
       Glob.settings.position.addEventListener("change", (e) => {
         if (Glob.settings.inputChordInfo.value.trim() !== "") {

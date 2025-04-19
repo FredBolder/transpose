@@ -29,6 +29,7 @@ class Settings {
     this.simplifyChords = document.getElementById("simplifyChords");
     this.textSize = document.getElementById("textSize");
     this.theme = document.getElementById("theme");
+    this.ukulele = document.getElementById("ukulele");
     this.uppercase = document.getElementById("uppercase");
     this.useSpecial = document.getElementById("useSpecial");
     this.useTi = document.getElementById("useTi");
