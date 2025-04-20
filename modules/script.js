@@ -458,7 +458,8 @@ function drawUkulele(idx, notes) {
   let cw = 0;
   let dx1 = 0;
   let dy1 = 0;
-  let found = false;
+  let ok = false;
+  let nFound = 0;
   let snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
 
   const ukulele = Glob.settings.ukulele;
@@ -466,11 +467,6 @@ function drawUkulele(idx, notes) {
   ukulele.width = ukulele.clientWidth * 2;
   const uku = ukulele.getContext("2d");
   uku.reset();
-
-  //console.log(notes);
-  // console.log(
-  //   `Width: ${ukulele.width}, Height: ${ukulele.height}, ClientWidth: ${ukulele.clientWidth}, ClientHeight: ${ukulele.clientHeight}`
-  // );
 
   ch = ukulele.height;
   cw = ukulele.width;
@@ -505,45 +501,29 @@ function drawUkulele(idx, notes) {
     }
 
     // Fret position
-    for (let snare = 0; snare < snares.length; snare++) {
-      const note = snares[snare].note;
-      if (!transposed.includes(note)) {
-        found = false;
-        while (!found && (snares[snare].fret <= rows)) {
-          snares[snare].fret++;
-          found = (transposed.includes(note + snares[snare].fret) || transposed.includes(note + snares[snare].fret - 12));
-        }
-        if (!found) {
-          snares[snare].fret = -1;
-        }
-      }
-    }
-
-    // Missing notes
-    for (let i = 0; i < transposed.length; i++) {
-      found = false;
-      for (let j = 0; j < snares.length; j++) {
-        if (snares[j].fret >= 0) {
-          if (((snares[j].note + snares[j].fret) === transposed[i]) || ((snares[j].note + snares[j].fret + 12) === transposed[i])) {
-            found = true;
-          }
-        }
-      }
-      if (!found) {
-        for (let j = 1; j <= rows; j++) {
-          for (let k = 0; k < snares.length; k++) {
-            if (((snares[k].note + j) === transposed[i]) || ((snares[k].note + j) === (transposed[i] + 12))) {
-              // Check if the original note is played by another snare
-              for (let l = 0; l < snares.length; l++) {
-                if (k !== l) {
-                  let n = Math.abs((snares[k].note + snares[k].fret) - (snares[l].note + snares[l].fret));
-                  if ((n === 0) || (n === 12)) {
-                    if (!found) {
-                      snares[k].fret = j
-                    }
-                    found = true;
-                  }
+    ok = false;
+    for (let f1 = 0; f1 <= rows; f1++) {
+      for (let f2 = 0; f2 <= rows; f2++) {
+        for (let f3 = 0; f3 <= rows; f3++) {
+          for (let f4 = 0; f4 <= rows; f4++) {
+            let note1 = (snares[0].note + f1) % 12;
+            let note2 = (snares[1].note + f2) % 12;
+            let note3 = (snares[2].note + f3) % 12;
+            let note4 = (snares[3].note + f4) % 12;
+            if (!ok && transposed.includes(note1) && transposed.includes(note2) && transposed.includes(note3) && transposed.includes(note4)) {
+              nFound = 0;
+              for (let i = 0; i < transposed.length; i++) {
+                let note = transposed[i];
+                if ((note1 === note) || (note2 === note) || (note3 === note) || (note4 === note)) {
+                  nFound++;
                 }
+              }
+              if ((nFound === snares.length) || (nFound === transposed.length)) {
+                ok = true;
+                snares[0].fret = f1;
+                snares[1].fret = f2;
+                snares[2].fret = f3;
+                snares[3].fret = f4;
               }
             }
           }
