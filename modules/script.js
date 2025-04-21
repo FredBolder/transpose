@@ -493,11 +493,35 @@ function drawUkulele(idx, notes) {
   if (notes.length > 0) {
     let transposed = [];
     for (let i = 0; i < notes.length; i++) {
-      let note = notes[i] + idx;
-      if (note >= 12) {
-        note -= 12;
-      }
+      let note = (notes[i] + idx) % 12;
       transposed.push(note);
+    }
+
+    // Keep only the most important notes
+    if (transposed.length > 4) {
+      // Delete the fifth
+      let p = transposed.indexOf((7 + idx) % 12);
+      if (p >= 0) {
+        transposed.splice(p, 1);
+      }
+    }
+    if (transposed.length > 4) {
+      if (transposed.includes((17 + idx) % 12) || transposed.includes((21 + idx) % 12)) {
+        // Delete the ninth
+        let p = transposed.indexOf((14 + idx) % 12);
+        if (p >= 0) {
+          transposed.splice(p, 1);
+        }
+      }
+    }
+    if (transposed.length > 4) {
+      if (transposed.includes((21 + idx) % 12)) {
+        // Delete the eleventh
+        let p = transposed.indexOf((17 + idx) % 12);
+        if (p >= 0) {
+          transposed.splice(p, 1);
+        }
+      }
     }
 
     // Fret position
