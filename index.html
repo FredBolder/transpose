@@ -1,821 +1,712 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transpose</title>
-    <link rel="stylesheet" href="./main.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>Transpose by Fred Bolder</h1>
-        <div id="menuBar">
-          <div class="menu">
-            <button class="menu-button">Commands</button>
-            <div class="menu-content">
-              <div>
-                <select name="commentType" id="commentType">
-                  <option value="comment">Bold</option>
-                  <option value="comment_italic" selected="selected">Italic</option>
-                  <option value="comment_box">Box</option>
-                </select>
-                <button id="btComment">Comment</button>
-              </div>
-              <div>
-                <button id="btTitle">Title</button>
-              </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transpose</title>
+  <link rel="stylesheet" href="./main.css" />
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Transpose by Fred Bolder</h1>
+      <div id="menuBar">
+        <div class="menu">
+          <button class="menu-button">Commands</button>
+          <div class="menu-content">
+            <div>
+              <select name="commentType" id="commentType">
+                <option value="comment">Bold</option>
+                <option value="comment_italic" selected="selected">Italic</option>
+                <option value="comment_box">Box</option>
+              </select>
+              <button id="btComment">Comment</button>
             </div>
-          </div>
-          <div class="menu">
-            <button class="menu-button">Preferences</button>
-            <div class="menu-content">
-              <div>
-                <input
-                  type="checkbox"
-                  id="chordsBold"
-                  name="chordsBold"
-                  value="bold"
-                  checked
-                />
-                <label for="chordsBold">Chords=bold</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="ignoreColors"
-                  name="ignoreColors"
-                  value="ignoreColors"
-                />
-                <label for="ignoreColors">Ignore colors</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="compact"
-                  name="compact"
-                  value="compact"
-                />
-                <label for="compact">Compact</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="spaceBetween"
-                  name="spaceBetween"
-                  value="space"
-                  checked
-                />
-                <label for="spaceBetween">Space between chords</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="strict"
-                  name="strict"
-                  value="strict"
-                  checked
-                />
-                <label for="strict">Strict</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="simplifyChords"
-                  name="simplifyChords"
-                  value="simplify"
-                />
-                <label for="simplifyChords">Simplify chords</label>
-              </div>
-              <div>
-                <label for="textSize">Text size:</label>
-                <select name="textSize" id="textSize">
-                  <option value="XS">XS</option>
-                  <option value="SMALL">Small</option>
-                  <option value="NORMAL" selected="selected">Normal</option>
-                  <option value="LARGE">Large</option>
-                  <option value="XL">XL</option>
-                </select>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="uppercase"
-                  name="uppercase"
-                  value="upper"
-                />
-                <label for="uppercase">Uppercase notes</label>
-              </div>
-              <div>
-                <input
-                  type="checkbox"
-                  id="useSpecial"
-                  name="useSpecial"
-                  value="special"
-                />
-                <label for="useSpecial">Special chars</label>
-              </div>
-              <div>
-                <input type="checkbox" id="useTi" name="useTi" value="ti" />
-                <label for="useTi">Use Ti</label>
-              </div>
+            <div>
+              <button id="btTitle">Title</button>
             </div>
           </div>
         </div>
-      </header>
-      <main>
-        <div id="main">
-          <p>
-            Paste lyrics including chords in the first text area. Change the
-            settings and click the "Transpose / Convert" button. The result will
-            appear in the second text area. If the result is not what you
-            expect, press the Help button for more information.
-          </p>
-          <p>
-            Feel free to contact me by
-            <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
-            (fgh.bolder@gmail.com).
-          </p>
-          <div class="settings">
+        <div class="menu">
+          <button class="menu-button">Preferences</button>
+          <div class="menu-content">
             <div>
-              <button id="btHelp">Help</button>
+              <input type="checkbox" id="chordsBold" name="chordsBold" value="bold" checked />
+              <label for="chordsBold">Chords=bold</label>
             </div>
             <div>
-              <button id="btClear">Clear</button>
+              <input type="checkbox" id="ignoreColors" name="ignoreColors" value="ignoreColors" />
+              <label for="ignoreColors">Ignore colors</label>
             </div>
             <div>
-              <button id="btSurpriseMe">Surprise me</button>
+              <input type="checkbox" id="compact" name="compact" value="compact" />
+              <label for="compact">Compact</label>
             </div>
             <div>
-              <label for="theme">Theme:</label>
-              <select name="theme" id="theme">
-                <option value="LIGHT" selected="selected">Light</option>
-                <option value="DARK">Dark</option>
+              <input type="checkbox" id="spaceBetween" name="spaceBetween" value="space" checked />
+              <label for="spaceBetween">Space between chords</label>
+            </div>
+            <div>
+              <input type="checkbox" id="strict" name="strict" value="strict" checked />
+              <label for="strict">Strict</label>
+            </div>
+            <div>
+              <input type="checkbox" id="simplifyChords" name="simplifyChords" value="simplify" />
+              <label for="simplifyChords">Simplify chords</label>
+            </div>
+            <div>
+              <label for="textSize">Text size:</label>
+              <select name="textSize" id="textSize">
+                <option value="XS">XS</option>
+                <option value="SMALL">Small</option>
+                <option value="NORMAL" selected="selected">Normal</option>
+                <option value="LARGE">Large</option>
+                <option value="XL">XL</option>
               </select>
+            </div>
+            <div>
+              <input type="checkbox" id="uppercase" name="uppercase" value="upper" />
+              <label for="uppercase">Uppercase notes</label>
+            </div>
+            <div>
+              <input type="checkbox" id="useSpecial" name="useSpecial" value="special" />
+              <label for="useSpecial">Special chars</label>
+            </div>
+            <div>
+              <input type="checkbox" id="useTi" name="useTi" value="ti" />
+              <label for="useTi">Use Ti</label>
             </div>
           </div>
-          <textarea
-            id="input"
-            spellcheck="false"
-            placeholder="Paste lyrics including chords here"
-          ></textarea>
-          <div class="settings">
-            <div>
-              <label for="inputFormat">Input format:</label>
-              <select name="inputFormat" id="inputFormat">
-                <option value="CDE" selected="selected">C D E</option>
-                <option value="INLINE">[C] Inline</option>
-                <option value="DOREMI">Do Re Mi</option>
-                <option value="GERMAN1">German 1</option>
-                <option value="GERMAN2">German 2</option>
-                <option value="GREEK">Greek</option>
-                <option value="ROMAN">Roman</option>
-                <option value="NASHVILLE">Nashville</option>
-              </select>
-              <select name="bracketsInput" id="bracketsInput" class="hidden">
-                <option value="SQUARE" selected="selected">[C]</option>
-                <option value="ROUND">(C)</option>
-              </select>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="lowerIsMinor"
-                name="lowerIsMinor"
-                value="lowerIsMinor"
-              />
-              <label for="lowerIsMinor">Lowercase=minor</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="useSharps"
-                name="useSharps"
-                value="sharps"
-              />
-              <label for="useSharps">Use sharps (#)</label>
-            </div>
-            <div id="groupKey" class="hidden">
-              <label for="key">Key:</label>
-              <select name="key" id="key">
-                <option value="0" selected="selected">C</option>
-                <option value="1">C#/Db</option>
-                <option value="2">D</option>
-                <option value="3">D#/Eb</option>
-                <option value="4">E</option>
-                <option value="5">F</option>
-                <option value="6">F#/Gb</option>
-                <option value="7">G</option>
-                <option value="8">G#/Ab</option>
-                <option value="9">A</option>
-                <option value="10">A#/Bb</option>
-                <option value="11">B</option>
-                <option value="12">Cm</option>
-                <option value="13">C#m/Dbm</option>
-                <option value="14">Dm</option>
-                <option value="15">D#m/Ebm</option>
-                <option value="16">Em</option>
-                <option value="17">Fm</option>
-                <option value="18">F#m/Gbm</option>
-                <option value="19">Gm</option>
-                <option value="20">G#m/Abm</option>
-                <option value="21">Am</option>
-                <option value="22">A#m/Bbm</option>
-                <option value="23">Bm</option>
-              </select>
-            </div>
-            <div>
-              <label for="semitones">Semitones:</label>
-              <select name="semitones" id="semitones">
-                <option value="11">11</option>
-                <option value="10">10</option>
-                <option value="9">9</option>
-                <option value="8">8</option>
-                <option value="7">7</option>
-                <option value="6">6</option>
-                <option value="5">5</option>
-                <option value="4">4</option>
-                <option value="3">3</option>
-                <option value="2">2</option>
-                <option value="1">1</option>
-                <option value="0">0</option>
-                <option value="-1">-1</option>
-                <option value="-2" selected="selected">-2</option>
-                <option value="-3">-3</option>
-                <option value="-4">-4</option>
-                <option value="-5">-5</option>
-                <option value="-6">-6</option>
-                <option value="-7">-7</option>
-                <option value="-8">-8</option>
-                <option value="-9">-9</option>
-                <option value="-10">-10</option>
-                <option value="-11">-11</option>
-              </select>
-            </div>
-            <div>
-              <label for="outputFormat">Output format:</label>
-              <select name="outputFormat" id="outputFormat">
-                <option value="CDE" selected="selected">C D E</option>
-                <option value="INLINE">[C] Inline</option>
-                <option value="DOREMI">Do Re Mi</option>
-                <option value="GERMAN1">German 1</option>
-                <option value="GERMAN2">German 2</option>
-                <option value="GREEK">Greek</option>
-                <option value="ROMAN">Roman</option>
-                <option value="NASHVILLE">Nashville</option>
-                <option value="NOCHORDS">No chords</option>
-              </select>
-              <select name="bracketsOutput" id="bracketsOutput" class="hidden">
-                <option value="SQUARE" selected="selected">[C]</option>
-                <option value="ROUND">(C)</option>
-              </select>
-            </div>
-            <div>
-              <button id="btTranspose">Transpose / Convert</button>
-            </div>
-            <div>
-              <button id="btDown">Down</button>
-              <button id="btUp">Up</button>
-            </div>
-            <div>
-              <button id="btSelectAll">Select all</button>
-            </div>
-            <div>
-              <button id="btPrint">Print</button>
-            </div>
-            <div>
-              <select name="exportFormat" id="exportFormat">
-                <option value="TEXT" selected="selected">Text</option>
-                <option value="HTML">HTML</option>
-              </select>
-              <button id="btExport">Export</button>
-            </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div id="main">
+        <p>
+          Paste lyrics including chords in the first text area. Change the
+          settings and click the "Transpose / Convert" button. The result will
+          appear in the second text area. If the result is not what you
+          expect, press the Help button for more information.
+        </p>
+        <p>
+          Feel free to contact me by
+          <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
+          (fgh.bolder@gmail.com).
+        </p>
+        <div class="settings">
+          <div>
+            <button id="btHelp">Help</button>
           </div>
-          <div id="output" class="output"></div>
-          <fieldset>
-            <legend>Auto Scroll</legend>
-            <button id="btScroll">Start</button>
-            <button id="btScrollSlower">Slower</button>
-            <span id="interval"></span>
-            <button id="btScrollFaster">Faster</button>
-          </fieldset>
-          <fieldset>
-            <legend>Chord information</legend>
-            <input
-              id="inputChordInfo"
-              class="input-chord-info"
-              type="text"
-              spellcheck="false"
-              placeholder="chord or notes"
-            />
-            <select name="position" id="position">
-              <option value="ROOT" selected="selected">Root</option>
-              <option value="INV1">1st inv</option>
-              <option value="INV2">2nd inv</option>
-              <option value="INV3">3rd inv</option>
+          <div>
+            <button id="btClear">Clear</button>
+          </div>
+          <div>
+            <button id="btSurpriseMe">Surprise me</button>
+          </div>
+          <div>
+            <label for="theme">Theme:</label>
+            <select name="theme" id="theme">
+              <option value="LIGHT" selected="selected">Light</option>
+              <option value="DARK">Dark</option>
             </select>
-            <select name="drop" id="drop">
-              <option value="CLOSED" selected="selected">Closed</option>
-              <option value="DROP2">Drop 2</option>
-              <option value="DROP3">Drop 3</option>
-              <option value="DROP1AND3">Drop 1 and 3</option>
-              <option value="DROP2AND4">Drop 2 and 4</option>
+          </div>
+        </div>
+        <textarea id="input" spellcheck="false" placeholder="Paste lyrics including chords here"></textarea>
+        <div class="settings">
+          <div>
+            <label for="inputFormat">Input format:</label>
+            <select name="inputFormat" id="inputFormat">
+              <option value="CDE" selected="selected">C D E</option>
+              <option value="INLINE">[C] Inline</option>
+              <option value="DOREMI">Do Re Mi</option>
+              <option value="GERMAN1">German 1</option>
+              <option value="GERMAN2">German 2</option>
+              <option value="GREEK">Greek</option>
+              <option value="ROMAN">Roman</option>
+              <option value="NASHVILLE">Nashville</option>
             </select>
-            <button id="btChordInfo">Info</button>
-            <div id="outputChordInfo" class="output-chord-info">-</div>
-            <canvas class="keyboard" id="keyboard"></canvas>
+            <select name="bracketsInput" id="bracketsInput" class="hidden">
+              <option value="SQUARE" selected="selected">[C]</option>
+              <option value="ROUND">(C)</option>
+            </select>
+          </div>
+          <div>
+            <input type="checkbox" id="lowerIsMinor" name="lowerIsMinor" value="lowerIsMinor" />
+            <label for="lowerIsMinor">Lowercase=minor</label>
+          </div>
+          <div>
+            <input type="checkbox" id="useSharps" name="useSharps" value="sharps" />
+            <label for="useSharps">Use sharps (#)</label>
+          </div>
+          <div id="groupKey" class="hidden">
+            <label for="key">Key:</label>
+            <select name="key" id="key">
+              <option value="0" selected="selected">C</option>
+              <option value="1">C#/Db</option>
+              <option value="2">D</option>
+              <option value="3">D#/Eb</option>
+              <option value="4">E</option>
+              <option value="5">F</option>
+              <option value="6">F#/Gb</option>
+              <option value="7">G</option>
+              <option value="8">G#/Ab</option>
+              <option value="9">A</option>
+              <option value="10">A#/Bb</option>
+              <option value="11">B</option>
+              <option value="12">Cm</option>
+              <option value="13">C#m/Dbm</option>
+              <option value="14">Dm</option>
+              <option value="15">D#m/Ebm</option>
+              <option value="16">Em</option>
+              <option value="17">Fm</option>
+              <option value="18">F#m/Gbm</option>
+              <option value="19">Gm</option>
+              <option value="20">G#m/Abm</option>
+              <option value="21">Am</option>
+              <option value="22">A#m/Bbm</option>
+              <option value="23">Bm</option>
+            </select>
+          </div>
+          <div>
+            <label for="semitones">Semitones:</label>
+            <select name="semitones" id="semitones">
+              <option value="11">11</option>
+              <option value="10">10</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+              <option value="0">0</option>
+              <option value="-1">-1</option>
+              <option value="-2" selected="selected">-2</option>
+              <option value="-3">-3</option>
+              <option value="-4">-4</option>
+              <option value="-5">-5</option>
+              <option value="-6">-6</option>
+              <option value="-7">-7</option>
+              <option value="-8">-8</option>
+              <option value="-9">-9</option>
+              <option value="-10">-10</option>
+              <option value="-11">-11</option>
+            </select>
+          </div>
+          <div>
+            <label for="outputFormat">Output format:</label>
+            <select name="outputFormat" id="outputFormat">
+              <option value="CDE" selected="selected">C D E</option>
+              <option value="INLINE">[C] Inline</option>
+              <option value="DOREMI">Do Re Mi</option>
+              <option value="GERMAN1">German 1</option>
+              <option value="GERMAN2">German 2</option>
+              <option value="GREEK">Greek</option>
+              <option value="ROMAN">Roman</option>
+              <option value="NASHVILLE">Nashville</option>
+              <option value="NOCHORDS">No chords</option>
+            </select>
+            <select name="bracketsOutput" id="bracketsOutput" class="hidden">
+              <option value="SQUARE" selected="selected">[C]</option>
+              <option value="ROUND">(C)</option>
+            </select>
+          </div>
+          <div>
+            <button id="btTranspose">Transpose / Convert</button>
+          </div>
+          <div>
+            <button id="btDown">Down</button>
+            <button id="btUp">Up</button>
+          </div>
+          <div>
+            <button id="btSelectAll">Select all</button>
+          </div>
+          <div>
+            <button id="btPrint">Print</button>
+          </div>
+          <div>
+            <select name="exportFormat" id="exportFormat">
+              <option value="TEXT" selected="selected">Text</option>
+              <option value="HTML">HTML</option>
+            </select>
+            <button id="btExport">Export</button>
+          </div>
+        </div>
+        <div id="output" class="output"></div>
+        <fieldset>
+          <legend>Auto Scroll</legend>
+          <button id="btScroll">Start</button>
+          <button id="btScrollSlower">Slower</button>
+          <span id="interval"></span>
+          <button id="btScrollFaster">Faster</button>
+        </fieldset>
+        <fieldset>
+          <legend>Chord information</legend>
+          <input id="inputChordInfo" class="input-chord-info" type="text" spellcheck="false"
+            placeholder="chord or notes" />
+          <select name="position" id="position">
+            <option value="ROOT" selected="selected">Root</option>
+            <option value="INV1">1st inv</option>
+            <option value="INV2">2nd inv</option>
+            <option value="INV3">3rd inv</option>
+          </select>
+          <select name="drop" id="drop">
+            <option value="CLOSED" selected="selected">Closed</option>
+            <option value="DROP2">Drop 2</option>
+            <option value="DROP3">Drop 3</option>
+            <option value="DROP1AND3">Drop 1 and 3</option>
+            <option value="DROP2AND4">Drop 2 and 4</option>
+          </select>
+          <button id="btChordInfo">Info</button>
+          <div id="outputChordInfo" class="output-chord-info">-</div>
+          <canvas class="keyboard" id="keyboard"></canvas>
+          <div>
             <canvas class="ukulele" id="ukulele"></canvas>
-            <p>
-              Click on the keyboard to hear the displayed chord
-            </p>
-          </fieldset>
-        </div>
-        <div id="help" class="hidden">
-          <div class="back">
-            <button id="btBack">Back</button> to the Main page
+            <div id="ukuleleVariation"></div>
           </div>
-          <h2>General information</h2>
           <p>
-            If there is normal text in the chord line and the Input format is
-            not "[C] Inline", the line will be ignored. An exception is the "|"
-            character, which will not be visible in the result. Some text like 2x
-            can be in a chord line.
-            The first letter of a note name must be a capital (uppercase letter), except when
-            Lowercase=minor is enabled or when the Input format is set to Roman.
-            When the Output format is set to Roman, the note names for minor and
-            diminished chords will be in lowercase.<br />
-            The text after a slash is interpreted as a bass note, so don't use
-            chord names like D6/9. You can use D69 or D6add9 instead. Inversions
-            that are sometimes used in Roman numerals are not supported.
+            Click on the keyboard to hear the displayed chord. Click on the Ukulele chord diagram to show
+            the next variation.
           </p>
-          <p>
-            Feel free to contact me by
-            <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
-            (fgh.bolder@gmail.com) for questions or feedback.
-          </p>
-          <h2>Commands: Comment</h2>
-          <p>
-            Select the command type that you want, put the cursor in the line
-            (not at the end) that you want to change into a comment and press
-            the Comment button. Keep in mind that Box is not always supported.
-          </p>
-          <h2>Commands: Title</h2>
-          <p>
-            Press the Title button to find the title and create a directive for
-            a better styling. Make sure that you have selected the Input format
-            that matches with the input for the best result.
-          </p>
-          <h2>Preferences: Chords=bold</h2>
-          <p>
-            Enable this option if you want the chords to be bold. When the
-            Output format is set to Inline the chords will not be bold.
-          </p>
-          <h2>Preferences: Compact</h2>
-          <p>
-            Enable this option if you want compact chord symbols. If in the
-            original text long chord names are used, they will be converted to
-            short chord names. For example minor will be converted to m and maj7
-            will be converted to M7 or even just a delta symbol when Special
-            chars is enabled.
-          </p>
-          <h2>Preferences: Ignore colors</h2>
-          <p>
-            If this option is enabled, color changes from directives are
-            ignored, so all text will be black.
-          </p>
-          <h2>Preferences: Space between chords</h2>
-          <p>
-            When this option is enabled, there will be always at least one space
-            character between two chords. When the Output format is set to Roman
-            there will be always at least one space character between two chords
-            independent of the "Space between chords" setting, because when
-            there is no space between the I chord and the V chord, it is in fact
-            the IV chord.
-          </p>
-          <h2>Preferences: Special chars</h2>
-          <p>
-            Enable Special chars if you prefer real music symbols for sharps
-            (#), flats (b) etc., but keep in mind that if you want to use the
-            result in other software these characters might not be supported.
-          </p>
-          <h2>Preferences: Strict</h2>
-          <p>
-            Normally it is best to have Strict enabled to prevent normal text
-            from being changed. If there are unusual chords in the text, you can
-            disable Strict and correct some text later if needed.
-          </p>
-          <h2>Preferences: Simplify chords</h2>
-          <p>
-            For beginners it is handy to enable this option. Of course a song
-            sounds different when chords are simplified, but often it still
-            sounds good.
-          </p>
-          <h2>Preferences: Text size</h2>
-          <p>The Text size setting is used for the output and for printing.</p>
-          <h2>Preferences: Uppercase notes</h2>
-          <p>
-            When this option is enabled, the letters of the note names will be
-            in capitals. This option has only influence on the result when the
-            Output format is set to "Do Re Mi" or Greek. For example, Solm7 will
-            be converted to SOLm7.
-          </p>
-          <h2>Preferences: Use Ti</h2>
-          <p>
-            If the Output format is set to "Do Re Mi" and you want Ti instead of
-            Si on the result, enable Use Ti. If the Input format is set to "Do
-            Re Mi", both Ti and Si are recognized independently of the Use Ti
-            setting.
-          </p>
-          <h2>Clear</h2>
-          <p>
-            Press the Clear button to clear the input. After that you can easily
-            paste or type a new text.
-          </p>
-          <h2>Surprise me</h2>
-          <p>
-            Press the "Surprise me" button to load a random song. This is handy
-            to learn how Transpose works. The current song will be overwritten.
-            You can get an overview of the available songs by making the input
-            area empty (Clear button), only writing index (or ?) on the first
-            line and pressing the "Surprise me" button. You can load a song from
-            the index by making the input area empty, only writing the number on
-            the first line and pressing the "Surprise me" button.
-          </p>
-          <h2>Theme</h2>
-          <p>
-            Select the color theme that you pefer. If Theme is set to Dark, the
-            color black will be converted to white. For printing, always the
-            color theme Light is used.
-          </p>
-          <h2>Input format</h2>
-          <p>
-            It is important to choose the correct Input format. For example,
-            when there are chords within the text lines, the Input format need
-            to be set to "[C] Inline". If the format is set to "[C] Inline", you
-            can change the type of the brackets (square or round).
-          </p>
-          <h2>Lowercase=minor</h2>
-          <p>
-            When this option is enabled, the lowercase notes in the input will
-            be capitalized and the chord type will be changed to minor.
-          </p>
-          <h2>Use sharps (#)</h2>
-          <p>
-            Enable this option if you prefer to see sharps (#) instead of flats
-            (b) on the result. This option has only influence on the note names,
-            so D7#5 will not change. Enable Special chars if you want real music
-            symbols, but keep in mind that if you want to use the result in
-            other software these characters might not be supported. When the
-            Output format is set to German, there are no sharp or flat symbols
-            in the note name, but if Use sharps is enabled, you will see for
-            example Cis instead of Des.
-          </p>
-          <h2>Key</h2>
-          <p>
-            The "Key" setting is only used for Roman numerals and the Nashville
-            Number System. The key of a song is mostly the last chord.
-          </p>
-          <h2>Semitones</h2>
-          <p>
-            With this setting you adjust the number of semitones that the chords
-            will be transposed up or down. When the number is negative, the
-            chords will be transposed down. When you only want to convert to
-            another format, Semitones must be set to 0. When the Output format
-            is set to Roman, the Semitones setting is ignored.
-          </p>
-          <h2>Output format</h2>
-          <p>
-            With this setting you can adjust the format of the result. If the
-            format is set to "[C] Inline", you can change the type of the
-            brackets (square or round).
-          </p>
-          <h2>Transpose / Convert</h2>
-          <p>Press this button to generate a result in the second text area.</p>
-          <h2>Down</h2>
-          <p>
-            Press the Down button to decrease (if possible) the Semitones
-            setting and to generate a result.
-          </p>
-          <h2>Up</h2>
-          <p>
-            Press the Up button to increase (if possible) the Semitones setting
-            and to generate a result.
-          </p>
-          <h2>Select all</h2>
-          <p>
-            Press this button to select the complete result. After that you can
-            press Ctrl-C to copy it. Copying to the clipboard is not done
-            automatically, as browsers may prevent this for security reasons.
-            Depending on the browser, the formatting can be different.
-          </p>
-          <h2>Directives</h2>
-          <p>
-            Transpose supports several directives that are used by ProChord.<br />
-            The directives {title: text}, {t: text}, {subtitle: text}, {st:
-            text}, {artist: text}, {comment: text}, {c: text}, {comment_italic:
-            text}, {ci: text}, {comment_box: text}, {cb: text}, {chordcolour:
-            colour}, {chordcolor: color}, {textcolour: colour}, {textcolor:
-            color}, {titlecolour: colour} and {titlecolor: color} are supported.
-            You can use them with all Input formats.<br />
-            The directives {new_song}, {ns}, {start_of_chorus}, {soc},
-            {end_of_chorus}, {eoc}, {start_of_tab}, {sot}, {end_of_tab}, {eot},
-            {define: ...}, {textfont: fontname}, {tf: fontname}, {textsize:
-            fontsize}, {ts: fontsize}, {chordfont: fontname}, {cf: fontname},
-            {chordsize: fontsize}, {cs: fontsize}, {no_grid}, {ng}, {grid}, {g},
-            {titles: flush}, {new_page}, {np}, {new_physical_page}, {npp},
-            {columns: number}, {col: number}, {column_break}, {colb} and
-            {pagetype: type} are not really supported, but they are hidden when
-            the Output format is not Online.<br />
-            Directives that are not supported are shown in a nice way. Lines
-            that start with a # are ignored when the Input format is Inline and
-            the Output format is not Inline. With the directive {scroll:
-            msec/pixel} you can set the Auto Scroll speed.
-          </p>
-          <h2>Print</h2>
-          <p>
-            Press the Print button to print the complete result using the
-            standard print function. The result can be different depending on
-            the browser. Mostly you can also print to a PDF file.<br />
-            This is just a fast way to print. If you copy the text and past it
-            in a document, you can change the layout the way you like and print
-            the document.
-          </p>
-          <h2>Export</h2>
-          <p>
-            Press the Export button to download the complete result in plain
-            text format or in HTML format.
-          </p>
-          <h2>Auto Scroll</h2>
-          <p>
-            If the lyrics don't fit on the screen, it is handy to use Auto
-            Scroll. Press Start to start scrolling. Press Stop to stop
-            scrolling. Press Slower or Faster to change the scrolling speed. The
-            number indicates the time (msec) per pixel.
-          </p>
-          <h2>Chord information</h2>
-          <p>
-            Type or copy a chord name (example: Dm7) in the left input box and
-            press the Info button to see the notes that are in that chord. Notes
-            in round brackets may be omitted. You can also see how to play the
-            chord on a piano. For the keyboard picture, the selected chord
-            position (root, 1st inversion, 2nd inversion or 3rd inversion) is
-            used. Chords with three notes have only two inversions. If you
-            select "3rd inv" for these chords, you will see the chord in root
-            position, but one octave higher. If you have entered a valid chord
-            and you change the position, you don't need to press the Info
-            button.
-            You can also see and hear drop voicings.<br>
-            The first letter of a note name must be a capital (uppercase
-            letter). Enable the option Use sharps if you prefer to see sharps
-            (#) instead of flats (b). All chord formats are supported. If you
-            want to get the information (for example) about the Sol chord, the
-            Output format has to be set to Do Re Mi. There is information
-            available for
-            <span id="numberOfChords"></span> chords. There are many ways to
-            write the same chord, so if you don't get information, you can try
-            to write the chord in a different way. Don't use a slash in a chord
-            name like D6/9. You can use D69 or D6add9 instead. A bass note like
-            the G in C/G will be ignored. Keep in mind that Ab5 is not the same
-            as A(b5). Ab5 is an Ab chord without the third and A(b5) is an A
-            chord with a lowered fifth. You can also enter the notes of a chord
-            in the left input box to find the matching chord(s). The notes have
-            to be separated by a comma. The order of the notes have no influence
-            on the result. For example C, F#, D, A will give the chords D7 and 
-            Gbdim6. The notes A, B, E will give the chords A59, Asus2 and Esus4.
-            <br>
-            You can hear the displayed chord by clicking on the keyboard picture.
-            If you click within the first octave, the notes of the chord are
-            played simultaneously. If you click within the second octave, the
-            notes are played with a slight delay between them, like strumming on 
-            a guitar. If you click within the third octave, the chord is played
-            as an arpeggio.
-          </p>
+        </fieldset>
+      </div>
+      <div id="help" class="hidden">
+        <div class="back">
+          <button id="btBack">Back</button> to the Main page
         </div>
-      </main>
-      <section id="links">
-        <h2>Links</h2>
-        <p></p>
-        <table>
-          <tr>
-            <th colspan="2" scope="col">General</th>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://fredbolder.github.io/portfolio/" target="_blank"
-                >Fred Bolder's Portfolio</a
-              ><br />
-            </td>
-            <td>Music software and music books</td>
-          </tr>
-          <tr>
-            <th colspan="2" scope="col">
-              Lyrics or sheet music including chords
-            </th>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.ultimate-guitar.com/" target="_blank"
-                >Ultimate-Guitar.com</a
-              >
-            </td>
-            <td>Lyrics including chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.azchords.com/" target="_blank">AZChords</a>
-            </td>
-            <td>Lyrics including chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.guitaretab.com/" target="_blank"
-                >GuitareTab</a
-              >
-            </td>
-            <td>Lyrics including chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://songbook19.my-free.website/" target="_blank"
-                >Songbook</a
-              >
-            </td>
-            <td>Downloadable lyrics including chords in several formats</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://kithara.to/" target="_blank">kithara.to</a>
-            </td>
-            <td>Greek lyrics including chords</td>
-          </tr>
-          <tr>
-            <td><a href="https://tabsy.gr/" target="_blank">tabsy</a></td>
-            <td>Greek lyrics including chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.bouzoukispot.com/tabs.php" target="_blank"
-                >Bouzouki Spot</a
-              >
-            </td>
-            <td>
-              Downloadable Greek sheet music including chords in PDF format
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="http://greek-guitar.weebly.com/tauomicron-sigmakapparhoiotapitauomicron.html"
-                target="_blank"
-                >Greek Guitar</a
-              >
-            </td>
-            <td>
-              Downloadable Greek sheet music including chords in PDF format
-            </td>
-          </tr>
-          <tr>
-            <th colspan="2" scope="col">Chords and Keys</th>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="https://www.songtive.com/en/chords/piano/Cmaj"
-                target="_blank"
-                >Songtive</a
-              >
-            </td>
-            <td>Chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.musicca.com/chord-finder" target="_blank"
-                >Musicca</a
-              >
-            </td>
-            <td>Chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://musmath.com/" target="_blank"
-                >musmath (music + math)</a
-              >
-            </td>
-            <td>Chords and Scales</td>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="https://www.8notes.com/piano_chord_chart/"
-                target="_blank"
-                >8notes</a
-              >
-            </td>
-            <td>Chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="https://jazz-library.com/articles/chord-symbols/"
-                target="_blank"
-                >Every chord symbol found on lead sheets</a
-              >
-            </td>
-            <td>Chord symbols</td>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="https://www.scales-chords.com/chordid.php"
-                target="_blank"
-                >ScalesChords</a
-              >
-            </td>
-            <td>Search chord by notes</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://musictheorysite.com/namethatkey/" target="_blank"
-                >MusicTheorySite</a
-              >
-            </td>
-            <td>Find a song's key by it's chords</td>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="https://websemantics.uk/tools/circle-of-fifths-chord-wheel/"
-                target="_blank"
-                >webSemantics</a
-              >
-            </td>
-            <td>Find chords in a key</td>
-          </tr>
-          <tr>
-            <td>
-              <a
-                href="https://www.guitaristsource.com/lessons/chords/keys/"
-                target="_blank"
-                >GuitaristSource</a
-              >
-            </td>
-            <td>Find chords in major and minor keys</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://getsongkey.com/tools/chords" target="_blank"
-                >GetSongKey</a
-              >
-            </td>
-            <td>Find the key of a chord progression</td>
-          </tr>
-          <tr>
-            <th colspan="2" scope="col">Other chord tools like Transpose</th>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.chordpro.org/chordpro/" target="_blank"
-                >ChordPro</a
-              ><br />
-            </td>
-            <td>Song editor for Linux, Microsoft Windows and MacOS</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="http://ukegeeks.com/songeditor" target="_blank"
-                >Song-a-Matic Editor</a
-              ><br />
-            </td>
-            <td>Online song editor</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://ultimate.ftes.de/" target="_blank"
-                >Ultimate Guitar to ChordPro Converter</a
-              ><br />
-            </td>
-            <td>Online chord converter</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="http://tabtransposer.com/" target="_blank"
-                >TabTransposer</a
-              ><br />
-            </td>
-            <td>Online transposer</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://www.logue.net/index.htm" target="_blank"
-                >Logue Music Services</a
-              ><br />
-            </td>
-            <td>Several online chord tools</td>
-          </tr>
-        </table>
-      </section>
-    </div>
-    <script type="module" src="./modules/script.js"></script>
-  </body>
+        <h2>General information</h2>
+        <p>
+          If there is normal text in the chord line and the Input format is
+          not "[C] Inline", the line will be ignored. An exception is the "|"
+          character, which will not be visible in the result. Some text like 2x
+          can be in a chord line.
+          The first letter of a note name must be a capital (uppercase letter), except when
+          Lowercase=minor is enabled or when the Input format is set to Roman.
+          When the Output format is set to Roman, the note names for minor and
+          diminished chords will be in lowercase.<br />
+          The text after a slash is interpreted as a bass note, so don't use
+          chord names like D6/9. You can use D69 or D6add9 instead. Inversions
+          that are sometimes used in Roman numerals are not supported.
+        </p>
+        <p>
+          Feel free to contact me by
+          <a href="mailto:fgh.bolder@gmail.com" target="_blank">e-mail</a>
+          (fgh.bolder@gmail.com) for questions or feedback.
+        </p>
+        <h2>Commands: Comment</h2>
+        <p>
+          Select the command type that you want, put the cursor in the line
+          (not at the end) that you want to change into a comment and press
+          the Comment button. Keep in mind that Box is not always supported.
+        </p>
+        <h2>Commands: Title</h2>
+        <p>
+          Press the Title button to find the title and create a directive for
+          a better styling. Make sure that you have selected the Input format
+          that matches with the input for the best result.
+        </p>
+        <h2>Preferences: Chords=bold</h2>
+        <p>
+          Enable this option if you want the chords to be bold. When the
+          Output format is set to Inline the chords will not be bold.
+        </p>
+        <h2>Preferences: Compact</h2>
+        <p>
+          Enable this option if you want compact chord symbols. If in the
+          original text long chord names are used, they will be converted to
+          short chord names. For example minor will be converted to m and maj7
+          will be converted to M7 or even just a delta symbol when Special
+          chars is enabled.
+        </p>
+        <h2>Preferences: Ignore colors</h2>
+        <p>
+          If this option is enabled, color changes from directives are
+          ignored, so all text will be black.
+        </p>
+        <h2>Preferences: Space between chords</h2>
+        <p>
+          When this option is enabled, there will be always at least one space
+          character between two chords. When the Output format is set to Roman
+          there will be always at least one space character between two chords
+          independent of the "Space between chords" setting, because when
+          there is no space between the I chord and the V chord, it is in fact
+          the IV chord.
+        </p>
+        <h2>Preferences: Special chars</h2>
+        <p>
+          Enable Special chars if you prefer real music symbols for sharps
+          (#), flats (b) etc., but keep in mind that if you want to use the
+          result in other software these characters might not be supported.
+        </p>
+        <h2>Preferences: Strict</h2>
+        <p>
+          Normally it is best to have Strict enabled to prevent normal text
+          from being changed. If there are unusual chords in the text, you can
+          disable Strict and correct some text later if needed.
+        </p>
+        <h2>Preferences: Simplify chords</h2>
+        <p>
+          For beginners it is handy to enable this option. Of course a song
+          sounds different when chords are simplified, but often it still
+          sounds good.
+        </p>
+        <h2>Preferences: Text size</h2>
+        <p>The Text size setting is used for the output and for printing.</p>
+        <h2>Preferences: Uppercase notes</h2>
+        <p>
+          When this option is enabled, the letters of the note names will be
+          in capitals. This option has only influence on the result when the
+          Output format is set to "Do Re Mi" or Greek. For example, Solm7 will
+          be converted to SOLm7.
+        </p>
+        <h2>Preferences: Use Ti</h2>
+        <p>
+          If the Output format is set to "Do Re Mi" and you want Ti instead of
+          Si on the result, enable Use Ti. If the Input format is set to "Do
+          Re Mi", both Ti and Si are recognized independently of the Use Ti
+          setting.
+        </p>
+        <h2>Clear</h2>
+        <p>
+          Press the Clear button to clear the input. After that you can easily
+          paste or type a new text.
+        </p>
+        <h2>Surprise me</h2>
+        <p>
+          Press the "Surprise me" button to load a random song. This is handy
+          to learn how Transpose works. The current song will be overwritten.
+          You can get an overview of the available songs by making the input
+          area empty (Clear button), only writing index (or ?) on the first
+          line and pressing the "Surprise me" button. You can load a song from
+          the index by making the input area empty, only writing the number on
+          the first line and pressing the "Surprise me" button.
+        </p>
+        <h2>Theme</h2>
+        <p>
+          Select the color theme that you pefer. If Theme is set to Dark, the
+          color black will be converted to white. For printing, always the
+          color theme Light is used.
+        </p>
+        <h2>Input format</h2>
+        <p>
+          It is important to choose the correct Input format. For example,
+          when there are chords within the text lines, the Input format need
+          to be set to "[C] Inline". If the format is set to "[C] Inline", you
+          can change the type of the brackets (square or round).
+        </p>
+        <h2>Lowercase=minor</h2>
+        <p>
+          When this option is enabled, the lowercase notes in the input will
+          be capitalized and the chord type will be changed to minor.
+        </p>
+        <h2>Use sharps (#)</h2>
+        <p>
+          Enable this option if you prefer to see sharps (#) instead of flats
+          (b) on the result. This option has only influence on the note names,
+          so D7#5 will not change. Enable Special chars if you want real music
+          symbols, but keep in mind that if you want to use the result in
+          other software these characters might not be supported. When the
+          Output format is set to German, there are no sharp or flat symbols
+          in the note name, but if Use sharps is enabled, you will see for
+          example Cis instead of Des.
+        </p>
+        <h2>Key</h2>
+        <p>
+          The "Key" setting is only used for Roman numerals and the Nashville
+          Number System. The key of a song is mostly the last chord.
+        </p>
+        <h2>Semitones</h2>
+        <p>
+          With this setting you adjust the number of semitones that the chords
+          will be transposed up or down. When the number is negative, the
+          chords will be transposed down. When you only want to convert to
+          another format, Semitones must be set to 0. When the Output format
+          is set to Roman, the Semitones setting is ignored.
+        </p>
+        <h2>Output format</h2>
+        <p>
+          With this setting you can adjust the format of the result. If the
+          format is set to "[C] Inline", you can change the type of the
+          brackets (square or round).
+        </p>
+        <h2>Transpose / Convert</h2>
+        <p>Press this button to generate a result in the second text area.</p>
+        <h2>Down</h2>
+        <p>
+          Press the Down button to decrease (if possible) the Semitones
+          setting and to generate a result.
+        </p>
+        <h2>Up</h2>
+        <p>
+          Press the Up button to increase (if possible) the Semitones setting
+          and to generate a result.
+        </p>
+        <h2>Select all</h2>
+        <p>
+          Press this button to select the complete result. After that you can
+          press Ctrl-C to copy it. Copying to the clipboard is not done
+          automatically, as browsers may prevent this for security reasons.
+          Depending on the browser, the formatting can be different.
+        </p>
+        <h2>Directives</h2>
+        <p>
+          Transpose supports several directives that are used by ProChord.<br />
+          The directives {title: text}, {t: text}, {subtitle: text}, {st:
+          text}, {artist: text}, {comment: text}, {c: text}, {comment_italic:
+          text}, {ci: text}, {comment_box: text}, {cb: text}, {chordcolour:
+          colour}, {chordcolor: color}, {textcolour: colour}, {textcolor:
+          color}, {titlecolour: colour} and {titlecolor: color} are supported.
+          You can use them with all Input formats.<br />
+          The directives {new_song}, {ns}, {start_of_chorus}, {soc},
+          {end_of_chorus}, {eoc}, {start_of_tab}, {sot}, {end_of_tab}, {eot},
+          {define: ...}, {textfont: fontname}, {tf: fontname}, {textsize:
+          fontsize}, {ts: fontsize}, {chordfont: fontname}, {cf: fontname},
+          {chordsize: fontsize}, {cs: fontsize}, {no_grid}, {ng}, {grid}, {g},
+          {titles: flush}, {new_page}, {np}, {new_physical_page}, {npp},
+          {columns: number}, {col: number}, {column_break}, {colb} and
+          {pagetype: type} are not really supported, but they are hidden when
+          the Output format is not Online.<br />
+          Directives that are not supported are shown in a nice way. Lines
+          that start with a # are ignored when the Input format is Inline and
+          the Output format is not Inline. With the directive {scroll:
+          msec/pixel} you can set the Auto Scroll speed.
+        </p>
+        <h2>Print</h2>
+        <p>
+          Press the Print button to print the complete result using the
+          standard print function. The result can be different depending on
+          the browser. Mostly you can also print to a PDF file.<br />
+          This is just a fast way to print. If you copy the text and past it
+          in a document, you can change the layout the way you like and print
+          the document.
+        </p>
+        <h2>Export</h2>
+        <p>
+          Press the Export button to download the complete result in plain
+          text format or in HTML format.
+        </p>
+        <h2>Auto Scroll</h2>
+        <p>
+          If the lyrics don't fit on the screen, it is handy to use Auto
+          Scroll. Press Start to start scrolling. Press Stop to stop
+          scrolling. Press Slower or Faster to change the scrolling speed. The
+          number indicates the time (msec) per pixel.
+        </p>
+        <h2>Chord information</h2>
+        <p>
+          Type or copy a chord name (example: Dm7) in the left input box and
+          press the Info button to see the notes that are in that chord. Notes
+          in round brackets may be omitted. You can also see how to play the
+          chord on a piano. For the keyboard picture, the selected chord
+          position (root, 1st inversion, 2nd inversion or 3rd inversion) is
+          used. Chords with three notes have only two inversions. If you
+          select "3rd inv" for these chords, you will see the chord in root
+          position, but one octave higher. If you have entered a valid chord
+          and you change the position, you don't need to press the Info
+          button.
+          You can also see and hear drop voicings.<br>
+          The first letter of a note name must be a capital (uppercase
+          letter). Enable the option Use sharps if you prefer to see sharps
+          (#) instead of flats (b). All chord formats are supported. If you
+          want to get the information (for example) about the Sol chord, the
+          Output format has to be set to Do Re Mi. There is information
+          available for
+          <span id="numberOfChords"></span> chords. There are many ways to
+          write the same chord, so if you don't get information, you can try
+          to write the chord in a different way. Don't use a slash in a chord
+          name like D6/9. You can use D69 or D6add9 instead. A bass note like
+          the G in C/G will be ignored. Keep in mind that Ab5 is not the same
+          as A(b5). Ab5 is an Ab chord without the third and A(b5) is an A
+          chord with a lowered fifth. You can also enter the notes of a chord
+          in the left input box to find the matching chord(s). The notes have
+          to be separated by a comma. The order of the notes have no influence
+          on the result. For example C, F#, D, A will give the chords D7 and
+          Gbdim6. The notes A, B, E will give the chords A59, Asus2 and Esus4.
+          <br>
+          You can hear the displayed chord by clicking on the keyboard picture.
+          If you click within the first octave, the notes of the chord are
+          played simultaneously. If you click within the second octave, the
+          notes are played with a slight delay between them, like strumming on
+          a guitar. If you click within the third octave, the chord is played
+          as an arpeggio.
+        </p>
+      </div>
+    </main>
+    <section id="links">
+      <h2>Links</h2>
+      <p></p>
+      <table>
+        <tr>
+          <th colspan="2" scope="col">General</th>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://fredbolder.github.io/portfolio/" target="_blank">Fred Bolder's Portfolio</a><br />
+          </td>
+          <td>Music software and music books</td>
+        </tr>
+        <tr>
+          <th colspan="2" scope="col">
+            Lyrics or sheet music including chords
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.ultimate-guitar.com/" target="_blank">Ultimate-Guitar.com</a>
+          </td>
+          <td>Lyrics including chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.azchords.com/" target="_blank">AZChords</a>
+          </td>
+          <td>Lyrics including chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.guitaretab.com/" target="_blank">GuitareTab</a>
+          </td>
+          <td>Lyrics including chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://songbook19.my-free.website/" target="_blank">Songbook</a>
+          </td>
+          <td>Downloadable lyrics including chords in several formats</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://kithara.to/" target="_blank">kithara.to</a>
+          </td>
+          <td>Greek lyrics including chords</td>
+        </tr>
+        <tr>
+          <td><a href="https://tabsy.gr/" target="_blank">tabsy</a></td>
+          <td>Greek lyrics including chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.bouzoukispot.com/tabs.php" target="_blank">Bouzouki Spot</a>
+          </td>
+          <td>
+            Downloadable Greek sheet music including chords in PDF format
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="http://greek-guitar.weebly.com/tauomicron-sigmakapparhoiotapitauomicron.html" target="_blank">Greek
+              Guitar</a>
+          </td>
+          <td>
+            Downloadable Greek sheet music including chords in PDF format
+          </td>
+        </tr>
+        <tr>
+          <th colspan="2" scope="col">Chords and Keys</th>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.songtive.com/en/chords/piano/Cmaj" target="_blank">Songtive</a>
+          </td>
+          <td>Chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.musicca.com/chord-finder" target="_blank">Musicca</a>
+          </td>
+          <td>Chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://musmath.com/" target="_blank">musmath (music + math)</a>
+          </td>
+          <td>Chords and Scales</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.8notes.com/piano_chord_chart/" target="_blank">8notes</a>
+          </td>
+          <td>Chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://jazz-library.com/articles/chord-symbols/" target="_blank">Every chord symbol found on lead
+              sheets</a>
+          </td>
+          <td>Chord symbols</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.scales-chords.com/chordid.php" target="_blank">ScalesChords</a>
+          </td>
+          <td>Search chord by notes</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://musictheorysite.com/namethatkey/" target="_blank">MusicTheorySite</a>
+          </td>
+          <td>Find a song's key by it's chords</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://websemantics.uk/tools/circle-of-fifths-chord-wheel/" target="_blank">webSemantics</a>
+          </td>
+          <td>Find chords in a key</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.guitaristsource.com/lessons/chords/keys/" target="_blank">GuitaristSource</a>
+          </td>
+          <td>Find chords in major and minor keys</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://getsongkey.com/tools/chords" target="_blank">GetSongKey</a>
+          </td>
+          <td>Find the key of a chord progression</td>
+        </tr>
+        <tr>
+          <th colspan="2" scope="col">Other chord tools like Transpose</th>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.chordpro.org/chordpro/" target="_blank">ChordPro</a><br />
+          </td>
+          <td>Song editor for Linux, Microsoft Windows and MacOS</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="http://ukegeeks.com/songeditor" target="_blank">Song-a-Matic Editor</a><br />
+          </td>
+          <td>Online song editor</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://ultimate.ftes.de/" target="_blank">Ultimate Guitar to ChordPro Converter</a><br />
+          </td>
+          <td>Online chord converter</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="http://tabtransposer.com/" target="_blank">TabTransposer</a><br />
+          </td>
+          <td>Online transposer</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://www.logue.net/index.htm" target="_blank">Logue Music Services</a><br />
+          </td>
+          <td>Several online chord tools</td>
+        </tr>
+      </table>
+    </section>
+  </div>
+  <script type="module" src="./modules/script.js"></script>
+</body>
+
 </html>

@@ -4,6 +4,8 @@ class Glob {
   static scrollID;
   static scrollInterval;
   static settings;
+  static ukuleleFrets;
+  static ukuleleVariation;
 
   static init() {
     this.lastChord = [];
@@ -11,6 +13,8 @@ class Glob {
     this.scrollID = null;
     this.scrollInterval = 200;
     this.settings = null;
+    this.ukuleleFrets = [];
+    this.ukuleleVariation = 0;
   }
 
   static sleep(ms) {
