@@ -5,6 +5,8 @@ class Glob {
   static scrollInterval;
   static settings;
   static ukuleleFrets;
+  static ukuleleLeftHanded;
+  static ukuleleTuning;
   static ukuleleVariation;
 
   static init() {
@@ -14,6 +16,8 @@ class Glob {
     this.scrollInterval = 200;
     this.settings = null;
     this.ukuleleFrets = [];
+    this.ukuleleLeftHanded = false;
+    this.ukuleleTuning = 1;
     this.ukuleleVariation = 0;
   }
 

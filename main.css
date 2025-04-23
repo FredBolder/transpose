@@ -153,12 +153,34 @@ fieldset {
   width: 250px;
 }
 
-.ukulele {
+#ukuleleGroup {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  row-gap: 0.5rem;
+  column-gap: 0.5rem;
+}
+
+#ukulele {
   background-color: white;
   color: black;
   border: 1px solid black;
-  height: 80px;
+  height: 100px;
   width: 50px;
+}
+
+#ukuleleSettings {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  row-gap: 0.5rem;
+  column-gap: 0.5rem;
 }
 
 p {

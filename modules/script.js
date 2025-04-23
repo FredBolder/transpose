@@ -451,21 +451,34 @@ function drawKeyboard(idx, notes) {
   }
 }
 
-function drawUkulele(idx, notes, variation = -1) {
+function drawUkulele(idx, notes, variation = false) {
   const columns = 3;
-  const rows = 5;
+  const rows = 6;
   let ch = 0;
   let cw = 0;
   let dx1 = 0;
   let dy1 = 0;
   let nFound = 0;
-  let snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
+  let snareIdx = 0;
+  let snares;
 
   const ukulele = Glob.settings.ukulele;
   ukulele.height = ukulele.clientHeight * 2;
   ukulele.width = ukulele.clientWidth * 2;
   const uku = ukulele.getContext("2d");
   uku.reset();
+
+  switch (Glob.ukuleleTuning) {
+    case 1:
+      snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
+      break;
+    case 2:
+      snares = [{ note: 9, fret: 0 }, { note: 2, fret: 0 }, { note: 6, fret: 0 }, { note: 11, fret: 0 }];
+      break;
+    default:
+      snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
+      break;
+  }
 
   ch = ukulele.height;
   cw = ukulele.width;
@@ -489,12 +502,7 @@ function drawUkulele(idx, notes, variation = -1) {
   uku.lineTo((columns * dx1) + (0.5 * dx1), 1.5 * dy1);
   uku.stroke();
 
-  if ((variation >= 0) && (Glob.ukuleleFrets.length > 0)) {
-    snares[0].fret = Glob.ukuleleFrets[variation].f1;
-    snares[1].fret = Glob.ukuleleFrets[variation].f2;
-    snares[2].fret = Glob.ukuleleFrets[variation].f3;
-    snares[3].fret = Glob.ukuleleFrets[variation].f4;
-  } else {
+  if (!variation || (Glob.ukuleleFrets.length === 0)) {
     if (notes.length > 0) {
       let transposed = [];
       for (let i = 0; i < notes.length; i++) {
@@ -550,12 +558,6 @@ function drawUkulele(idx, notes, variation = -1) {
                 }
                 if ((nFound === snares.length) || (nFound === transposed.length)) {
                   Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
-                  if (Glob.ukuleleFrets.length === 1) {
-                    snares[0].fret = f1;
-                    snares[1].fret = f2;
-                    snares[2].fret = f3;
-                    snares[3].fret = f4;
-                  }
                 }
               }
             }
@@ -565,44 +567,52 @@ function drawUkulele(idx, notes, variation = -1) {
     }
   }
 
-  let v = Glob.ukuleleVariation + 1;
-  if (v < 1) {
-    v = 1;
-  }
   if (Glob.ukuleleFrets.length > 0) {
-    Glob.settings.ukuleleVariation.innerText = `${v}/${Glob.ukuleleFrets.length}`;
-  } else {
-    Glob.settings.ukuleleVariation.innerText = "";
-  }
+    if (Glob.ukuleleVariation >= Glob.ukuleleFrets.length) {
+      Glob.ukuleleVariation = 0;
+    }
+    snares[0].fret = Glob.ukuleleFrets[Glob.ukuleleVariation].f1;
+    snares[1].fret = Glob.ukuleleFrets[Glob.ukuleleVariation].f2;
+    snares[2].fret = Glob.ukuleleFrets[Glob.ukuleleVariation].f3;
+    snares[3].fret = Glob.ukuleleFrets[Glob.ukuleleVariation].f4;
+    Glob.settings.ukuleleVariation.innerText = `${Glob.ukuleleVariation + 1}/${Glob.ukuleleFrets.length}`;
 
-  // Draw dots and crosses
-  uku.lineWidth = 2;
-  uku.fillStyle = "black";
-  uku.strokeStyle = "black";
-  for (let col = 0; col <= columns; col++) {
-    if (snares[col].fret === 0) {
-      uku.beginPath();
-      uku.arc((col * dx1) + (0.5 * dx1), (dy1 * 0.7), 6, 0, 2 * Math.PI);
-      uku.stroke();
-    }
-    if (snares[col].fret === -1) {
-      uku.beginPath();
-      uku.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) - 5);
-      uku.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) + 5);
-      uku.stroke();
-      uku.beginPath();
-      uku.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) + 5);
-      uku.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) - 5);
-      uku.stroke();
-    }
-    for (let row = 0; row < rows; row++) {
-      if (snares[col].fret === (row + 1)) {
+    // Draw dots and crosses
+    uku.lineWidth = 2;
+    uku.fillStyle = "black";
+    uku.strokeStyle = "black";
+    for (let col = 0; col <= columns; col++) {
+      if (Glob.ukuleleLeftHanded) {
+        snareIdx = columns - col;
+      } else {
+        snareIdx = col;
+      }
+      if (snares[snareIdx].fret === 0) {
         uku.beginPath();
-        uku.arc((col * dx1) + (0.5 * dx1), (row * dy1) + dy1 + dy1, 6, 0, 2 * Math.PI);
-        uku.fill();
+        uku.arc((col * dx1) + (0.5 * dx1), (dy1 * 0.7), 6, 0, 2 * Math.PI);
         uku.stroke();
       }
+      if (snares[snareIdx].fret === -1) {
+        uku.beginPath();
+        uku.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) - 5);
+        uku.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) + 5);
+        uku.stroke();
+        uku.beginPath();
+        uku.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) + 5);
+        uku.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) - 5);
+        uku.stroke();
+      }
+      for (let row = 0; row < rows; row++) {
+        if (snares[snareIdx].fret === (row + 1)) {
+          uku.beginPath();
+          uku.arc((col * dx1) + (0.5 * dx1), (row * dy1) + dy1 + dy1, 6, 0, 2 * Math.PI);
+          uku.fill();
+          uku.stroke();
+        }
+      }
     }
+  } else {
+    Glob.settings.ukuleleVariation.innerText = "";
   }
 }
 
@@ -2172,7 +2182,7 @@ async function ukuleleClicked(e) {
     if (Glob.ukuleleVariation >= Glob.ukuleleFrets.length) {
       Glob.ukuleleVariation = 0;
     }
-    drawUkulele(0, [], Glob.ukuleleVariation);
+    drawUkulele(0, [], true);
   }
 }
 
@@ -2226,6 +2236,18 @@ try {
   });
   document.getElementById("ukulele").addEventListener("mousedown", (e) => {
     ukuleleClicked(e);
+  });
+  document.getElementById("ukuleleLeftHanded").addEventListener("change", (e) => {
+    Glob.ukuleleLeftHanded = document.getElementById("ukuleleLeftHanded").checked;
+    if (Glob.lastChord.length > 0) {
+      drawUkulele(0, [], true);
+    }
+  });
+  document.getElementById("ukuleleTuning").addEventListener("change", (e) => {
+    Glob.ukuleleTuning = Glob.tryParseInt(document.getElementById("ukuleleTuning").value, 1);
+    if (Glob.settings.inputChordInfo.value.trim() !== "") {
+      chordInfoClicked();
+    }
   });
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
