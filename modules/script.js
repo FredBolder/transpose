@@ -453,11 +453,13 @@ function drawKeyboard(idx, notes) {
 
 function drawUkulele(idx, notes, variation = false) {
   const columns = 3;
-  const rows = 6;
+  const maxFret = 15;
+  const rows = 5;
   let ch = 0;
   let cw = 0;
   let dx1 = 0;
   let dy1 = 0;
+  let fretStart = 1;
   let nFound = 0;
   let snareIdx = 0;
   let snares;
@@ -482,7 +484,7 @@ function drawUkulele(idx, notes, variation = false) {
 
   ch = ukulele.height;
   cw = ukulele.width;
-  dx1 = cw / (columns + 1);
+  dx1 = cw / (columns + 2.5);
   dy1 = ch / (rows + 2);
 
   // Draw raster
@@ -496,11 +498,6 @@ function drawUkulele(idx, notes, variation = false) {
       uku.strokeRect((col * dx1) + (0.5 * dx1), (row * dy1) + (1.5 * dy1), dx1, dy1);
     }
   }
-  uku.lineWidth = 6;
-  uku.beginPath();
-  uku.moveTo(0.5 * dx1, 1.5 * dy1);
-  uku.lineTo((columns * dx1) + (0.5 * dx1), 1.5 * dy1);
-  uku.stroke();
 
   if (!variation || (Glob.ukuleleFrets.length === 0)) {
     if (notes.length > 0) {
@@ -537,18 +534,34 @@ function drawUkulele(idx, notes, variation = false) {
         }
       }
 
+      // Keep only the possible fret positions
+      const frets = [];
+      for (let i = 0; i < snares.length; i++) {
+        frets.push([]);
+        for (let j = 0; j <= maxFret; j++) {
+          const note = (snares[i].note + j) % 12;
+          if (transposed.includes(note)) {
+            frets[i].push(j);
+          }
+        }
+      }
+
       // Fret position
       Glob.ukuleleVariation = 0;
       Glob.ukuleleFrets.length = 0;
-      for (let f1 = 0; f1 <= rows; f1++) {
-        for (let f2 = 0; f2 <= rows; f2++) {
-          for (let f3 = 0; f3 <= rows; f3++) {
-            for (let f4 = 0; f4 <= rows; f4++) {
-              let note1 = (snares[0].note + f1) % 12;
-              let note2 = (snares[1].note + f2) % 12;
-              let note3 = (snares[2].note + f3) % 12;
-              let note4 = (snares[3].note + f4) % 12;
-              if (transposed.includes(note1) && transposed.includes(note2) && transposed.includes(note3) && transposed.includes(note4)) {
+      if ((frets[0].length > 0) && (frets[1].length > 0) && (frets[2].length > 0) && (frets[3].length > 0)) {
+        for (let iF1 = 0; iF1 < frets[0].length; iF1++) {
+          const f1 = frets[0][iF1];
+          for (let iF2 = 0; iF2 < frets[1].length; iF2++) {
+            const f2 = frets[1][iF2];
+            for (let iF3 = 0; iF3 < frets[2].length; iF3++) {
+              const f3 = frets[2][iF3];
+              for (let iF4 = 0; iF4 < frets[3].length; iF4++) {
+                const f4 = frets[3][iF4];
+                let note1 = (snares[0].note + f1) % 12;
+                let note2 = (snares[1].note + f2) % 12;
+                let note3 = (snares[2].note + f3) % 12;
+                let note4 = (snares[3].note + f4) % 12;
                 nFound = 0;
                 for (let i = 0; i < transposed.length; i++) {
                   let note = transposed[i];
@@ -557,7 +570,11 @@ function drawUkulele(idx, notes, variation = false) {
                   }
                 }
                 if ((nFound === snares.length) || (nFound === transposed.length)) {
-                  Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
+                  const minFretPosition = Math.min(f1, f2, f3, f4);
+                  const maxFretPosition = Math.max(f1, f2, f3, f4);
+                  if ((maxFretPosition - minFretPosition) < rows) {
+                    Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
+                  }
                 }
               }
             }
@@ -576,6 +593,25 @@ function drawUkulele(idx, notes, variation = false) {
     snares[2].fret = Glob.ukuleleFrets[Glob.ukuleleVariation].f3;
     snares[3].fret = Glob.ukuleleFrets[Glob.ukuleleVariation].f4;
     Glob.settings.ukuleleVariation.innerText = `${Glob.ukuleleVariation + 1}/${Glob.ukuleleFrets.length}`;
+
+    fretStart = 1;
+    const minFretPosition = Math.min(snares[0].fret, snares[1].fret, snares[2].fret, snares[3].fret);
+    const maxFretPosition = Math.max(snares[0].fret, snares[1].fret, snares[2].fret, snares[3].fret);
+    if (maxFretPosition > rows) {
+      fretStart = minFretPosition;
+    }
+
+    if (fretStart === 1) {
+      uku.lineWidth = 6;
+      uku.beginPath();
+      uku.moveTo(0.5 * dx1, 1.5 * dy1);
+      uku.lineTo((columns * dx1) + (0.5 * dx1), 1.5 * dy1);
+      uku.stroke();
+    } else {
+      uku.font = "24px serif";
+      uku.fillStyle = "black";
+      uku.fillText(fretStart.toString(), cw - 30, (2.5 * dy1));
+    }
 
     // Draw dots and crosses
     uku.lineWidth = 2;
@@ -603,7 +639,7 @@ function drawUkulele(idx, notes, variation = false) {
         uku.stroke();
       }
       for (let row = 0; row < rows; row++) {
-        if (snares[snareIdx].fret === (row + 1)) {
+        if (snares[snareIdx].fret === (row + fretStart)) {
           uku.beginPath();
           uku.arc((col * dx1) + (0.5 * dx1), (row * dy1) + dy1 + dy1, 6, 0, 2 * Math.PI);
           uku.fill();
@@ -2178,9 +2214,19 @@ function transposeLine(
 
 async function ukuleleClicked(e) {
   if ((e.button === 0) && (Glob.ukuleleFrets.length > 0)) {
-    Glob.ukuleleVariation++;
-    if (Glob.ukuleleVariation >= Glob.ukuleleFrets.length) {
-      Glob.ukuleleVariation = 0;
+    const rect = ukulele.getBoundingClientRect();
+    const xMouse = e.clientX - rect.left;
+    const p1 = rect.width / 2;
+    if (xMouse > p1) {
+      Glob.ukuleleVariation++;
+      if (Glob.ukuleleVariation >= Glob.ukuleleFrets.length) {
+        Glob.ukuleleVariation = 0;
+      }
+    } else {
+      Glob.ukuleleVariation--;
+      if (Glob.ukuleleVariation < 0) {
+        Glob.ukuleleVariation = Glob.ukuleleFrets.length - 1;
+      }
     }
     drawUkulele(0, [], true);
   }
