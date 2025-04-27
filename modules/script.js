@@ -451,7 +451,7 @@ function drawKeyboard(idx, notes) {
   }
 }
 
-function drawUkulele(idx, notes, variation = false) {
+function drawUkulele(idx, notes, variation, info) {
   const columns = 3;
   const maxFret = 15;
   const rows = 5;
@@ -460,6 +460,7 @@ function drawUkulele(idx, notes, variation = false) {
   let dx1 = 0;
   let dy1 = 0;
   let fretStart = 1;
+  let infoStr = "";
   let nFound = 0;
   let snareIdx = 0;
   let snares;
@@ -476,6 +477,12 @@ function drawUkulele(idx, notes, variation = false) {
       break;
     case 2:
       snares = [{ note: 9, fret: 0 }, { note: 2, fret: 0 }, { note: 6, fret: 0 }, { note: 11, fret: 0 }];
+      break;
+    case 3:
+      snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 7, fret: 0 }];
+      break;
+    case 4:
+      snares = [{ note: 2, fret: 0 }, { note: 7, fret: 0 }, { note: 11, fret: 0 }, { note: 4, fret: 0 }];
       break;
     default:
       snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
@@ -570,8 +577,14 @@ function drawUkulele(idx, notes, variation = false) {
                   }
                 }
                 if ((nFound === snares.length) || (nFound === transposed.length)) {
-                  const minFretPosition = Math.min(f1, f2, f3, f4);
-                  const maxFretPosition = Math.max(f1, f2, f3, f4);
+                  let minFretPosition = Math.min(f1, f2, f3, f4);
+                  let maxFretPosition = Math.max(f1, f2, f3, f4);
+                  if (minFretPosition === 0) {
+                    minFretPosition = 1;
+                  }
+                  if (maxFretPosition === 0) {
+                    maxFretPosition = 1;
+                  }
                   if ((maxFretPosition - minFretPosition) < rows) {
                     Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
                   }
@@ -646,6 +659,31 @@ function drawUkulele(idx, notes, variation = false) {
           uku.stroke();
         }
       }
+    }
+    if (info) {
+      let note = 0;
+      const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      infoStr = "Notes: "
+      for (let i = 0; i < snares.length; i++) {
+        note = (snares[i].note + snares[i].fret) % 12;
+        if (i > 0) {
+          infoStr += ", ";
+        }
+        infoStr += notes[note];
+      }
+      infoStr += "\n";
+      infoStr += "Lowest note (High G Uke): ";
+      const note1 = snares[0].note + snares[0].fret;
+      const note2 = snares[1].note + snares[1].fret;
+      const note3 = snares[2].note + snares[2].fret;
+      const note4 = snares[3].note + snares[3].fret;
+      note = Math.min(note1, note2, note3, note4) % 12;
+      infoStr += notes[note];
+      infoStr += "\n";
+      infoStr += "Highest note: ";
+      note = Math.max(note1, note2, note3, note4) % 12;
+      infoStr += notes[note];
+      alert(infoStr);
     }
   } else {
     Glob.settings.ukuleleVariation.innerText = "";
@@ -1206,7 +1244,7 @@ function chordInfoClicked() {
     }
     output.innerHTML = s1;
     drawKeyboard(0, []);
-    drawUkulele(0, []);
+    drawUkulele(0, [], false, false);
   } else {
     // Remove spaces and square brackets
     input = Glob.removeChars(input, " []");
@@ -1256,10 +1294,10 @@ function chordInfoClicked() {
     if (info === "") {
       info = "No info available for this chord yet";
       drawKeyboard(0, []);
-      drawUkulele(0, []);
+      drawUkulele(0, [], false, false);
     } else {
       drawKeyboard(idx, chordNotes);
-      drawUkulele(idx, chordNotes);
+      drawUkulele(idx, chordNotes, false, false);
     }
     output.innerHTML = info;
   }
@@ -2216,19 +2254,24 @@ async function ukuleleClicked(e) {
   if ((e.button === 0) && (Glob.ukuleleFrets.length > 0)) {
     const rect = ukulele.getBoundingClientRect();
     const xMouse = e.clientX - rect.left;
-    const p1 = rect.width / 2;
-    if (xMouse > p1) {
-      Glob.ukuleleVariation++;
-      if (Glob.ukuleleVariation >= Glob.ukuleleFrets.length) {
-        Glob.ukuleleVariation = 0;
-      }
-    } else {
+    const p1 = rect.width / 3;
+    const p2 = p1 * 2;
+
+    if (xMouse < p1) {
       Glob.ukuleleVariation--;
       if (Glob.ukuleleVariation < 0) {
         Glob.ukuleleVariation = Glob.ukuleleFrets.length - 1;
       }
+      drawUkulele(0, [], true, false);
+    } else if ((xMouse >= p1) && (xMouse < p2)) {
+      drawUkulele(0, [], true, true);
+    } else {
+      Glob.ukuleleVariation++;
+      if (Glob.ukuleleVariation >= Glob.ukuleleFrets.length) {
+        Glob.ukuleleVariation = 0;
+      }
+      drawUkulele(0, [], true, false);
     }
-    drawUkulele(0, [], true);
   }
 }
 
@@ -2239,7 +2282,7 @@ try {
       Glob.settings = new Settings();
       //console.log("Settings loaded");
       drawKeyboard(0, []);
-      drawUkulele(0, []);
+      drawUkulele(0, [], false, false);
       Glob.settings.numberOfChords.innerHTML = getNumberOfChords();
       Glob.settings.position.addEventListener("change", (e) => {
         if (Glob.settings.inputChordInfo.value.trim() !== "") {
@@ -2286,7 +2329,7 @@ try {
   document.getElementById("ukuleleLeftHanded").addEventListener("change", (e) => {
     Glob.ukuleleLeftHanded = document.getElementById("ukuleleLeftHanded").checked;
     if (Glob.lastChord.length > 0) {
-      drawUkulele(0, [], true);
+      drawUkulele(0, [], true, false);
     }
   });
   document.getElementById("ukuleleTuning").addEventListener("change", (e) => {
