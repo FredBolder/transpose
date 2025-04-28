@@ -472,20 +472,31 @@ function drawUkulele(idx, notes, variation, info) {
   uku.reset();
 
   switch (Glob.ukuleleTuning) {
-    case 1:
-      snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
+    case "G4-C4-E4-A4":
+      // oct is only for calculating the lowest note and the highest note for the info
+      // High G
+      snares = [{ note: 7, fret: 0, oct: true }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 9, fret: 0, oct: true }];
       break;
-    case 2:
-      snares = [{ note: 9, fret: 0 }, { note: 2, fret: 0 }, { note: 6, fret: 0 }, { note: 11, fret: 0 }];
+    case "G3-C4-E4-A4":
+      // Low G
+      snares = [{ note: 7, fret: 0, oct: false }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 9, fret: 0, oct: true }];
       break;
-    case 3:
-      snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 7, fret: 0 }];
+    case "A4-D4-F#4-B4":
+      snares = [{ note: 9, fret: 0, oct: true }, { note: 2, fret: 0, oct: true }, { note: 6, fret: 0, oct: true }, { note: 11, fret: 0, oct: true }];
       break;
-    case 4:
-      snares = [{ note: 2, fret: 0 }, { note: 7, fret: 0 }, { note: 11, fret: 0 }, { note: 4, fret: 0 }];
+    case "G4-C4-E4-G4":
+      // Slack Key
+      snares = [{ note: 7, fret: 0, oct: true }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 7, fret: 0, oct: true }];
+      break;
+    case "D3-G3-B3-E4":
+      // Baritone
+      snares = [{ note: 2, fret: 0, oct: false }, { note: 7, fret: 0, oct: false }, { note: 11, fret: 0, oct: false }, { note: 4, fret: 0, oct: true }];
+      break;
+    case "C3-G3-B3-E4":
+      snares = [{ note: 0, fret: 0, oct: false }, { note: 7, fret: 0, oct: false }, { note: 11, fret: 0, oct: false }, { note: 4, fret: 0, oct: true }];
       break;
     default:
-      snares = [{ note: 7, fret: 0 }, { note: 0, fret: 0 }, { note: 4, fret: 0 }, { note: 9, fret: 0 }];
+      snares = [{ note: 7, fret: 0, oct: true }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 9, fret: 0, oct: true }];
       break;
   }
 
@@ -672,16 +683,20 @@ function drawUkulele(idx, notes, variation, info) {
         infoStr += notes[note];
       }
       infoStr += "\n";
-      infoStr += "Lowest note (High G Uke): ";
-      const note1 = snares[0].note + snares[0].fret;
-      const note2 = snares[1].note + snares[1].fret;
-      const note3 = snares[2].note + snares[2].fret;
-      const note4 = snares[3].note + snares[3].fret;
-      note = Math.min(note1, note2, note3, note4) % 12;
+      infoStr += "Lowest note: ";
+      const notesInfo = [];
+      for (let i = 0; i < snares.length; i++) {
+        note = snares[i].note + snares[i].fret;
+        if (snares[i].oct) {
+          note = note + 12;
+        }
+        notesInfo.push(note);
+      }
+      note = Math.min(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3]) % 12;
       infoStr += notes[note];
       infoStr += "\n";
       infoStr += "Highest note: ";
-      note = Math.max(note1, note2, note3, note4) % 12;
+      note = Math.max(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3]) % 12;
       infoStr += notes[note];
       alert(infoStr);
     }
@@ -2333,7 +2348,7 @@ try {
     }
   });
   document.getElementById("ukuleleTuning").addEventListener("change", (e) => {
-    Glob.ukuleleTuning = Glob.tryParseInt(document.getElementById("ukuleleTuning").value, 1);
+    Glob.ukuleleTuning = document.getElementById("ukuleleTuning").value;
     if (Glob.settings.inputChordInfo.value.trim() !== "") {
       chordInfoClicked();
     }

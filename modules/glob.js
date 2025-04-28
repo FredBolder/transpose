@@ -17,7 +17,7 @@ class Glob {
     this.settings = null;
     this.ukuleleFrets = [];
     this.ukuleleLeftHanded = false;
-    this.ukuleleTuning = 1;
+    this.ukuleleTuning = "G4-C4-E4-A4";
     this.ukuleleVariation = 0;
   }
 
