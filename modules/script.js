@@ -451,6 +451,23 @@ function drawKeyboard(idx, notes) {
   }
 }
 
+function fretRange(fretPositions) {
+  let minFretPosition = 0;
+  let maxFretPosition = 0;
+  for (let i = 0; i < fretPositions.length; i++) {
+    const fret = fretPositions[i];
+    if (fret > 0) {
+      if ((minFretPosition === 0) || (fret < minFretPosition)) {
+        minFretPosition = fret;
+      }
+      if ((maxFretPosition === 0) || (fret > maxFretPosition)) {
+        maxFretPosition = fret;
+      }
+    }
+  }
+  return { minFretPosition, maxFretPosition };
+}
+
 function drawUkulele(idx, notes, variation, info) {
   const columns = 3;
   const maxFret = 15;
@@ -588,15 +605,8 @@ function drawUkulele(idx, notes, variation, info) {
                   }
                 }
                 if ((nFound === snares.length) || (nFound === transposed.length)) {
-                  let minFretPosition = Math.min(f1, f2, f3, f4);
-                  let maxFretPosition = Math.max(f1, f2, f3, f4);
-                  if (minFretPosition === 0) {
-                    minFretPosition = 1;
-                  }
-                  if (maxFretPosition === 0) {
-                    maxFretPosition = 1;
-                  }
-                  if ((maxFretPosition - minFretPosition) < rows) {
+                  const result = fretRange([f1, f2, f3, f4]);
+                  if ((result.maxFretPosition - result.minFretPosition) < rows) {
                     Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
                   }
                 }
@@ -619,10 +629,13 @@ function drawUkulele(idx, notes, variation, info) {
     Glob.settings.ukuleleVariation.innerText = `${Glob.ukuleleVariation + 1}/${Glob.ukuleleFrets.length}`;
 
     fretStart = 1;
-    const minFretPosition = Math.min(snares[0].fret, snares[1].fret, snares[2].fret, snares[3].fret);
-    const maxFretPosition = Math.max(snares[0].fret, snares[1].fret, snares[2].fret, snares[3].fret);
-    if (maxFretPosition > rows) {
-      fretStart = minFretPosition;
+    const result = fretRange([snares[0].fret, snares[1].fret, snares[2].fret, snares[3].fret]);
+    if (result.maxFretPosition > rows) {
+      if (result.minFretPosition === 0) {
+        fretStart = result.maxFretPosition;
+      } else {
+        fretStart = result.minFretPosition;
+      }
     }
 
     if (fretStart === 1) {
