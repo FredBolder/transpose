@@ -2265,6 +2265,81 @@ function transposeLine(
   };
 }
 
+async function fadeOutAndStop(audioCtx, gainNode, oscNode, fadeOutTime) {
+  const now = audioCtx.currentTime;
+
+  gainNode.gain.cancelScheduledValues(now);
+  gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+  gainNode.gain.linearRampToValueAtTime(0, now + fadeOutTime);
+  oscNode.stop(now + fadeOutTime);
+
+  await new Promise(resolve => {
+    oscNode.onended = () => resolve();
+  });
+
+  oscNode.disconnect();
+  gainNode.disconnect();
+}
+
+async function tuneUkulele() {
+  let frequencies;
+  const audioCtx = Audio.audioContext;
+
+  Glob.ukuleleTuningStatus++;
+  if (Glob.ukuleleTuningStatus > 1) {
+    await fadeOutAndStop(
+      audioCtx,
+      Glob.tuningGain,
+      Glob.tuningOscillator,
+      0.1
+    );
+    Glob.tuningGain = null;
+    Glob.tuningOscillator = null;
+  }
+
+  if (Glob.ukuleleTuningStatus >= 5) {
+    Glob.ukuleleTuningStatus = 0;
+  }
+
+  if (Glob.ukuleleTuningStatus > 0) {
+    switch (Glob.ukuleleTuning) {
+      case "G4-C4-E4-A4":
+        frequencies = [391.995, 261.626, 329.628, 440];
+        break;
+      case "G3-C4-E4-A4":
+        frequencies = [195.998, 261.626, 329.628, 440];
+        break;
+      case "A4-D4-F#4-B4":
+        frequencies = [440, 293.665, 369.994, 493.883];
+        break;
+      case "G4-C4-E4-G4":
+        frequencies = [391.995, 261.626, 329.628, 391.995];
+        break;
+      case "D3-G3-B3-E4":
+        frequencies = [146.832, 195.998, 246.942, 329.628];
+        break;
+      case "C3-G3-B3-E4":
+        frequencies = [130.813, 195.998, 246.942, 329.628];
+        break;
+      default:
+        frequencies = [391.995, 261.626, 329.628, 440];
+        break;
+    }
+
+    Glob.tuningGain = audioCtx.createGain();
+    Glob.tuningGain.gain.value = 0.25;
+
+    Glob.tuningOscillator = audioCtx.createOscillator();
+    Glob.tuningOscillator.type = "triangle";
+    Glob.tuningOscillator.frequency.setValueAtTime(frequencies[Glob.ukuleleTuningStatus - 1], audioCtx.currentTime);
+
+    Glob.tuningOscillator.connect(Glob.tuningGain);
+    Glob.tuningGain.connect(audioCtx.destination);
+
+    Glob.tuningOscillator.start();
+  }
+}
+
 async function ukuleleClicked(e) {
   if ((e.button === 0) && (Glob.ukuleleFrets.length > 0)) {
     const rect = ukulele.getBoundingClientRect();
@@ -2353,6 +2428,7 @@ try {
       chordInfoClicked();
     }
   });
+  document.getElementById("btTuneUkulele").addEventListener("click", tuneUkulele);
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
   document
