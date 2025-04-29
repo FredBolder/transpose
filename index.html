@@ -247,30 +247,37 @@
         </fieldset>
         <fieldset>
           <legend>Chord information</legend>
-          <input id="inputChordInfo" class="input-chord-info" type="text" spellcheck="false"
-            placeholder="chord or notes" />
-          <select name="position" id="position">
-            <option value="ROOT" selected="selected">Root</option>
-            <option value="INV1">1st inv</option>
-            <option value="INV2">2nd inv</option>
-            <option value="INV3">3rd inv</option>
-          </select>
-          <select name="drop" id="drop">
-            <option value="CLOSED" selected="selected">Closed</option>
-            <option value="DROP2">Drop 2</option>
-            <option value="DROP3">Drop 3</option>
-            <option value="DROP1AND3">Drop 1 and 3</option>
-            <option value="DROP2AND4">Drop 2 and 4</option>
-          </select>
-          <button id="btChordInfo">Info</button>
-          <div id="outputChordInfo" class="output-chord-info">-</div>
-          <canvas class="keyboard" id="keyboard"></canvas>
+          <div class="verticalGroup">
+            <input id="inputChordInfo" class="input-chord-info" type="text" spellcheck="false"
+              placeholder="chord or notes" />
+            <select name="position" id="position">
+              <option value="ROOT" selected="selected">Root</option>
+              <option value="INV1">1st inv</option>
+              <option value="INV2">2nd inv</option>
+              <option value="INV3">3rd inv</option>
+            </select>
+            <select name="drop" id="drop">
+              <option value="CLOSED" selected="selected">Closed</option>
+              <option value="DROP2">Drop 2</option>
+              <option value="DROP3">Drop 3</option>
+              <option value="DROP1AND3">Drop 1 and 3</option>
+              <option value="DROP2AND4">Drop 2 and 4</option>
+            </select>
+          </div>
+          <div class="verticalGroup">
+            <button id="btChordInfo">Info</button>
+            <div id="outputChordInfo" class="output-chord-info">-</div>
+            <canvas class="keyboard" id="keyboard"></canvas>
+          </div>
           <div id="ukuleleGroup">
             <div>
               <canvas id="ukulele"></canvas>
             </div>
             <div id="ukuleleSettings">
-              <div id="ukuleleVariation"></div>
+              <div id="ukuleleVariationGroup">
+                <div id="ukuleleVariation"></div>
+                <button id="btTuneUkulele">Tune</button>
+              </div>
               <select name="ukuleleTuning" id="ukuleleTuning">
                 <option value="G4-C4-E4-A4" selected="selected">G4-C4-E4-A4 (High G)</option>
                 <option value="G3-C4-E4-A4">G3-C4-E4-A4 (Low G)</option>
@@ -283,13 +290,13 @@
                 <input type="checkbox" id="ukuleleLeftHanded" name="ukuleleLeftHanded" value="ukuleleLeftHanded" />
                 <label for="ukuleleLeftHanded">Left handed</label>
               </div>
-              <button id="btTuneUkulele">Tune</button>
             </div>
           </div>
           <p>
             Click on the keyboard to hear the displayed chord (right=arpeggio). Click on the Ukulele chord diagram
             to show another variation (left=previous, right=next, center=info). For some variations it is difficult
-            or impossible to put a finger on every indicated position. In that case you can just mute or not play a string.
+            or impossible to put a finger on every indicated position. In that case you can just mute or not play a
+            string.
           </p>
         </fieldset>
       </div>

@@ -673,7 +673,12 @@ function drawUkulele(idx, notes, variation, info) {
     }
     if (info) {
       let note = 0;
-      const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      let notes;
+      if (document.getElementById("useSharps").checked) {
+        notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      } else {
+        notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+      }
       infoStr = "Notes: "
       for (let i = 0; i < snares.length; i++) {
         note = (snares[i].note + snares[i].fret) % 12;
@@ -1309,6 +1314,8 @@ function chordInfoClicked() {
     if (info === "") {
       info = "No info available for this chord yet";
       drawKeyboard(0, []);
+      Glob.ukuleleFrets = [];
+      Glob.ukuleleVariation = 0;
       drawUkulele(0, [], false, false);
     } else {
       drawKeyboard(idx, chordNotes);
