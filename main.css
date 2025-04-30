@@ -163,7 +163,7 @@ fieldset {
   width: 250px;
 }
 
-#ukuleleGroup {
+#ukuleleGroup, #guitarGroup {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -173,7 +173,7 @@ fieldset {
   column-gap: 0.5rem;
 }
 
-#ukuleleVariationGroup {
+#ukuleleVariationGroup, #guitarVariationGroup {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -191,7 +191,15 @@ fieldset {
   width: 60px;
 }
 
-#ukuleleSettings {
+#guitar {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  height: 90px;
+  width: 80px;
+}
+
+#ukuleleSettings, #guitarSettings {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;

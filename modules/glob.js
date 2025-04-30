@@ -1,4 +1,9 @@
 class Glob {
+  static guitarFrets;
+  static guitarLeftHanded;
+  static guitarTuning;
+  static guitarTuningStatus;
+  static guitarVariation;
   static lastChord;
   static lastChordIdx;
   static scrollID;
@@ -13,6 +18,11 @@ class Glob {
   static ukuleleVariation;
 
   static init() {
+    this.guitarFrets = [];
+    this.guitarLeftHanded = false;
+    this.guitarTuning = "E2-A2-D3-G3-B3-E4";
+    this.guitarTuningStatus = 0;
+    this.guitarVariation = 0;
     this.lastChord = [];
     this.lastChordIdx = 0;
     this.scrollID = null;

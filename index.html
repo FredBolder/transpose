@@ -275,8 +275,11 @@
             </div>
             <div id="ukuleleSettings">
               <div id="ukuleleVariationGroup">
+                <select name="ukuleleFilter" id="ukuleleFilter">
+                  <option value="All">All</option>
+                  <option value="Fret5" selected="selected">Until fret 5</option>
+                </select>
                 <div id="ukuleleVariation"></div>
-                <button id="btTuneUkulele">Tune</button>
               </div>
               <select name="ukuleleTuning" id="ukuleleTuning">
                 <option value="G4-C4-E4-A4" selected="selected">G4-C4-E4-A4 (High G)</option>
@@ -290,10 +293,34 @@
                 <input type="checkbox" id="ukuleleLeftHanded" name="ukuleleLeftHanded" value="ukuleleLeftHanded" />
                 <label for="ukuleleLeftHanded">Left handed</label>
               </div>
+              <button id="btTuneUkulele">Tune</button>
+            </div>
+          </div>
+          <div id="guitarGroup">
+            <div>
+              <canvas id="guitar"></canvas>
+            </div>
+            <div id="guitarSettings">
+              <div id="guitarVariationGroup">
+                <select name="guitarFilter" id="guitarFilter">
+                  <option value="All">All</option>
+                  <option value="Fret5" selected="selected">Until fret 5</option>
+                </select>
+                <div id="guitarVariation"></div>
+              </div>
+              <select name="guitarTuning" id="guitarTuning">
+                <option value="E2-A2-D3-G3-B3-E4" selected="selected">E2-A2-D3-G3-B3-E4 (Standard)</option>
+                <option value="D2-A2-D3-G3-B3-E4">D2-A2-D3-G3-B3-E4 (Drop D)</option>
+              </select>
+              <div>
+                <input type="checkbox" id="guitarLeftHanded" name="guitarLeftHanded" value="guitarLeftHanded" />
+                <label for="guitarLeftHanded">Left handed</label>
+              </div>
+              <button id="btTuneGuitar">Tune</button>
             </div>
           </div>
           <p>
-            Click on the keyboard to hear the displayed chord (right=arpeggio). Click on the Ukulele chord diagram
+            Click on the keyboard to hear the displayed chord (right=arpeggio). Click on a chord diagram
             to show another variation (left=previous, right=next, center=info). For some variations it is difficult
             or impossible to put a finger on every indicated position. In that case you can just mute or not play a
             string.

@@ -9,6 +9,9 @@ class Settings {
     this.drop = document.getElementById("drop");
     this.exportFormat = document.getElementById("exportFormat")
     this.groupKey = document.getElementById("groupKey");
+    this.guitar = document.getElementById("guitar");
+    this.guitarFilter = document.getElementById("guitarFilter");
+    this.guitarVariation = document.getElementById("guitarVariation");
     this.ignoreColors = document.getElementById("ignoreColors");
     this.inputArea = document.getElementById("input");
     this.inputChordInfo = document.getElementById("inputChordInfo")
@@ -30,6 +33,7 @@ class Settings {
     this.textSize = document.getElementById("textSize");
     this.theme = document.getElementById("theme");
     this.ukulele = document.getElementById("ukulele");
+    this.ukuleleFilter = document.getElementById("ukuleleFilter");
     this.ukuleleVariation = document.getElementById("ukuleleVariation");
     this.uppercase = document.getElementById("uppercase");
     this.useSpecial = document.getElementById("useSpecial");

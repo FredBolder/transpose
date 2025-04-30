@@ -294,6 +294,257 @@ function createInputOrOutputObject(chordSystem) {
   return result;
 }
 
+function drawGuitar(idx, notes, variation, info) {
+  const columns = 5;
+  const maxFret = 15;
+  const rows = 5;
+  let ch = 0;
+  let cw = 0;
+  let dx1 = 0;
+  let dy1 = 0;
+  let fretStart = 1;
+  let infoStr = "";
+  let nFound = 0;
+  let snareIdx = 0;
+  let snares;
+
+  const guitar = Glob.settings.guitar;
+  guitar.height = guitar.clientHeight * 2;
+  guitar.width = guitar.clientWidth * 2;
+  const gtr = guitar.getContext("2d");
+  gtr.reset();
+  const guitarFilter = Glob.settings.guitarFilter.value;
+
+  switch (Glob.guitarTuning) {
+    case "E2-A2-D3-G3-B3-E4":
+      // oct is only for calculating the lowest note and the highest note for the info
+      // Standard
+      snares = [{ note: 4, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
+      break;
+    case "D2-A2-D3-G3-B3-E4":
+      // Drop D
+      snares = [{ note: 2, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
+      break;
+    default:
+      snares = [{ note: 4, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
+      break;
+  }
+
+  ch = guitar.height;
+  cw = guitar.width;
+  dx1 = cw / (columns + 2.5);
+  dy1 = ch / (rows + 2);
+
+  // Draw raster
+  gtr.lineWidth = 2;
+  gtr.fillStyle = "white";
+  gtr.strokeStyle = "black";
+  for (let col = 0; col < columns; col++) {
+    for (let row = 0; row < rows; row++) {
+      gtr.beginPath;
+      gtr.fillRect((col * dx1) + (0.5 * dx1), (row * dy1) + (1.5 * dy1), dx1, dy1);
+      gtr.strokeRect((col * dx1) + (0.5 * dx1), (row * dy1) + (1.5 * dy1), dx1, dy1);
+    }
+  }
+
+  if (!variation || (Glob.guitarFrets.length === 0)) {
+    if (notes.length > 0) {
+      let transposed = [];
+      for (let i = 0; i < notes.length; i++) {
+        let note = (notes[i] + idx) % 12;
+        transposed.push(note);
+      }
+
+      // Keep only the most important notes
+      if (transposed.length > 4) {
+        // Delete the fifth
+        let p = transposed.indexOf((7 + idx) % 12);
+        if (p >= 0) {
+          transposed.splice(p, 1);
+        }
+      }
+      if (transposed.length > 4) {
+        if (transposed.includes((17 + idx) % 12) || transposed.includes((21 + idx) % 12)) {
+          // Delete the ninth
+          let p = transposed.indexOf((14 + idx) % 12);
+          if (p >= 0) {
+            transposed.splice(p, 1);
+          }
+        }
+      }
+      if (transposed.length > 4) {
+        if (transposed.includes((21 + idx) % 12)) {
+          // Delete the eleventh
+          let p = transposed.indexOf((17 + idx) % 12);
+          if (p >= 0) {
+            transposed.splice(p, 1);
+          }
+        }
+      }
+
+      // Keep only the possible fret positions
+      const frets = [];
+      for (let i = 0; i < snares.length; i++) {
+        frets.push([]);
+        for (let j = 0; j <= maxFret; j++) {
+          const note = (snares[i].note + j) % 12;
+          if (transposed.includes(note)) {
+            frets[i].push(j);
+          }
+        }
+      }
+
+      // Fret position
+      Glob.guitarVariation = 0;
+      Glob.guitarFrets.length = 0;
+      if ((frets[0].length > 0) && (frets[1].length > 0) && (frets[2].length > 0) && (frets[3].length > 0)) {
+        for (let iF1 = 0; iF1 < frets[0].length; iF1++) {
+          const f1 = frets[0][iF1];
+          for (let iF2 = 0; iF2 < frets[1].length; iF2++) {
+            const f2 = frets[1][iF2];
+            for (let iF3 = 0; iF3 < frets[2].length; iF3++) {
+              const f3 = frets[2][iF3];
+              for (let iF4 = 0; iF4 < frets[3].length; iF4++) {
+                const f4 = frets[3][iF4];
+                for (let iF5 = 0; iF5 < frets[4].length; iF5++) {
+                  const f5 = frets[4][iF5];
+                  for (let iF6 = 0; iF6 < frets[5].length; iF6++) {
+                    const f6 = frets[5][iF6];
+                    let note1 = (snares[0].note + f1) % 12;
+                    let note2 = (snares[1].note + f2) % 12;
+                    let note3 = (snares[2].note + f3) % 12;
+                    let note4 = (snares[3].note + f4) % 12;
+                    let note5 = (snares[4].note + f5) % 12;
+                    let note6 = (snares[5].note + f6) % 12;
+                    nFound = 0;
+                    for (let i = 0; i < transposed.length; i++) {
+                      let note = transposed[i];
+                      if ((note1 === note) || (note2 === note) || (note3 === note) || (note4 === note) || (note5 === note) || (note6 === note)) {
+                        nFound++;
+                      }
+                    }
+                    if ((nFound === snares.length) || (nFound === transposed.length)) {
+                      const result = fretRange([f1, f2, f3, f4, f5, f6]);
+                      if ((guitarFilter === "All") || ((guitarFilter === "Fret5") && (result.maxFretPosition <= 5))) {
+                        if ((result.maxFretPosition - result.minFretPosition) < rows) {
+                          Glob.guitarFrets.push({ f1, f2, f3, f4, f5, f6 });
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (Glob.guitarFrets.length > 0) {
+    if (Glob.guitarVariation >= Glob.guitarFrets.length) {
+      Glob.guitarVariation = 0;
+    }
+    snares[0].fret = Glob.guitarFrets[Glob.guitarVariation].f1;
+    snares[1].fret = Glob.guitarFrets[Glob.guitarVariation].f2;
+    snares[2].fret = Glob.guitarFrets[Glob.guitarVariation].f3;
+    snares[3].fret = Glob.guitarFrets[Glob.guitarVariation].f4;
+    snares[4].fret = Glob.guitarFrets[Glob.guitarVariation].f5;
+    snares[5].fret = Glob.guitarFrets[Glob.guitarVariation].f6;
+    Glob.settings.guitarVariation.innerText = `${Glob.guitarVariation + 1}/${Glob.guitarFrets.length}`;
+
+    fretStart = 1;
+    const result = fretRange([snares[0].fret, snares[1].fret, snares[2].fret, snares[3].fret, snares[4].fret, snares[5].fret]);
+    if (result.maxFretPosition > rows) {
+      if (result.minFretPosition === 0) {
+        fretStart = result.maxFretPosition;
+      } else {
+        fretStart = result.minFretPosition;
+      }
+    }
+
+    if (fretStart === 1) {
+      gtr.lineWidth = 6;
+      gtr.beginPath();
+      gtr.moveTo(0.5 * dx1, 1.5 * dy1);
+      gtr.lineTo((columns * dx1) + (0.5 * dx1), 1.5 * dy1);
+      gtr.stroke();
+    } else {
+      gtr.font = "24px serif";
+      gtr.fillStyle = "black";
+      gtr.fillText(fretStart.toString(), cw - 30, (2.5 * dy1));
+    }
+
+    // Draw dots and crosses
+    gtr.lineWidth = 2;
+    gtr.fillStyle = "black";
+    gtr.strokeStyle = "black";
+    for (let col = 0; col <= columns; col++) {
+      if (Glob.guitarLeftHanded) {
+        snareIdx = columns - col;
+      } else {
+        snareIdx = col;
+      }
+      if (snares[snareIdx].fret === 0) {
+        gtr.beginPath();
+        gtr.arc((col * dx1) + (0.5 * dx1), (dy1 * 0.7), 6, 0, 2 * Math.PI);
+        gtr.stroke();
+      }
+      if (snares[snareIdx].fret === -1) {
+        gtr.beginPath();
+        gtr.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) - 5);
+        gtr.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) + 5);
+        gtr.stroke();
+        gtr.beginPath();
+        gtr.moveTo((col * dx1) + (0.5 * dx1) - 5, (dy1 * 0.7) + 5);
+        gtr.lineTo((col * dx1) + (0.5 * dx1) + 5, (dy1 * 0.7) - 5);
+        gtr.stroke();
+      }
+      for (let row = 0; row < rows; row++) {
+        if (snares[snareIdx].fret === (row + fretStart)) {
+          gtr.beginPath();
+          gtr.arc((col * dx1) + (0.5 * dx1), (row * dy1) + dy1 + dy1, 6, 0, 2 * Math.PI);
+          gtr.fill();
+          gtr.stroke();
+        }
+      }
+    }
+    if (info) {
+      let note = 0;
+      let notes;
+      if (document.getElementById("useSharps").checked) {
+        notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      } else {
+        notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+      }
+      infoStr = "Notes: "
+      for (let i = 0; i < snares.length; i++) {
+        note = (snares[i].note + snares[i].fret) % 12;
+        if (i > 0) {
+          infoStr += ", ";
+        }
+        infoStr += notes[note];
+      }
+      infoStr += "\n";
+      infoStr += "Lowest note: ";
+      const notesInfo = [];
+      for (let i = 0; i < snares.length; i++) {
+        note = snares[i].note + snares[i].fret + (snares[i].oct * 12);
+        notesInfo.push(note);
+      }
+      note = Math.min(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3], notesInfo[4], notesInfo[5]) % 12;
+      infoStr += notes[note];
+      infoStr += "\n";
+      infoStr += "Highest note: ";
+      note = Math.max(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3], notesInfo[4], notesInfo[5]) % 12;
+      infoStr += notes[note];
+      alert(infoStr);
+    }
+  } else {
+    Glob.settings.guitarVariation.innerText = "";
+  }
+}
+
 function drawKeyboard(idx, notes) {
   let ch = 0;
   let cw = 0;
@@ -487,33 +738,34 @@ function drawUkulele(idx, notes, variation, info) {
   ukulele.width = ukulele.clientWidth * 2;
   const uku = ukulele.getContext("2d");
   uku.reset();
+  const ukuleleFilter = Glob.settings.ukuleleFilter.value;
 
   switch (Glob.ukuleleTuning) {
     case "G4-C4-E4-A4":
       // oct is only for calculating the lowest note and the highest note for the info
       // High G
-      snares = [{ note: 7, fret: 0, oct: true }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 9, fret: 0, oct: true }];
+      snares = [{ note: 7, fret: 0, oct: 4 }, { note: 0, fret: 0, oct: 4 }, { note: 4, fret: 0, oct: 4 }, { note: 9, fret: 0, oct: 4 }];
       break;
     case "G3-C4-E4-A4":
       // Low G
-      snares = [{ note: 7, fret: 0, oct: false }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 9, fret: 0, oct: true }];
+      snares = [{ note: 7, fret: 0, oct: 3 }, { note: 0, fret: 0, oct: 4 }, { note: 4, fret: 0, oct: 4 }, { note: 9, fret: 0, oct: 4 }];
       break;
     case "A4-D4-F#4-B4":
-      snares = [{ note: 9, fret: 0, oct: true }, { note: 2, fret: 0, oct: true }, { note: 6, fret: 0, oct: true }, { note: 11, fret: 0, oct: true }];
+      snares = [{ note: 9, fret: 0, oct: 4 }, { note: 2, fret: 0, oct: 4 }, { note: 6, fret: 0, oct: 4 }, { note: 11, fret: 0, oct: 4 }];
       break;
     case "G4-C4-E4-G4":
       // Slack Key
-      snares = [{ note: 7, fret: 0, oct: true }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 7, fret: 0, oct: true }];
+      snares = [{ note: 7, fret: 0, oct: 4 }, { note: 0, fret: 0, oct: 4 }, { note: 4, fret: 0, oct: 4 }, { note: 7, fret: 0, oct: 4 }];
       break;
     case "D3-G3-B3-E4":
       // Baritone
-      snares = [{ note: 2, fret: 0, oct: false }, { note: 7, fret: 0, oct: false }, { note: 11, fret: 0, oct: false }, { note: 4, fret: 0, oct: true }];
+      snares = [{ note: 2, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
       break;
     case "C3-G3-B3-E4":
-      snares = [{ note: 0, fret: 0, oct: false }, { note: 7, fret: 0, oct: false }, { note: 11, fret: 0, oct: false }, { note: 4, fret: 0, oct: true }];
+      snares = [{ note: 0, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
       break;
     default:
-      snares = [{ note: 7, fret: 0, oct: true }, { note: 0, fret: 0, oct: true }, { note: 4, fret: 0, oct: true }, { note: 9, fret: 0, oct: true }];
+      snares = [{ note: 7, fret: 0, oct: 4 }, { note: 0, fret: 0, oct: 4 }, { note: 4, fret: 0, oct: 4 }, { note: 9, fret: 0, oct: 4 }];
       break;
   }
 
@@ -606,8 +858,10 @@ function drawUkulele(idx, notes, variation, info) {
                 }
                 if ((nFound === snares.length) || (nFound === transposed.length)) {
                   const result = fretRange([f1, f2, f3, f4]);
-                  if ((result.maxFretPosition - result.minFretPosition) < rows) {
-                    Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
+                  if ((ukuleleFilter === "All") || ((ukuleleFilter === "Fret5") && (result.maxFretPosition <= 5))) {
+                    if ((result.maxFretPosition - result.minFretPosition) < rows) {
+                      Glob.ukuleleFrets.push({ f1, f2, f3, f4 });
+                    }
                   }
                 }
               }
@@ -704,10 +958,7 @@ function drawUkulele(idx, notes, variation, info) {
       infoStr += "Lowest note: ";
       const notesInfo = [];
       for (let i = 0; i < snares.length; i++) {
-        note = snares[i].note + snares[i].fret;
-        if (snares[i].oct) {
-          note = note + 12;
-        }
+        note = snares[i].note + snares[i].fret + (snares[i].oct * 12);
         notesInfo.push(note);
       }
       note = Math.min(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3]) % 12;
@@ -1278,6 +1529,7 @@ function chordInfoClicked() {
     output.innerHTML = s1;
     drawKeyboard(0, []);
     drawUkulele(0, [], false, false);
+    drawGuitar(0, [], false, false);
   } else {
     // Remove spaces and square brackets
     input = Glob.removeChars(input, " []");
@@ -1330,9 +1582,11 @@ function chordInfoClicked() {
       Glob.ukuleleFrets = [];
       Glob.ukuleleVariation = 0;
       drawUkulele(0, [], false, false);
+      drawGuitar(0, [], false, false);
     } else {
       drawKeyboard(idx, chordNotes);
       drawUkulele(idx, chordNotes, false, false);
+      drawGuitar(idx, chordNotes, false, false);
     }
     output.innerHTML = info;
   }
@@ -2301,62 +2555,138 @@ async function fadeOutAndStop(audioCtx, gainNode, oscNode, fadeOutTime) {
   gainNode.disconnect();
 }
 
+async function tuneGuitar() {
+  let frequencies;
+  const audioCtx = Audio.audioContext;
+
+  if (Glob.ukuleleTuningStatus === 0) {
+    Glob.guitarTuningStatus++;
+    if (Glob.guitarTuningStatus > 1) {
+      await fadeOutAndStop(
+        audioCtx,
+        Glob.tuningGain,
+        Glob.tuningOscillator,
+        0.1
+      );
+      Glob.tuningGain = null;
+      Glob.tuningOscillator = null;
+    }
+
+    if (Glob.guitarTuningStatus >= 7) {
+      Glob.guitarTuningStatus = 0;
+    }
+
+    if (Glob.guitarTuningStatus > 0) {
+      switch (Glob.guitarTuning) {
+        case "E2-A2-D3-G3-B3-E4":
+          frequencies = [82.407, 110, 146.832, 195.998, 246.942, 329.628];
+          break;
+        case "D2-A2-D3-G3-B3-E4":
+          frequencies = [73.416, 110, 146.832, 195.998, 246.942, 329.628];
+          break;
+        default:
+          frequencies = [82.407, 110, 146.832, 195.998, 246.942, 329.628];
+          break;
+      }
+
+      Glob.tuningGain = audioCtx.createGain();
+      Glob.tuningGain.gain.value = 0.25;
+
+      Glob.tuningOscillator = audioCtx.createOscillator();
+      Glob.tuningOscillator.type = "triangle";
+      Glob.tuningOscillator.frequency.setValueAtTime(frequencies[Glob.guitarTuningStatus - 1], audioCtx.currentTime);
+
+      Glob.tuningOscillator.connect(Glob.tuningGain);
+      Glob.tuningGain.connect(audioCtx.destination);
+
+      Glob.tuningOscillator.start();
+    }
+  }
+}
+
+async function guitarClicked(e) {
+  if ((e.button === 0) && (Glob.guitarFrets.length > 0)) {
+    const rect = guitar.getBoundingClientRect();
+    const xMouse = e.clientX - rect.left;
+    const p1 = rect.width / 3;
+    const p2 = p1 * 2;
+
+    if (xMouse < p1) {
+      Glob.guitarVariation--;
+      if (Glob.guitarVariation < 0) {
+        Glob.guitarVariation = Glob.guitarFrets.length - 1;
+      }
+      drawGuitar(0, [], true, false);
+    } else if ((xMouse >= p1) && (xMouse < p2)) {
+      drawGuitar(0, [], true, true);
+    } else {
+      Glob.guitarVariation++;
+      if (Glob.guitarVariation >= Glob.guitarFrets.length) {
+        Glob.guitarVariation = 0;
+      }
+      drawGuitar(0, [], true, false);
+    }
+  }
+}
+
 async function tuneUkulele() {
   let frequencies;
   const audioCtx = Audio.audioContext;
 
-  Glob.ukuleleTuningStatus++;
-  if (Glob.ukuleleTuningStatus > 1) {
-    await fadeOutAndStop(
-      audioCtx,
-      Glob.tuningGain,
-      Glob.tuningOscillator,
-      0.1
-    );
-    Glob.tuningGain = null;
-    Glob.tuningOscillator = null;
-  }
-
-  if (Glob.ukuleleTuningStatus >= 5) {
-    Glob.ukuleleTuningStatus = 0;
-  }
-
-  if (Glob.ukuleleTuningStatus > 0) {
-    switch (Glob.ukuleleTuning) {
-      case "G4-C4-E4-A4":
-        frequencies = [391.995, 261.626, 329.628, 440];
-        break;
-      case "G3-C4-E4-A4":
-        frequencies = [195.998, 261.626, 329.628, 440];
-        break;
-      case "A4-D4-F#4-B4":
-        frequencies = [440, 293.665, 369.994, 493.883];
-        break;
-      case "G4-C4-E4-G4":
-        frequencies = [391.995, 261.626, 329.628, 391.995];
-        break;
-      case "D3-G3-B3-E4":
-        frequencies = [146.832, 195.998, 246.942, 329.628];
-        break;
-      case "C3-G3-B3-E4":
-        frequencies = [130.813, 195.998, 246.942, 329.628];
-        break;
-      default:
-        frequencies = [391.995, 261.626, 329.628, 440];
-        break;
+  if (Glob.guitarTuningStatus === 0) {
+    Glob.ukuleleTuningStatus++;
+    if (Glob.ukuleleTuningStatus > 1) {
+      await fadeOutAndStop(
+        audioCtx,
+        Glob.tuningGain,
+        Glob.tuningOscillator,
+        0.1
+      );
+      Glob.tuningGain = null;
+      Glob.tuningOscillator = null;
     }
 
-    Glob.tuningGain = audioCtx.createGain();
-    Glob.tuningGain.gain.value = 0.25;
+    if (Glob.ukuleleTuningStatus >= 5) {
+      Glob.ukuleleTuningStatus = 0;
+    }
 
-    Glob.tuningOscillator = audioCtx.createOscillator();
-    Glob.tuningOscillator.type = "triangle";
-    Glob.tuningOscillator.frequency.setValueAtTime(frequencies[Glob.ukuleleTuningStatus - 1], audioCtx.currentTime);
+    if (Glob.ukuleleTuningStatus > 0) {
+      switch (Glob.ukuleleTuning) {
+        case "G4-C4-E4-A4":
+          frequencies = [391.995, 261.626, 329.628, 440];
+          break;
+        case "G3-C4-E4-A4":
+          frequencies = [195.998, 261.626, 329.628, 440];
+          break;
+        case "A4-D4-F#4-B4":
+          frequencies = [440, 293.665, 369.994, 493.883];
+          break;
+        case "G4-C4-E4-G4":
+          frequencies = [391.995, 261.626, 329.628, 391.995];
+          break;
+        case "D3-G3-B3-E4":
+          frequencies = [146.832, 195.998, 246.942, 329.628];
+          break;
+        case "C3-G3-B3-E4":
+          frequencies = [130.813, 195.998, 246.942, 329.628];
+          break;
+        default:
+          frequencies = [391.995, 261.626, 329.628, 440];
+          break;
+      }
 
-    Glob.tuningOscillator.connect(Glob.tuningGain);
-    Glob.tuningGain.connect(audioCtx.destination);
+      Glob.tuningGain = audioCtx.createGain();
+      Glob.tuningGain.gain.value = 0.25;
 
-    Glob.tuningOscillator.start();
+      Glob.tuningOscillator = audioCtx.createOscillator();
+      Glob.tuningOscillator.type = "triangle";
+      Glob.tuningOscillator.frequency.setValueAtTime(frequencies[Glob.ukuleleTuningStatus - 1], audioCtx.currentTime);
+
+      Glob.tuningOscillator.connect(Glob.tuningGain);
+      Glob.tuningGain.connect(audioCtx.destination);
+
+      Glob.tuningOscillator.start();
+    }
   }
 }
 
@@ -2393,6 +2723,7 @@ try {
       //console.log("Settings loaded");
       drawKeyboard(0, []);
       drawUkulele(0, [], false, false);
+      drawGuitar(0, [], false, false);
       Glob.settings.numberOfChords.innerHTML = getNumberOfChords();
       Glob.settings.position.addEventListener("change", (e) => {
         if (Glob.settings.inputChordInfo.value.trim() !== "") {
@@ -2433,6 +2764,31 @@ try {
   document.getElementById("keyboard").addEventListener("mousedown", (e) => {
     keyboardClicked(e);
   });
+
+  // Guitar
+  document.getElementById("guitar").addEventListener("mousedown", (e) => {
+    guitarClicked(e);
+  });
+  document.getElementById("guitarLeftHanded").addEventListener("change", (e) => {
+    Glob.guitarLeftHanded = document.getElementById("guitarLeftHanded").checked;
+    if (Glob.lastChord.length > 0) {
+      drawGuitar(0, [], true, false);
+    }
+  });
+  document.getElementById("guitarFilter").addEventListener("change", (e) => {
+    if (Glob.settings.inputChordInfo.value.trim() !== "") {
+      chordInfoClicked();
+    }
+  });
+  document.getElementById("guitarTuning").addEventListener("change", (e) => {
+    Glob.guitarTuning = document.getElementById("guitarTuning").value;
+    if (Glob.settings.inputChordInfo.value.trim() !== "") {
+      chordInfoClicked();
+    }
+  });
+  document.getElementById("btTuneGuitar").addEventListener("click", tuneGuitar);
+
+  // Ukulele
   document.getElementById("ukulele").addEventListener("mousedown", (e) => {
     ukuleleClicked(e);
   });
@@ -2442,6 +2798,11 @@ try {
       drawUkulele(0, [], true, false);
     }
   });
+  document.getElementById("ukuleleFilter").addEventListener("change", (e) => {
+    if (Glob.settings.inputChordInfo.value.trim() !== "") {
+      chordInfoClicked();
+    }
+  });
   document.getElementById("ukuleleTuning").addEventListener("change", (e) => {
     Glob.ukuleleTuning = document.getElementById("ukuleleTuning").value;
     if (Glob.settings.inputChordInfo.value.trim() !== "") {
@@ -2449,6 +2810,7 @@ try {
     }
   });
   document.getElementById("btTuneUkulele").addEventListener("click", tuneUkulele);
+
   document.getElementById("btDown").addEventListener("click", downClicked);
   document.getElementById("btUp").addEventListener("click", upClicked);
   document
