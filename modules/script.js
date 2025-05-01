@@ -294,6 +294,24 @@ function createInputOrOutputObject(chordSystem) {
   return result;
 }
 
+function LowestNoteAndHighestNote(snares) {
+  let note = -1;
+  const notes = [];
+  let result = { lowest: -1, highest: -1 };
+
+  if (snares.length > 0) {
+    for (let i = 0; i < snares.length; i++) {
+      if (snares[i].fret !== -1) {
+        note = snares[i].note + snares[i].fret + (snares[i].oct * 12);
+        notes.push(note);
+      }
+    }
+    result.lowest = Math.min(...notes) % 12;
+    result.highest = Math.max(...notes) % 12;
+  }
+  return result;
+}
+
 function drawGuitar(idx, notes, variation, info) {
   const columns = 5;
   const maxFret = 15;
@@ -306,7 +324,9 @@ function drawGuitar(idx, notes, variation, info) {
   let dx1 = 0;
   let dy1 = 0;
   let fretStart = 1;
+  let found = false;
   let infoStr = "";
+  let lowestIsRoot = false;
   let nFound = 0;
   let ok = true;
   let snareIdx = 0;
@@ -444,7 +464,7 @@ function drawGuitar(idx, notes, variation, info) {
                       if ((f1 !== -1) && (f2 !== -1)) {
                         bass1 = snares[0].note + f1 + (snares[0].oct * 12);
                         bass2 = snares[1].note + f2 + (snares[1].oct * 12);
-                        if (Math.abs(bass1 - bass2) < 8) {
+                        if ((Math.abs(bass1 - bass2) < 8) && (f1 < 5) && (f2 < 5)) {
                           ok = false;
                         }
                       }
@@ -452,7 +472,7 @@ function drawGuitar(idx, notes, variation, info) {
                       if (f2 !== -1) {
                         bass1 = snares[1].note + f2 + (snares[1].oct * 12);
                         bass2 = snares[2].note + f3 + (snares[2].oct * 12);
-                        if (Math.abs(bass1 - bass2) < 4) {
+                        if ((Math.abs(bass1 - bass2) < 4) && (f2 < 5) && (f3 < 5)) {
                           ok = false;
                         }
                       }
@@ -487,7 +507,15 @@ function drawGuitar(idx, notes, variation, info) {
 
                       if (ok) {
                         const result = fretRange([f1, f2, f3, f4, f5, f6]);
-                        if ((guitarFilter === "All") || ((guitarFilter === "Fret5") && (result.maxFretPosition <= 5))) {
+                        snares[0].fret = f1;
+                        snares[1].fret = f2;
+                        snares[2].fret = f3;
+                        snares[3].fret = f4;
+                        snares[4].fret = f5;
+                        snares[5].fret = f6;
+                        lowestIsRoot = (transposed[0] === LowestNoteAndHighestNote(snares).lowest);
+                        if ((guitarFilter === "All") || ((guitarFilter === "Fret5") && (result.maxFretPosition <= 5)) ||
+                        ((guitarFilter === "LowestIsRoot") && lowestIsRoot)) {
                           if ((result.maxFretPosition - result.minFretPosition) < maxFretDist) {
                             Glob.guitarFrets.push({ f1, f2, f3, f4, f5, f6 });
                           }
@@ -504,7 +532,29 @@ function drawGuitar(idx, notes, variation, info) {
     }
   }
 
-  // TODO: Remove variations with mute that has the same notes without that mute
+  // Remove variations with mute that exist already without that mute
+  const newGuitarFrets = [];
+  for (let i = 0; i < Glob.guitarFrets.length; i++) {
+    found = false;
+    const gf1 = Glob.guitarFrets[i];
+    for (let j = 0; j < Glob.guitarFrets.length; j++) {
+      const gf2 = Glob.guitarFrets[j];
+      if ((gf1.f3 === gf2.f3) && (gf1.f4 === gf2.f4) && (gf1.f5 === gf2.f5)) {
+        if ((gf1.f1 === gf2.f1) && (gf1.f2 === gf2.f2) && (gf1.f6 === -1) && (gf2.f6 !== -1)) {
+          found = true;
+        }
+        if ((gf1.f1 === gf2.f1) && (gf1.f6 === gf2.f6) && (gf1.f2 === -1) && (gf2.f2 !== -1)) {
+          found = true;
+        }
+      }
+    }
+    if (!found) {
+      newGuitarFrets.push(gf1);
+    }
+  }
+  Glob.guitarFrets.length = 0;
+  Glob.guitarFrets = null;
+  Glob.guitarFrets = newGuitarFrets;
 
   if (Glob.guitarFrets.length > 0) {
     if (Glob.guitarVariation >= Glob.guitarFrets.length) {
@@ -595,21 +645,11 @@ function drawGuitar(idx, notes, variation, info) {
           infoStr += "X";
         }
       }
-      infoStr += "\n";
-      infoStr += "Lowest note: ";
-      const notesInfo = [];
-      for (let i = 0; i < snares.length; i++) {
-        if (snares[i].fret !== -1) {
-          note = snares[i].note + snares[i].fret + (snares[i].oct * 12);
-          notesInfo.push(note);
-        }
-      }
-      note = Math.min(...notesInfo) % 12;
-      infoStr += notes[note];
-      infoStr += "\n";
-      infoStr += "Highest note: ";
-      note = Math.max(...notesInfo) % 12;
-      infoStr += notes[note];
+      infoStr += "\nLowest note: ";
+      const lowestHighest = LowestNoteAndHighestNote(snares);
+      infoStr += notes[lowestHighest.lowest];
+      infoStr += "\nHighest note: ";
+      infoStr += notes[lowestHighest.highest];
       alert(infoStr);
     }
   } else {
@@ -1026,19 +1066,11 @@ function drawUkulele(idx, notes, variation, info) {
         }
         infoStr += notes[note];
       }
-      infoStr += "\n";
-      infoStr += "Lowest note: ";
-      const notesInfo = [];
-      for (let i = 0; i < snares.length; i++) {
-        note = snares[i].note + snares[i].fret + (snares[i].oct * 12);
-        notesInfo.push(note);
-      }
-      note = Math.min(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3]) % 12;
-      infoStr += notes[note];
-      infoStr += "\n";
-      infoStr += "Highest note: ";
-      note = Math.max(notesInfo[0], notesInfo[1], notesInfo[2], notesInfo[3]) % 12;
-      infoStr += notes[note];
+      infoStr += "\nLowest note: ";
+      const lowestHighest = LowestNoteAndHighestNote(snares);
+      infoStr += notes[lowestHighest.lowest];
+      infoStr += "\nHighest note: ";
+      infoStr += notes[lowestHighest.highest];
       alert(infoStr);
     }
   } else {
