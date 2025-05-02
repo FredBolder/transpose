@@ -2,6 +2,7 @@ import { keyToSemitones, transpose, getDirective } from "./script.js";
 import { Options } from "./options.js";
 import { MusicData } from "./musicdata.js";
 import { Glob } from "./glob.js";
+import { ChordDiagrams } from "./chorddiagrams.js";
 
 function checkResult(testName, expected, result) {
   if (result !== expected) {
@@ -465,6 +466,33 @@ function test() {
     "Test 43",
     "This is a [test] C D",
     outputData.join("\n")
+  );
+
+  // Tests usedFingers
+  checkResult(
+    "Test usedFingers 1",
+    1,
+    ChordDiagrams.usedFingers([0, 0, 0, 1, 1, 1])
+  );
+  checkResult(
+    "Test usedFingers 2",
+    5,
+    ChordDiagrams.usedFingers([-1, 5, 4, 2, 3, 3])
+  );
+  checkResult(
+    "Test usedFingers 3",
+    3,
+    ChordDiagrams.usedFingers([-1, 4, 2, 0, 2, 2])
+  );
+  checkResult(
+    "Test usedFingers 4",
+    1,
+    ChordDiagrams.usedFingers([4, 4, 4, 4, 4, 4])
+  );
+  checkResult(
+    "Test usedFingers 5",
+    4,
+    ChordDiagrams.usedFingers([-1, 4, 4, 4, 4, 0])
   );
 
   // Extra test

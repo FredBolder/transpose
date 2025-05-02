@@ -32,7 +32,7 @@ class ChordDiagrams {
 
     static drawGuitar(idx, notes, variation, info) {
         const columns = 5;
-        const maxFret = 15;
+        let maxFret = 0;
         const maxFretDist = 4;
         const rows = 5;
         let bass1 = 0;
@@ -66,6 +66,14 @@ class ChordDiagrams {
             case "D2-A2-D3-G3-B3-E4":
                 // Drop D
                 snares = [{ note: 2, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
+                break;
+            case "D2-A2-D3-F#3-A3-D4":
+                // Open D
+                snares = [{ note: 2, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 6, fret: 0, oct: 3 }, { note: 9, fret: 0, oct: 3 }, { note: 2, fret: 0, oct: 4 }];
+                break;
+            case "D2-A2-D3-F3-A3-D4":
+                // Open D Minor
+                snares = [{ note: 2, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 5, fret: 0, oct: 3 }, { note: 9, fret: 0, oct: 3 }, { note: 2, fret: 0, oct: 4 }];
                 break;
             default:
                 snares = [{ note: 4, fret: 0, oct: 2 }, { note: 9, fret: 0, oct: 2 }, { note: 2, fret: 0, oct: 3 }, { note: 7, fret: 0, oct: 3 }, { note: 11, fret: 0, oct: 3 }, { note: 4, fret: 0, oct: 4 }];
@@ -125,6 +133,11 @@ class ChordDiagrams {
                 }
 
                 // Keep only the possible fret positions
+                if (guitarFilter === "Fret5") {
+                    maxFret = 5;
+                } else {
+                    maxFret = 15;
+                }
                 const frets = [];
                 for (let i = 0; i < snares.length; i++) {
                     frets.push([]);
@@ -178,48 +191,16 @@ class ChordDiagrams {
                                                 if ((f1 === -1) && (f2 === -1) && (f6 === -1)) {
                                                     ok = false;
                                                 }
-                                                // Minimal bass note distance 8 semitones
+                                                // Minimal bass note distance 4 semitones
                                                 if ((f1 !== -1) && (f2 !== -1)) {
                                                     bass1 = snares[0].note + f1 + (snares[0].oct * 12);
                                                     bass2 = snares[1].note + f2 + (snares[1].oct * 12);
-                                                    if ((Math.abs(bass1 - bass2) < 8) && (f1 < 5) && (f2 < 5)) {
-                                                        ok = false;
-                                                    }
-                                                }
-                                                // Minimal note distance 4 semitones
-                                                if (f2 !== -1) {
-                                                    bass1 = snares[1].note + f2 + (snares[1].oct * 12);
-                                                    bass2 = snares[2].note + f3 + (snares[2].oct * 12);
-                                                    if ((Math.abs(bass1 - bass2) < 4) && (f2 < 5) && (f3 < 5)) {
+                                                    if (Math.abs(bass1 - bass2) < 4) {
                                                         ok = false;
                                                     }
                                                 }
                                                 // Not enough fingers
-                                                let fingers = 0;
-                                                if (f1 > 0) fingers++;
-                                                if (f2 > 0) fingers++;
-                                                if (f3 > 0) fingers++;
-                                                if (f4 > 0) fingers++;
-                                                if (f5 > 0) fingers++;
-                                                if (f6 > 0) fingers++;
-                                                if (f6 > 0) {
-                                                    if (f6 === f5) {
-                                                        fingers--;
-                                                        if (f6 === f4) {
-                                                            fingers--;
-                                                            if (f6 === f3) {
-                                                                fingers--;
-                                                                if (f6 === f2) {
-                                                                    fingers--;
-                                                                    if (f6 === f1) {
-                                                                        fingers--;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                if (fingers > 4) {
+                                                if (this.usedFingers([f1, f2, f3, f4, f5, f6]) > 4) {
                                                     ok = false;
                                                 }
 
@@ -262,6 +243,9 @@ class ChordDiagrams {
                         found = true;
                     }
                     if ((gf1.f1 === gf2.f1) && (gf1.f6 === gf2.f6) && (gf1.f2 === -1) && (gf2.f2 !== -1)) {
+                        found = true;
+                    }
+                    if ((gf1.f6 === gf2.f6) && (gf1.f1 === -1) && (gf2.f1 !== -1) && (gf1.f2 === -1) && (gf2.f2 !== -1)) {
                         found = true;
                     }
                 }
@@ -400,7 +384,7 @@ class ChordDiagrams {
 
     static drawUkulele(idx, notes, variation, info) {
         const columns = 3;
-        const maxFret = 15;
+        let maxFret = 0;
         const rows = 5;
         let ch = 0;
         let cw = 0;
@@ -501,6 +485,11 @@ class ChordDiagrams {
                 }
 
                 // Keep only the possible fret positions
+                if (ukuleleFilter === "Fret5") {
+                    maxFret = 5;
+                } else {
+                    maxFret = 15;
+                }
                 const frets = [];
                 for (let i = 0; i < snares.length; i++) {
                     frets.push([]);
@@ -678,6 +667,23 @@ class ChordDiagrams {
         return { minFretPosition, maxFretPosition };
     }
 
+    static lowestFret(arr) {
+        const frets = [];
+        let result = -1;
+
+        if (arr.length > 0) {
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] > 0) {
+                    frets.push(arr[i]);
+                }
+            }
+            if (frets.length > 0) {
+                result = Math.min(...frets);
+            }
+        }
+        return result;
+    }
+
     static lowestNoteAndHighestNote(snares) {
         let note = -1;
         const notes = [];
@@ -724,6 +730,12 @@ class ChordDiagrams {
                         break;
                     case "D2-A2-D3-G3-B3-E4":
                         frequencies = [73.416, 110, 146.832, 195.998, 246.942, 329.628];
+                        break;
+                    case "D2-A2-D3-F#3-A3-D4":
+                        frequencies = [73.416, 110, 146.832, 184.997, 220, 293.665];
+                        break;
+                    case "D2-A2-D3-F3-A3-D4":
+                        frequencies = [73.416, 110, 146.832, 174.614, 220, 293.665];
                         break;
                     default:
                         frequencies = [82.407, 110, 146.832, 195.998, 246.942, 329.628];
@@ -805,7 +817,32 @@ class ChordDiagrams {
         }
     }
 
+    static usedFingers(frets) {
+        let last = 0;
+        let result = 0;
+        let stop = false;
+        const lowest = this.lowestFret(frets);
 
+        if (frets.length <= 0) return 0;
+
+        for (let i = 0; i < frets.length; i++) {
+            if (frets[i] > 0) {
+                result++;
+            }
+        }
+        last = frets[frets.length - 1];
+        if ((last > 0) && (last === lowest)) {
+            for (let i = 1; ((i < frets.length) && !stop); i++) {
+                if (frets[frets.length - 1 - i] === last) {
+                    result--;
+                }
+                if (frets[frets.length - 1 - i] < last) {
+                    stop = true;
+                }
+            }
+        }
+        return result;
+    }
 
 }
 
