@@ -296,13 +296,14 @@ function createInputOrOutputObject(chordSystem) {
   return result;
 }
 
-function drawKeyboard(idx, notes) {
+function drawKeyboard(idx, chordNotes) {
   let ch = 0;
   let cw = 0;
   let dx1 = 0;
   let dx2 = 0;
   let n1 = 0;
   let drop = "";
+  let notes = chordNotes.slice();
   let position = "";
   let up = false;
   let x = 0;
