@@ -104,6 +104,137 @@ function checkChordType(s) {
   return MusicData.getInterval(s).length > 0;
 }
 
+function chordInfoClicked() {
+  let chordType = "";
+  let idx = -1;
+  let info = "";
+  let mayBeOmitted = false;
+  let note = "";
+  let noteIdx = 0;
+  let p1 = -1;
+  let s1 = "";
+  let chordNotes = [];
+  let input = convertToNormalChars(Glob.settings.inputChordInfo.value.trim());
+  const output = Glob.settings.outputChordInfo;
+  const options = new Options();
+  Glob.settings.saveToOptions(options);
+  options.inputFormat = options.outputFormat;
+  const outputObj = createInputOrOutputObject(options.outputFormat);
+
+  if (input.includes(",")) {
+    // Search chord by notes
+    // Remove round brackets
+    input = Glob.removeChars(input, "()");
+    s1 = searchNotes(input);
+    if (s1 === "") {
+      s1 = "No matching chord found";
+    }
+    output.innerHTML = s1;
+    drawKeyboard(0, []);
+    ChordDiagrams.drawUkulele(0, [], false, false);
+    ChordDiagrams.drawGuitar(0, [], false, false);
+  } else {
+    // Remove spaces and square brackets
+    input = Glob.removeChars(input, " []");
+
+    if (options.outputFormat === "NOCHORDS") {
+      options.outputFormat = "CDE";
+    }
+    note = outputObj.readNote(input);
+    if (note !== "") {
+      idx = noteToIndex(note, options, false, false, outputObj);
+      if (idx >= 0) {
+        chordType = input.substring(note.length);
+        p1 = chordType.lastIndexOf("/");
+        if (p1 >= 0) {
+          chordType = chordType.substring(0, p1);
+        }
+        if (options.outputFormat === "GREEK") {
+          chordType = convertGreekType(chordType);
+        }
+        if (options.outputFormat === "ROMAN") {
+          if (
+            note === note.toLowerCase() &&
+            !chordType.startsWith("°") &&
+            !chordType.toLowerCase().startsWith("dim")
+          ) {
+            chordType = "m" + chordType;
+          }
+        }
+        chordNotes = MusicData.getInterval(chordType);
+      }
+    }
+    info = "";
+    for (let i = 0; i < chordNotes.length; i++) {
+      if (i > 0) {
+        info += ", ";
+      }
+      mayBeOmitted = chordNotes[i] < 0;
+      chordNotes[i] = Math.abs(chordNotes[i]);
+      noteIdx = fixNoteIndex(chordNotes[i] + idx);
+      note = noteIndexToString(noteIdx, options, true, outputObj);
+      if (mayBeOmitted) {
+        note = "(" + note + ")";
+      }
+      info += note;
+    }
+
+    if (info === "") {
+      info = "No info available for this chord yet";
+      drawKeyboard(0, []);
+      ChordDiagrams.ukuleleFrets = [];
+      ChordDiagrams.ukuleleVariation = 0;
+      ChordDiagrams.guitarFrets = [];
+      ChordDiagrams.guitarVariation = 0;
+      ChordDiagrams.drawUkulele(0, [], false, false);
+      ChordDiagrams.drawGuitar(0, [], false, false);
+    } else {
+      drawKeyboard(idx, chordNotes);
+      ChordDiagrams.drawUkulele(idx, chordNotes, false, false);
+      ChordDiagrams.drawGuitar(idx, chordNotes, false, false);
+    }
+    output.innerHTML = info;
+  }
+}
+
+function clearClicked() {
+  const input = Glob.settings.inputArea;
+  if (input.value !== "") {
+    if (confirm("Clear the input?")) {
+      input.value = "";
+    }
+  }
+}
+
+function commentClicked() {
+  let p1 = 0;
+  let p2 = 0;
+  let p3 = 0;
+  let s1 = "";
+  let s2 = "";
+  let s3 = "";
+  let value = "";
+  const input = Glob.settings.inputArea;
+  const commentType = Glob.settings.commentType.value;
+  value = input.value;
+  if (value !== "") {
+    p3 = input.selectionStart;
+    p1 = value.lastIndexOf("\n", p3);
+    // No need to change p1 when it is -1
+    p2 = value.indexOf("\n", p3);
+    if (p2 === -1) {
+      p2 = value.length;
+    }
+    s1 = value.slice(p1 + 1, p2);
+    s2 = s1.trim();
+    if (s2 !== "" && !s2.startsWith("{")) {
+      s1 = "{" + commentType + ": " + s1 + "}";
+      s3 = value.slice(0, p1 + 1) + s1 + value.slice(p2);
+      input.value = s3;
+    }
+  }
+}
+
 function convertGreekType(s) {
   let result = s;
   if (s.startsWith("-")) {
@@ -296,6 +427,15 @@ function createInputOrOutputObject(chordSystem) {
   return result;
 }
 
+function downClicked() {
+  let semitones = parseInt(Glob.settings.semitones.value);
+  if (semitones > -11) {
+    semitones--;
+    Glob.settings.semitones.value = semitones.toString();
+    transposeClicked();
+  }
+}
+
 function drawKeyboard(idx, chordNotes) {
   let ch = 0;
   let cw = 0;
@@ -454,6 +594,51 @@ function drawKeyboard(idx, chordNotes) {
   }
 }
 
+function exportClicked() {
+  let dark = false;
+  let data = "";
+  let filename = prompt("Filename without path");
+  if (filename === null) {
+    filename = "";
+  }
+  filename = filename.trim();
+  if (filename !== "") {
+    const exportFormat = Glob.settings.exportFormat.value;
+    const element = document.createElement("a");
+    if (exportFormat === "HTML") {
+      if (!filename.includes(".")) {
+        filename += ".html";
+      }
+      data = Glob.settings.outputArea.innerHTML;
+      data = data.split("</div><").join("</div>\n      <");
+      dark = Glob.settings.theme.value === "DARK";
+      console.log(dark);
+      data = header(filename, dark) + "    <main>\n" + "      " + data;
+      data += `\n    </main>\n`;
+      data += `  </body>\n`;
+      data += `</html>\n`;
+      element.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(data)
+      );
+    } else {
+      if (!filename.includes(".")) {
+        filename += ".txt";
+      }
+      data = Glob.settings.outputArea.innerText;
+      element.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(data)
+      );
+    }
+    element.setAttribute("download", filename);
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+}
+
 function fixNoteIndex(n) {
   while (n > 11) {
     n -= 12;
@@ -516,6 +701,37 @@ function greekToNormal(s) {
     result += c;
   }
   return result;
+}
+
+async function guitarClicked(e) {
+  if ((e.button === 0) && (ChordDiagrams.guitarFrets.length > 0)) {
+    const rect = guitar.getBoundingClientRect();
+    const xMouse = e.clientX - rect.left;
+    const p1 = rect.width / 3;
+    const p2 = p1 * 2;
+
+    if (xMouse < p1) {
+      ChordDiagrams.guitarVariation--;
+      if (ChordDiagrams.guitarVariation < 0) {
+        ChordDiagrams.guitarVariation = ChordDiagrams.guitarFrets.length - 1;
+      }
+      ChordDiagrams.drawGuitar(0, [], true, false);
+    } else if ((xMouse >= p1) && (xMouse < p2)) {
+      ChordDiagrams.drawGuitar(0, [], true, true);
+    } else {
+      ChordDiagrams.guitarVariation++;
+      if (ChordDiagrams.guitarVariation >= ChordDiagrams.guitarFrets.length) {
+        ChordDiagrams.guitarVariation = 0;
+      }
+      ChordDiagrams.drawGuitar(0, [], true, false);
+    }
+  }
+}
+
+function guitarFilterChanged() {
+  if (Glob.settings.inputChordInfo.value.trim() !== "") {
+    chordInfoClicked();
+  }
 }
 
 function header(title, dark = false) {
@@ -614,6 +830,77 @@ function isRomanLower(s) {
 
 function isSharpOrFlat(index) {
   return [1, 3, 6, 8, 10, 12].includes(index);
+}
+
+async function keyboardClicked(e) {
+  if ((e.button === 0) && (Glob.lastChord.length > 0)) {
+    const rect = keyboard.getBoundingClientRect();
+    const xMouse = e.clientX - rect.left;
+    const p1 = rect.width / 3;
+    const p2 = p1 * 2;
+    let playMode = 0;
+    let timeBetweenNotes = 1000;
+
+    if (xMouse < p1) {
+      playMode = 1;
+    } else if ((xMouse >= p1) && (xMouse < p2)) {
+      playMode = 2;
+    } else {
+      playMode = 3;
+    }
+
+    switch (playMode) {
+      case 1:
+        timeBetweenNotes = 0;
+        break;
+      case 2:
+        timeBetweenNotes = 50;
+        break;
+      case 3:
+        timeBetweenNotes = 250;
+        break;
+      default:
+        break;
+    }
+
+    const urls = [];
+    for (let i = 0; i < Glob.lastChord.length; i++) {
+      let url = (Glob.lastChord[i] + Glob.lastChordIdx + 1).toString();
+      if (url.length < 2) {
+        url = '0' + url;
+      }
+      url = 'wav/' + url + '.wav';
+      urls.push(url);
+    }
+
+    // Check if all URLs are cached
+    if (!urls.every(url => Audio.audioCache.has(url))) {
+      await Audio.preloadAudioFiles(urls);
+    }
+
+    // Create and configure BufferSource nodes for each audio buffer and store them
+    const sources = urls.map(url => {
+      const audioBuffer = Audio.getCachedAudioBuffer(url);
+      const source = Audio.audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+
+      const gainNode = Audio.audioContext.createGain();
+      gainNode.gain.value = 0.9 / urls.length;
+
+      source.connect(gainNode);
+      gainNode.connect(Audio.audioContext.destination);
+
+      return source;
+    });
+
+    // Play the pre-configured sources with the specified delay
+    for (let i = 0; i < sources.length; i++) {
+      sources[i].start();
+      if (i < sources.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, timeBetweenNotes));
+      }
+    }
+  }
 }
 
 function keyToSemitones(key) {
@@ -795,6 +1082,28 @@ function noteToIndex(note, options, start, bass, inputObj) {
   return idx;
 }
 
+function printClicked() {
+  let data = "";
+  transposeClicked(true);
+  data = Glob.settings.outputArea.innerHTML;
+  data = data.split("</div><").join("</div>\n    <");
+  const w = window.open(" ", " ");
+  w.document.write(header("Transpose by Fred Bolder"));
+  w.document.writeln(`    <div class="outputprint">`);
+  w.document.write(data);
+  w.document.writeln("    </div>");
+  w.document.writeln("  </body>");
+  w.document.writeln("</html>");
+  let stateCheck = setInterval(() => {
+    if (document.readyState === "complete") {
+      clearInterval(stateCheck);
+      w.print();
+      w.close();
+    }
+  }, 100);
+  transposeClicked();
+}
+
 function searchNotes(input) {
   let result = "";
   let d = 0;
@@ -853,6 +1162,20 @@ function searchNotes(input) {
   return result;
 }
 
+function selectAllClicked() {
+  if (document.selection) {
+    // IE
+    var range = document.body.createTextRange();
+    range.moveToElementText(Glob.settings.outputArea);
+    range.select();
+  } else if (window.getSelection) {
+    var range = document.createRange();
+    range.selectNode(Glob.settings.outputArea);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  }
+}
+
 function showHide() {
   if (Glob.settings.inputFormat.value === "INLINE") {
     Glob.settings.bracketsInput.classList.remove("hidden");
@@ -874,6 +1197,30 @@ function showHide() {
   } else {
     Glob.settings.groupKey.classList.add("hidden");
   }
+}
+
+function simplifyNote(note) {
+  let p = -1;
+  let s = "";
+  let s1 = "";
+  let s2 = "";
+
+  let i = 0;
+  while (s === "" && i < MusicData.simpleNotes.length) {
+    p = MusicData.simpleNotes[i].indexOf(",");
+    if (p >= 0) {
+      s1 = MusicData.simpleNotes[i].slice(0, p).trim();
+      s2 = MusicData.simpleNotes[i].slice(p + 1).trim();
+      if (note === s1) {
+        s = s2;
+      }
+    }
+    i++;
+  }
+  if (s === "") {
+    s = note;
+  }
+  return s;
 }
 
 function startScroll(gotoTop = false) {
@@ -904,198 +1251,51 @@ function stopScroll() {
   }
 }
 
-function printClicked() {
-  let data = "";
-  transposeClicked(true);
-  data = Glob.settings.outputArea.innerHTML;
-  data = data.split("</div><").join("</div>\n    <");
-  const w = window.open(" ", " ");
-  w.document.write(header("Transpose by Fred Bolder"));
-  w.document.writeln(`    <div class="outputprint">`);
-  w.document.write(data);
-  w.document.writeln("    </div>");
-  w.document.writeln("  </body>");
-  w.document.writeln("</html>");
-  let stateCheck = setInterval(() => {
-    if (document.readyState === "complete") {
-      clearInterval(stateCheck);
-      w.print();
-      w.close();
-    }
-  }, 100);
-  transposeClicked();
-}
-
-function exportClicked() {
-  let dark = false;
-  let data = "";
-  let filename = prompt("Filename without path").trim();
-  if (filename !== "") {
-    const exportFormat = Glob.settings.exportFormat.value;
-    const element = document.createElement("a");
-    if (exportFormat === "HTML") {
-      if (!filename.includes(".")) {
-        filename += ".html";
-      }
-      data = Glob.settings.outputArea.innerHTML;
-      data = data.split("</div><").join("</div>\n      <");
-      dark = Glob.settings.theme.value === "DARK";
-      console.log(dark);
-      data = header(filename, dark) + "    <main>\n" + "      " + data;
-      data += `\n    </main>\n`;
-      data += `  </body>\n`;
-      data += `</html>\n`;
-      element.setAttribute(
-        "href",
-        "data:text/plain;charset=utf-8," + encodeURIComponent(data)
-      );
-    } else {
-      if (!filename.includes(".")) {
-        filename += ".txt";
-      }
-      data = Glob.settings.outputArea.innerText;
-      element.setAttribute(
-        "href",
-        "data:text/plain;charset=utf-8," + encodeURIComponent(data)
-      );
-    }
-    element.setAttribute("download", filename);
-    element.style.display = "none";
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  }
-}
-
-function selectAllClicked() {
-  if (document.selection) {
-    // IE
-    var range = document.body.createTextRange();
-    range.moveToElementText(Glob.settings.outputArea);
-    range.select();
-  } else if (window.getSelection) {
-    var range = document.createRange();
-    range.selectNode(Glob.settings.outputArea);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  }
-}
-
-function chordInfoClicked() {
-  let chordType = "";
-  let idx = -1;
-  let info = "";
-  let mayBeOmitted = false;
-  let note = "";
-  let noteIdx = 0;
-  let p1 = -1;
-  let s1 = "";
-  let chordNotes = [];
-  let input = convertToNormalChars(Glob.settings.inputChordInfo.value.trim());
-  const output = Glob.settings.outputChordInfo;
-  const options = new Options();
-  Glob.settings.saveToOptions(options);
-  options.inputFormat = options.outputFormat;
+function titleClicked() {
+  let found = false;
+  let chord = false;
+  let data = [];
+  let i = 0;
+  let name = "";
+  let result = {};
+  let titleExists = false;
+  const input = Glob.settings.inputArea;
+  const inputFormat = Glob.settings.inputFormat.value;
+  let options = new Options();
+  options.inputFormat = inputFormat;
+  const inputObj = createInputOrOutputObject(options.inputFormat);
   const outputObj = createInputOrOutputObject(options.outputFormat);
 
-  if (input.includes(",")) {
-    // Search chord by notes
-    // Remove round brackets
-    input = Glob.removeChars(input, "()");
-    s1 = searchNotes(input);
-    if (s1 === "") {
-      s1 = "No matching chord found";
+  data = input.value.split("\n");
+  found = false;
+  titleExists = false;
+  for (let j = 0; j < data.length; j++) {
+    name = getDirective(data[j]).name;
+    if (name === "title" || name === "t") {
+      titleExists = true;
     }
-    output.innerHTML = s1;
-    drawKeyboard(0, []);
-    ChordDiagrams.drawUkulele(0, [], false, false);
-    ChordDiagrams.drawGuitar(0, [], false, false);
-  } else {
-    // Remove spaces and square brackets
-    input = Glob.removeChars(input, " []");
-
-    if (options.outputFormat === "NOCHORDS") {
-      options.outputFormat = "CDE";
-    }
-    note = outputObj.readNote(input);
-    if (note !== "") {
-      idx = noteToIndex(note, options, false, false, outputObj);
-      if (idx >= 0) {
-        chordType = input.substring(note.length);
-        p1 = chordType.lastIndexOf("/");
-        if (p1 >= 0) {
-          chordType = chordType.substring(0, p1);
-        }
-        if (options.outputFormat === "GREEK") {
-          chordType = convertGreekType(chordType);
-        }
-        if (options.outputFormat === "ROMAN") {
-          if (
-            note === note.toLowerCase() &&
-            !chordType.startsWith("°") &&
-            !chordType.toLowerCase().startsWith("dim")
-          ) {
-            chordType = "m" + chordType;
+  }
+  if (!titleExists) {
+    i = 0;
+    while (!found && !chord && i < data.length) {
+      let s = data[i].trim();
+      if (s !== "") {
+        if (!data[i].startsWith("#") && !s.startsWith("{")) {
+          result = transposeLine(data[i], 1, options, "", inputObj, outputObj);
+          if (result.isChordLine) {
+            chord = true;
+          } else {
+            found = true;
+            data[i] = `{title: ${s}}`;
           }
         }
-        chordNotes = MusicData.getInterval(chordType);
       }
+      i++;
     }
-    info = "";
-    for (let i = 0; i < chordNotes.length; i++) {
-      if (i > 0) {
-        info += ", ";
-      }
-      mayBeOmitted = chordNotes[i] < 0;
-      chordNotes[i] = Math.abs(chordNotes[i]);
-      noteIdx = fixNoteIndex(chordNotes[i] + idx);
-      note = noteIndexToString(noteIdx, options, true, outputObj);
-      if (mayBeOmitted) {
-        note = "(" + note + ")";
-      }
-      info += note;
+    if (found) {
+      input.value = data.join("\n");
     }
-
-    if (info === "") {
-      info = "No info available for this chord yet";
-      drawKeyboard(0, []);
-      ChordDiagrams.ukuleleFrets = [];
-      ChordDiagrams.ukuleleVariation = 0;
-      ChordDiagrams.guitarFrets = [];
-      ChordDiagrams.guitarVariation = 0;
-      ChordDiagrams.drawUkulele(0, [], false, false);
-      ChordDiagrams.drawGuitar(0, [], false, false);
-    } else {
-      drawKeyboard(idx, chordNotes);
-      ChordDiagrams.drawUkulele(idx, chordNotes, false, false);
-      ChordDiagrams.drawGuitar(idx, chordNotes, false, false);
-    }
-    output.innerHTML = info;
   }
-}
-
-function simplifyNote(note) {
-  let p = -1;
-  let s = "";
-  let s1 = "";
-  let s2 = "";
-
-  let i = 0;
-  while (s === "" && i < MusicData.simpleNotes.length) {
-    p = MusicData.simpleNotes[i].indexOf(",");
-    if (p >= 0) {
-      s1 = MusicData.simpleNotes[i].slice(0, p).trim();
-      s2 = MusicData.simpleNotes[i].slice(p + 1).trim();
-      if (note === s1) {
-        s = s2;
-      }
-    }
-    i++;
-  }
-  if (s === "") {
-    s = note;
-  }
-  return s;
 }
 
 function transpose(inputData, semiTones, options) {
@@ -1179,93 +1379,6 @@ function transpose(inputData, semiTones, options) {
   };
 }
 
-function clearClicked() {
-  const input = Glob.settings.inputArea;
-  if (input.value !== "") {
-    if (confirm("Clear the input?")) {
-      input.value = "";
-    }
-  }
-}
-
-function titleClicked() {
-  let found = false;
-  let chord = false;
-  let data = [];
-  let i = 0;
-  let name = "";
-  let outputData = {};
-  let result = {};
-  let s = "";
-  let titleExists = false;
-  const input = Glob.settings.inputArea;
-  const inputFormat = Glob.settings.inputFormat.value;
-  let options = new Options();
-  options.inputFormat = inputFormat;
-  const inputObj = createInputOrOutputObject(options.inputFormat);
-  const outputObj = createInputOrOutputObject(options.outputFormat);
-
-  data = input.value.split("\n");
-  found = false;
-  titleExists = false;
-  for (let j = 0; j < data.length; j++) {
-    name = getDirective(data[j]).name;
-    if (name === "title" || name === "t") {
-      titleExists = true;
-    }
-  }
-  if (!titleExists) {
-    i = 0;
-    while (!found && !chord && i < data.length) {
-      let s = data[i].trim();
-      if (s !== "") {
-        if (!data[i].startsWith("#") && !s.startsWith("{")) {
-          result = transposeLine(data[i], 1, options, "", inputObj, outputObj);
-          if (result.isChordLine) {
-            chord = true;
-          } else {
-            found = true;
-            data[i] = `{title: ${s}}`;
-          }
-        }
-      }
-      i++;
-    }
-    if (found) {
-      input.value = data.join("\n");
-    }
-  }
-}
-
-function commentClicked() {
-  let p1 = 0;
-  let p2 = 0;
-  let p3 = 0;
-  let s1 = "";
-  let s2 = "";
-  let s3 = "";
-  let value = "";
-  const input = Glob.settings.inputArea;
-  const commentType = Glob.settings.commentType.value;
-  value = input.value;
-  if (value !== "") {
-    p3 = input.selectionStart;
-    p1 = value.lastIndexOf("\n", p3);
-    // No need to change p1 when it is -1
-    p2 = value.indexOf("\n", p3);
-    if (p2 === -1) {
-      p2 = value.length;
-    }
-    s1 = value.slice(p1 + 1, p2);
-    s2 = s1.trim();
-    if (s2 !== "" && !s2.startsWith("{")) {
-      s1 = "{" + commentType + ": " + s1 + "}";
-      s3 = value.slice(0, p1 + 1) + s1 + value.slice(p2);
-      input.value = s3;
-    }
-  }
-}
-
 function scrollClicked() {
   if (Glob.scrollID === null) {
     startScroll(true);
@@ -1343,95 +1456,6 @@ function surpriseMeClicked() {
     }).catch((error) => {
       console.error('Error:', error);
     });
-  }
-}
-
-function downClicked() {
-  let semitones = parseInt(Glob.settings.semitones.value);
-  if (semitones > -11) {
-    semitones--;
-    Glob.settings.semitones.value = semitones.toString();
-    transposeClicked();
-  }
-}
-
-function upClicked() {
-  let semitones = parseInt(Glob.settings.semitones.value);
-  if (semitones < 11) {
-    semitones++;
-    Glob.settings.semitones.value = semitones.toString();
-    transposeClicked();
-  }
-}
-
-async function keyboardClicked(e) {
-  if ((e.button === 0) && (Glob.lastChord.length > 0)) {
-    const rect = keyboard.getBoundingClientRect();
-    const xMouse = e.clientX - rect.left;
-    const p1 = rect.width / 3;
-    const p2 = p1 * 2;
-    let playMode = 0;
-    let timeBetweenNotes = 1000;
-
-    if (xMouse < p1) {
-      playMode = 1;
-    } else if ((xMouse >= p1) && (xMouse < p2)) {
-      playMode = 2;
-    } else {
-      playMode = 3;
-    }
-
-    switch (playMode) {
-      case 1:
-        timeBetweenNotes = 0;
-        break;
-      case 2:
-        timeBetweenNotes = 50;
-        break;
-      case 3:
-        timeBetweenNotes = 250;
-        break;
-      default:
-        break;
-    }
-
-    const urls = [];
-    for (let i = 0; i < Glob.lastChord.length; i++) {
-      let url = (Glob.lastChord[i] + Glob.lastChordIdx + 1).toString();
-      if (url.length < 2) {
-        url = '0' + url;
-      }
-      url = 'wav/' + url + '.wav';
-      urls.push(url);
-    }
-
-    // Check if all URLs are cached
-    if (!urls.every(url => Audio.audioCache.has(url))) {
-      await Audio.preloadAudioFiles(urls);
-    }
-
-    // Create and configure BufferSource nodes for each audio buffer and store them
-    const sources = urls.map(url => {
-      const audioBuffer = Audio.getCachedAudioBuffer(url);
-      const source = Audio.audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-
-      const gainNode = Audio.audioContext.createGain();
-      gainNode.gain.value = 0.9 / urls.length;
-
-      source.connect(gainNode);
-      gainNode.connect(Audio.audioContext.destination);
-
-      return source;
-    });
-
-    // Play the pre-configured sources with the specified delay
-    for (let i = 0; i < sources.length; i++) {
-      sources[i].start();
-      if (i < sources.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, timeBetweenNotes));
-      }
-    }
   }
 }
 
@@ -2021,31 +2045,6 @@ function transposeLine(
   };
 }
 
-async function guitarClicked(e) {
-  if ((e.button === 0) && (ChordDiagrams.guitarFrets.length > 0)) {
-    const rect = guitar.getBoundingClientRect();
-    const xMouse = e.clientX - rect.left;
-    const p1 = rect.width / 3;
-    const p2 = p1 * 2;
-
-    if (xMouse < p1) {
-      ChordDiagrams.guitarVariation--;
-      if (ChordDiagrams.guitarVariation < 0) {
-        ChordDiagrams.guitarVariation = ChordDiagrams.guitarFrets.length - 1;
-      }
-      ChordDiagrams.drawGuitar(0, [], true, false);
-    } else if ((xMouse >= p1) && (xMouse < p2)) {
-      ChordDiagrams.drawGuitar(0, [], true, true);
-    } else {
-      ChordDiagrams.guitarVariation++;
-      if (ChordDiagrams.guitarVariation >= ChordDiagrams.guitarFrets.length) {
-        ChordDiagrams.guitarVariation = 0;
-      }
-      ChordDiagrams.drawGuitar(0, [], true, false);
-    }
-  }
-}
-
 async function ukuleleClicked(e) {
   if ((e.button === 0) && (ChordDiagrams.ukuleleFrets.length > 0)) {
     const rect = ukulele.getBoundingClientRect();
@@ -2068,6 +2067,15 @@ async function ukuleleClicked(e) {
       }
       ChordDiagrams.drawUkulele(0, [], true, false);
     }
+  }
+}
+
+function upClicked() {
+  let semitones = parseInt(Glob.settings.semitones.value);
+  if (semitones < 11) {
+    semitones++;
+    Glob.settings.semitones.value = semitones.toString();
+    transposeClicked();
   }
 }
 
@@ -2128,12 +2136,7 @@ try {
   document.getElementById("guitarLeftHanded").addEventListener("change", (e) => {
     ChordDiagrams.guitarLeftHanded = document.getElementById("guitarLeftHanded").checked;
     if (Glob.lastChord.length > 0) {
-      drawGuitar(0, [], true, false);
-    }
-  });
-  document.getElementById("guitarFilter").addEventListener("change", (e) => {
-    if (Glob.settings.inputChordInfo.value.trim() !== "") {
-      chordInfoClicked();
+      ChordDiagrams.drawGuitar(0, [], true, false);
     }
   });
   document.getElementById("guitarTuning").addEventListener("change", (e) => {
@@ -2143,6 +2146,23 @@ try {
     }
   });
   document.getElementById("btTuneGuitar").addEventListener("click", () => ChordDiagrams.tuneGuitar());
+  // Filter
+  document.getElementById("guitarFilterAscendingPitch").addEventListener("change", (e) => {
+    ChordDiagrams.guitarFilterAscendingPitch = document.getElementById("guitarFilterAscendingPitch").checked;
+    guitarFilterChanged();
+  });
+  document.getElementById("guitarFilterLowestIsRoot").addEventListener("change", (e) => {
+    ChordDiagrams.guitarFilterLowestIsRoot = document.getElementById("guitarFilterLowestIsRoot").checked;
+    guitarFilterChanged();
+  });
+  document.getElementById("guitarFilterUntilFret5").addEventListener("change", (e) => {
+    ChordDiagrams.guitarFilterUntilFret5 = document.getElementById("guitarFilterUntilFret5").checked;
+    guitarFilterChanged();
+  });
+  document.getElementById("guitarFilterNoMutedStrings").addEventListener("change", (e) => {
+    ChordDiagrams.guitarFilterNoMutedStrings = document.getElementById("guitarFilterNoMutedStrings").checked;
+    guitarFilterChanged();
+  });
 
   // Ukulele
   document.getElementById("ukulele").addEventListener("mousedown", (e) => {

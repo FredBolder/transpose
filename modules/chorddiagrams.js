@@ -2,6 +2,10 @@ import { Glob } from "./glob.js";
 import { Audio } from "./audio.js";
 
 class ChordDiagrams {
+    static guitarFilterAscendingPitch;
+    static guitarFilterLowestIsRoot;
+    static guitarFilterNoMutedStrings;
+    static guitarFilterUntilFret5;
     static guitarFrets;
     static guitarLeftHanded;
     static guitarTuning;
@@ -16,6 +20,10 @@ class ChordDiagrams {
     static ukuleleVariation;
 
     static init() {
+        this.guitarFilterAscendingPitch = true;
+        this.guitarFilterLowestIsRoot = true;
+        this.guitarFilterNoMutedStrings = false;
+        this.guitarFilterUntilFret5 = false;
         this.guitarFrets = [];
         this.guitarLeftHanded = false;
         this.guitarTuning = "E2-A2-D3-G3-B3-E4";
@@ -55,7 +63,6 @@ class ChordDiagrams {
         guitar.width = guitar.clientWidth * 2;
         const gtr = guitar.getContext("2d");
         gtr.reset();
-        const guitarFilter = Glob.settings.guitarFilter.value;
 
         switch (this.guitarTuning) {
             case "E2-A2-D3-G3-B3-E4":
@@ -133,7 +140,7 @@ class ChordDiagrams {
                 }
 
                 // Keep only the possible fret positions
-                if (guitarFilter === "Fret5") {
+                if (this.guitarFilterUntilFret5) {
                     maxFret = 5;
                 } else {
                     maxFret = 15;
@@ -141,8 +148,10 @@ class ChordDiagrams {
                 const frets = [];
                 for (let i = 0; i < snares.length; i++) {
                     frets.push([]);
-                    if ([0, 1, 5].includes(i)) {
-                        frets[i].push(-1);
+                    if (!this.guitarFilterNoMutedStrings) {
+                        if ([0, 1, 5].includes(i)) {
+                            frets[i].push(-1);
+                        }
                     }
                     for (let j = 0; j <= maxFret; j++) {
                         const note = (snares[i].note + j) % 12;
@@ -213,8 +222,23 @@ class ChordDiagrams {
                                                     snares[4].fret = f5;
                                                     snares[5].fret = f6;
                                                     lowestIsRoot = (transposed[0] === this.lowestNoteAndHighestNote(snares).lowest);
-                                                    if ((guitarFilter === "All") || ((guitarFilter === "Fret5") && (result.maxFretPosition <= 5)) ||
-                                                        ((guitarFilter === "LowestIsRoot") && lowestIsRoot)) {
+                                                    let ascendingPitch = true;
+                                                    let pitch1 = -1;
+                                                    let pitch2 = -1;
+                                                    for (let i = 0; i < snares.length; i++) {
+                                                        if (snares[i].fret >= 0) {
+                                                            pitch1 = snares[i].note + snares[i].fret + (snares[i].oct * 12);
+                                                            if ((pitch2 >= 0) && (pitch2 >= pitch1)) {
+                                                                ascendingPitch = false;
+                                                            }
+                                                            pitch2 = pitch1;
+                                                        } else {
+                                                            pitch1 = -1;
+                                                        }
+                                                    }
+                                                    if ((ascendingPitch || !this.guitarFilterAscendingPitch) &&
+                                                        (lowestIsRoot || !this.guitarFilterLowestIsRoot) &&
+                                                        ((result.maxFretPosition <= 5) || !this.guitarFilterUntilFret5)) {
                                                         if ((result.maxFretPosition - result.minFretPosition) < maxFretDist) {
                                                             this.guitarFrets.push({ f1, f2, f3, f4, f5, f6 });
                                                         }

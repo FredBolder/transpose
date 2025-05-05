@@ -173,7 +173,7 @@ fieldset {
   column-gap: 0.5rem;
 }
 
-#ukuleleVariationGroup, #guitarVariationGroup {
+#ukuleleVariationGroup {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;

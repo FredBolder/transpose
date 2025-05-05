@@ -10,7 +10,6 @@ class Settings {
     this.exportFormat = document.getElementById("exportFormat")
     this.groupKey = document.getElementById("groupKey");
     this.guitar = document.getElementById("guitar");
-    this.guitarFilter = document.getElementById("guitarFilter");
     this.guitarVariation = document.getElementById("guitarVariation");
     this.ignoreColors = document.getElementById("ignoreColors");
     this.inputArea = document.getElementById("input");
