@@ -35,6 +35,10 @@ class Nashville extends ChordSystem {
     ];
   }
 
+  convertNoteToCDE(note) {
+    return note;
+  }
+
   convertType(type, options) {
     let convert = true;
     let result = type;

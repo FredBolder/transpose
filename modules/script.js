@@ -170,7 +170,7 @@ function chordInfoClicked() {
     }
 
     chordNotes = MusicData.formulaToIntegerNotation(formula, true);
-    scale = MusicData.majorScale(note);
+    scale = MusicData.majorScale(outputObj.convertNoteToCDE(note));
     info = "";
     if ((chordNotes.length > 0) && (scale.length > 0)) {
       for (let i = 0; i < formula.length; i++) {

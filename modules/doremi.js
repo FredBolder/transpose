@@ -21,6 +21,51 @@ class DoReMi extends ChordSystem {
     ];
   }
 
+  convertNoteToCDE(note) {
+    switch (note) {
+      case "Do":
+        return "C";
+      case "Re":
+        return "D";
+      case "Mi":
+        return "E";
+      case "Fa":
+        return "F";
+      case "Sol":
+        return "G";
+      case "La":
+        return "A";
+      case "Si":
+        return "B";
+      case "Ti":
+        return "B";
+      case "Do#":
+        return "C#";
+      case "Reb":
+        return "Db";
+      case "Re#":
+        return "D#";
+      case "Mib":
+        return "Eb";
+      case "Fa#":
+        return "F#";
+      case "Solb":
+        return "Gb";
+      case "Sol#":
+        return "G#";
+      case "Lab":
+        return "Ab";
+      case "La#":
+        return "A#";
+      case "Sib":
+        return "Bb";
+      case "Tib":
+        return "Bb";
+      default:
+        return "";
+    }
+  }
+
   notes(minor, bass) {
     return this.noteList;
   }

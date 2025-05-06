@@ -19,6 +19,47 @@ class German2 extends ChordSystem {
     ];
   }
 
+  convertNoteToCDE(note) {
+    switch (note) {
+      case "C":
+        return "C";
+      case "D":
+        return "D";
+      case "E":
+        return "E";
+      case "F":
+        return "F";
+      case "G":
+        return "G";
+      case "A":
+        return "A";
+      case "H":
+        return "B";
+      case "C#":
+        return "C#";
+      case "Db":
+        return "Db";
+      case "D#":
+        return "D#";
+      case "Eb":
+        return "Eb";
+      case "F#":
+        return "F#";
+      case "Gb":
+        return "Gb";
+      case "G#":
+        return "G#";
+      case "Ab":
+        return "Ab";
+      case "A#":
+        return "A#";
+      case "B":
+        return "Bb";
+      default:
+        return "";
+    }
+  }
+
   notes(minor, bass) {
     return this.noteList;
   }

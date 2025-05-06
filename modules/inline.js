@@ -19,6 +19,10 @@ class Inline extends ChordSystem {
     ];
   }
 
+  convertNoteToCDE(note) {
+    return note;
+  }
+
   notes(minor, bass) {
     return this.noteList;
   }
