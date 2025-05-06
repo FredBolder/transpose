@@ -369,30 +369,30 @@ function test() {
 
   checkResult(
     "Test 32",
-    [0, 3, 7].toString(),
+    ["1", "b3", "5"].toString(),
     MusicData.getInterval("m").toString()
   );
 
   checkResult(
     "Test 33",
-    [0, 3, 10, 14, 17].toString(),
+    ["1", "b3", "b7", "9", "11"].toString(),
     MusicData.getInterval("m11OMIT5").toString()
   );
 
   checkResult(
     "Test 34",
-    [0, 5, 7, 11].toString(),
+    ["1", "4", "5", "7"].toString(),
     MusicData.getInterval("M7SUS4").toString()
   );
 
-  // Test 35 (unique results in object MusicData.intervals)
+  // Test 35 (unique results in object MusicData.integerNotations)
   duplicate = false;
-  const keys = Object.keys(MusicData.intervals);
+  const keys = Object.keys(MusicData.integerNotations);
   for (let i = 0; i < keys.length && !duplicate; i++) {
-    value = Glob.removeChars(MusicData.intervals[keys[i]].toString(), "-");
+    value = Glob.removeChars(MusicData.integerNotations[keys[i]].toString(), "-");
     for (let j = 0; j < keys.length && !duplicate; j++) {
       if (
-        Glob.removeChars(MusicData.intervals[keys[j]].toString(), "-") ===
+        Glob.removeChars(MusicData.integerNotations[keys[j]].toString(), "-") ===
         value &&
         j != i
       ) {
@@ -405,19 +405,19 @@ function test() {
 
   checkResult(
     "Test 36",
-    [0, 4, 7, 11].toString(),
+    ["1", "3", "5", "7"].toString(),
     MusicData.getInterval("maj7").toString()
   );
 
   checkResult(
     "Test 37",
-    [0, 3, 7].toString(),
+    ["1", "b3", "5"].toString(),
     MusicData.getInterval("min").toString()
   );
 
   checkResult(
     "Test 38",
-    [0, 3, 7, 10, 15].toString(),
+    ["1", "b3", "5", "b7", "#9"].toString(),
     MusicData.getInterval("m7+9").toString()
   );
 
@@ -434,7 +434,7 @@ function test() {
 
   checkResult(
     "Test 40",
-    [0, 4, 8, 11].toString(),
+    ["1", "3", "#5", "7"].toString(),
     MusicData.getInterval("AugM7").toString()
   );
 
@@ -494,6 +494,36 @@ function test() {
     4,
     ChordDiagrams.usedFingers([-1, 4, 4, 4, 4, 0])
   );
+
+  // Tests chord formulas
+  checkResult(
+    "Test formulas 1",
+    Object.keys(MusicData.formulas).length,
+    Object.keys(MusicData.integerNotations).length
+  );
+
+  // Tests formulaToIntegerNotation
+  for (let i = 0; i < Object.keys(MusicData.formulas).length; i++) {
+    const key = Object.keys(MusicData.formulas)[i];
+    checkResult(
+      `Test formulaToIntegerNotation Key: ${key}`,
+      JSON.stringify(MusicData.integerNotations[key]),
+      JSON.stringify(MusicData.formulaToIntegerNotation(MusicData.formulas[key]))
+    );
+  }
+
+  // Tests majorScale
+  checkResult(
+    "Test majorScale 1",
+    JSON.stringify(["C", "D", "E", "F", "G", "A", "B"]),
+    JSON.stringify(MusicData.majorScale("C"))
+  );
+  checkResult(
+    "Test majorScale 2",
+    JSON.stringify(["Eb", "F", "G", "Ab", "Bb", "C", "D"]),
+    JSON.stringify(MusicData.majorScale("D#"))
+  );
+
 
   // Extra test
   testOptions.key = 0;

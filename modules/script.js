@@ -105,6 +105,7 @@ function checkChordType(s) {
 }
 
 function chordInfoClicked() {
+  let add = "";
   let chordType = "";
   let idx = -1;
   let info = "";
@@ -114,6 +115,10 @@ function chordInfoClicked() {
   let p1 = -1;
   let s1 = "";
   let chordNotes = [];
+  let displayNotes = [];
+  let formula = [];
+  let scale = [];
+  let sValue = "";
   let input = convertToNormalChars(Glob.settings.inputChordInfo.value.trim());
   const output = Glob.settings.outputChordInfo;
   const options = new Options();
@@ -161,24 +166,44 @@ function chordInfoClicked() {
             chordType = "m" + chordType;
           }
         }
-        chordNotes = MusicData.getInterval(chordType);
+        formula = MusicData.getInterval(chordType);
       }
-    }
-    info = "";
-    for (let i = 0; i < chordNotes.length; i++) {
-      if (i > 0) {
-        info += ", ";
-      }
-      mayBeOmitted = chordNotes[i] < 0;
-      chordNotes[i] = Math.abs(chordNotes[i]);
-      noteIdx = fixNoteIndex(chordNotes[i] + idx);
-      note = noteIndexToString(noteIdx, options, true, outputObj);
-      if (mayBeOmitted) {
-        note = "(" + note + ")";
-      }
-      info += note;
     }
 
+    chordNotes = MusicData.formulaToIntegerNotation(formula);
+    scale = MusicData.majorScale(note);
+    info = "";
+    if ((chordNotes.length > 0) && (scale.length > 0)) {
+      for (let i = 0; i < formula.length; i++) {
+        if (i > 0) {
+          info += ", ";
+        }
+        sValue = formula[i];
+        mayBeOmitted = false;
+        if (sValue.length > 1) {
+          if ((sValue[0] === "(") && (sValue[sValue.length - 1] === ")")) {
+            sValue = sValue.slice(1, sValue.length - 1);
+            mayBeOmitted = true;
+          }
+        }
+        add = "";
+        for (let j = 0; j < 2; j++) {
+          if (sValue.length > 0) {
+            if ((sValue[0] === "b") || (sValue[0] === "#")) {
+              add = add + sValue[0];
+              sValue = sValue.slice(1);
+            }
+          }
+        }
+        noteIdx = (parseInt(sValue) - 1) % 7;
+        note = scale[noteIdx] + add;
+        note = MusicData.fixFlatSharp(note);
+        if (mayBeOmitted) {
+          note = "(" + note + ")";
+        }
+        info += note;
+      }
+    }
     if (info === "") {
       info = "No info available for this chord yet";
       drawKeyboard(0, []);
@@ -677,7 +702,7 @@ function getDirective(s) {
 }
 
 function getNumberOfChords() {
-  return (Object.keys(MusicData.intervals).length * 12).toString();
+  return (Object.keys(MusicData.formulas).length * 12).toString();
 }
 
 function greekToNormal(s) {
@@ -1123,9 +1148,9 @@ function searchNotes(input) {
     notes1[i] = noteToIndex(notes1[i].trim(), options, false, true, inputObj);
   }
   notes1.sort();
-  const keys = Object.keys(MusicData.intervals);
+  const keys = Object.keys(MusicData.integerNotations);
   for (let i = 0; i < keys.length; i++) {
-    notes2 = MusicData.intervals[keys[i]];
+    notes2 = MusicData.integerNotations[keys[i]];
     d = 0;
     while (d < 11) {
       notes3 = notes2.map((current) => {
