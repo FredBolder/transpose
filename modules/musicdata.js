@@ -392,7 +392,6 @@ class MusicData {
     "Fes,E",
   ];
 
-
   static fixFlatSharp(note) {
     let add = 0;
     let result = note;
@@ -431,7 +430,7 @@ class MusicData {
     return result;
   }
 
-  static formulaToIntegerNotation(formula) {
+  static formulaToIntegerNotation(formula, ignoreOptional = false) {
     let add = 0;
     let optional = false;
     let result = [];
@@ -495,7 +494,7 @@ class MusicData {
           break;
       }
       value += add;
-      if (optional) {
+      if (optional && !ignoreOptional) {
         value = -value;
       }
       result.push(value);

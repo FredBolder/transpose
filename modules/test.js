@@ -511,6 +511,11 @@ function test() {
       JSON.stringify(MusicData.formulaToIntegerNotation(MusicData.formulas[key]))
     );
   }
+  checkResult(
+    `Test formulaToIntegerNotation Ignore optional`,
+    JSON.stringify([0, 4, 7, 10, 14]),
+    JSON.stringify(MusicData.formulaToIntegerNotation(MusicData.formulas["9"], true))
+  );
 
   // Tests majorScale
   checkResult(

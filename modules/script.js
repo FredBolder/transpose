@@ -115,7 +115,6 @@ function chordInfoClicked() {
   let p1 = -1;
   let s1 = "";
   let chordNotes = [];
-  let displayNotes = [];
   let formula = [];
   let scale = [];
   let sValue = "";
@@ -170,7 +169,7 @@ function chordInfoClicked() {
       }
     }
 
-    chordNotes = MusicData.formulaToIntegerNotation(formula);
+    chordNotes = MusicData.formulaToIntegerNotation(formula, true);
     scale = MusicData.majorScale(note);
     info = "";
     if ((chordNotes.length > 0) && (scale.length > 0)) {
