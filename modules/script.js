@@ -197,6 +197,7 @@ function chordInfoClicked() {
         noteIdx = (parseInt(sValue) - 1) % 7;
         note = scale[noteIdx] + add;
         note = MusicData.fixFlatSharp(note);
+        note = outputObj.convertNoteFromCDE(note, options);
         if (mayBeOmitted) {
           note = "(" + note + ")";
         }

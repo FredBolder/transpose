@@ -396,36 +396,21 @@ class MusicData {
     let add = 0;
     let result = note;
 
-    for (let i = 0; i < note.length; i++) {
-      if (note[i] === "b") {
-        add--;
-      }
-      if (note[i] === "#") {
-        add++;
-      }
-    }
-    for (let j = 0; j < 4; j++) {
-      if (result.length > 0) {
-        if ((result[result.length - 1] === "b") || (result[result.length - 1] === "#")) {
-          result = result.slice(0, result.length - 1);
+    if (note.length > 1) {
+      for (let i = 1; i < note.length; i++) {
+        if (note[i] === "b") {
+          add--;
+        }
+        if (note[i] === "#") {
+          add++;
         }
       }
+      result = result.slice(0, 1);
     }
-    switch (add) {
-      case -2:
-        result = result + "bb";
-        break;
-      case -1:
-        result = result + "b";
-        break;
-      case 1:
-        result = result + "#";
-        break;
-      case 2:
-        result = result + "##";
-        break;
-      default:
-        break;
+    if (add > 0) {
+      result = result + "#".repeat(add);
+    } else if (add < 0) {
+      result = result + "b".repeat(-add);
     }
     return result;
   }

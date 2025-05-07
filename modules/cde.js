@@ -19,7 +19,11 @@ class CDE extends ChordSystem {
     ];
   }
 
-  convertNoteToCDE(note) {
+  convertNoteFromCDE(note, options) {
+    return note;
+  }
+
+  convertNoteToCDE(note, options) {
     return note;
   }
 

@@ -21,7 +21,34 @@ class DoReMi extends ChordSystem {
     ];
   }
 
-  convertNoteToCDE(note) {
+  convertNoteFromCDE(note, options) {
+    let result = "";
+
+    const notes = {
+      C: "Do",
+      D: "Re",
+      E: "Mi",
+      F: "Fa",
+      G: "Sol",
+      A: "La",
+      B: "Si",
+    };
+    if (note.length > 0) {
+      result = notes[note[0]];
+    }
+    if (result === undefined) {
+      return "";
+    }
+    if ((result === "Si") && options.useTi) {
+      result = "Ti";
+    }
+    if (note.length > 1) {
+      result += note.slice(1);
+    }
+    return result;
+  }
+
+  convertNoteToCDE(note, options) {
     switch (note) {
       case "Do":
         return "C";

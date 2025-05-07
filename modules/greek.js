@@ -19,7 +19,31 @@ class Greek extends ChordSystem {
     ];
   }
 
-  convertNoteToCDE(note) {
+  convertNoteFromCDE(note, options) {
+    let result = "";
+
+    const notes = {
+      C: "Ντο",
+      D: "Ρε",
+      E: "Μι",
+      F: "Φα",
+      G: "Σολ",
+      A: "Λα",
+      B: "Σι",
+    };
+    if (note.length > 0) {
+      result = notes[note[0]];
+    }
+    if (result === undefined) {
+      return "";
+    }
+    if (note.length > 1) {
+      result += note.slice(1);
+    }
+    return result;
+  }
+
+  convertNoteToCDE(note, options) {
     switch (note) {
       case "Ντο":
         return "C";

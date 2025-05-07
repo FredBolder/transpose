@@ -19,7 +19,7 @@ class Inline extends ChordSystem {
     ];
   }
 
-  convertNoteToCDE(note) {
+  convertNoteToCDE(note, options) {
     return note;
   }
 
