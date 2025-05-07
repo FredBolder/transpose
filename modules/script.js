@@ -170,7 +170,7 @@ function chordInfoClicked() {
     }
 
     chordNotes = MusicData.formulaToIntegerNotation(formula, true);
-    scale = MusicData.majorScale(outputObj.convertNoteToCDE(note));
+    scale = MusicData.majorScale(outputObj.convertNoteToCDE(note, options));
     info = "";
     if ((chordNotes.length > 0) && (scale.length > 0)) {
       for (let i = 0; i < formula.length; i++) {
@@ -214,6 +214,10 @@ function chordInfoClicked() {
       ChordDiagrams.drawUkulele(0, [], false, false);
       ChordDiagrams.drawGuitar(0, [], false, false);
     } else {
+      if ((options.outputFormat === "ROMAN") || (options.outputFormat === "NASHVILLE")) {
+        idx += options.key;
+        idx = idx % 12;
+      }
       drawKeyboard(idx, chordNotes);
       ChordDiagrams.drawUkulele(idx, chordNotes, false, false);
       ChordDiagrams.drawGuitar(idx, chordNotes, false, false);
