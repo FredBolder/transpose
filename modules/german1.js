@@ -37,24 +37,60 @@ class German1 extends ChordSystem {
         return "H";
       case "C#":
         return "Cis";
+      case "C##":
+        return "Cisis";
       case "Db":
         return "Des";
+      case "Dbb":
+        return "Deses";
       case "D#":
         return "Dis";
+      case "D##":
+        return "Disis";
       case "Eb":
         return "Es";
+      case "Ebb":
+        return "Eses";
       case "F#":
         return "Fis";
+      case "F##":
+        return "Fisis";
       case "Gb":
         return "Ges";
+      case "Gbb":
+        return "Geses";
       case "G#":
         return "Gis";
+      case "G##":
+        return "Gisis";
       case "Ab":
         return "As";
+      case "Abb":
+        return "Ases";
       case "A#":
         return "Ais";
+      case "A##":
+        return "Aisis";
       case "Bb":
         return "B";
+      case "Bbb":
+        return "Heses";
+      case "E#":
+        return "Eis";
+      case "E##":
+        return "Eisis";
+      case "B#":
+        return "His";
+      case "B##":
+        return "Hisis";
+      case "Cb":
+        return "Ces";
+      case "Cbb":
+        return "Ceses";
+      case "Fb":
+        return "Fes";
+      case "Fbb":
+        return "Feses";
       default:
         return note;
     }
