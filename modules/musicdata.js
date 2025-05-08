@@ -415,6 +415,44 @@ class MusicData {
     return result;
   }
 
+  static fixRomanDoubles(note) {
+    let down = false;
+    let n = 0;
+    let up = false;
+
+    if (note.length === 3) {
+      if (note.startsWith("bb")) {
+        down = true;
+      }
+      if (note.startsWith("##")) {
+        up = true;
+      }
+    }
+    if (down || up) {
+      n = parseInt(note[2]);
+      if (up) {
+        switch (n) {
+          case 3:
+            return "4#";
+          case 7:
+            return "1#";
+          default:
+            return (n + 1).toString();
+        }
+      } else {
+        switch (n) {
+          case 4:
+            return "3b";
+          case 1:
+            return "7b";
+          default:
+            return (n - 1).toString();
+        }
+      }
+    }
+    return note;
+  }
+
   static formulaToIntegerNotation(formula, ignoreOptional = false) {
     let add = 0;
     let optional = false;

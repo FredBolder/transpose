@@ -67,14 +67,62 @@ class Roman extends ChordSystem {
     ];
   }
 
+  convertNoteFromCDE(note, options) {
+    let add = 0;
+    let n1 = 0;
+    let n2 = 0;
+    let result = "";
+    let scale;
+    let scaleNote = "";
+    const scales = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
+    scale = MusicData.majorScale(scales[options.key % 12]);
+    for (let i = 0; i < scale.length; i++) {
+      if (note[0] === scale[i][0]) {
+        scaleNote = scale[i];
+        result = parseInt(i + 1);
+      }
+    }
+    if (note.length > 1) {
+      for (let i = 1; i < note.length; i++) {
+        if (note[i] === "#") {
+          n1++;
+        }
+        if (note[i] === "b") {
+          n1--;
+        }
+      }
+    }
+    if (scaleNote.length > 1) {
+      for (let i = 1; i < scaleNote.length; i++) {
+        if (scaleNote[i] === "#") {
+          n2++;
+        }
+        if (scaleNote[i] === "b") {
+          n2--;
+        }
+      }
+    }
+    add = n1 - n2;
+    if (add > 0) {
+      result = "#".repeat(add) + result;
+    } else if (add < 0) {
+      result = "b".repeat(-add) + result;
+    }
+    result = MusicData.fixRomanDoubles(result);
+    return result;
+  }
+
   convertNoteToCDE(note, options) {
     let add = "";
     let idx = 0;
     let result = "";
     let romanNumber = note;
     let romanNumberInt = 0;
-    let start = 0;
-    const notes = "CDEFGAB";
+    let scale;
+    const scales = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
+    scale = MusicData.majorScale(scales[options.key % 12]);
 
     for (let i = 0; i < 2; i++) {
       if (romanNumber.length > 1) {
@@ -112,66 +160,8 @@ class Roman extends ChordSystem {
         break;
     }
     if (romanNumberInt > 0) {
-      switch (options.key % 12) {
-        case 0:
-          // C
-          start = 0;
-          break;
-        case 1:
-          // C#
-          start = 0;
-          add += "#";
-          break;
-        case 2:
-          // D
-          start = 1;
-          break;
-        case 3:
-          // Eb
-          start = 2;
-          add += "b";
-          break;
-        case 4:
-          // E
-          start = 2;
-          break;
-        case 5:
-          // F
-          start = 3;
-          break;
-        case 6:
-          // F#
-          start = 3;
-          add += "#";
-          break;
-        case 7:
-          // G
-          start = 4;
-          break;
-        case 8:
-          // Ab
-          start = 5;
-          add += "b";
-          break;
-        case 9:
-          // A
-          start = 5;
-          break;
-        case 10:
-          // Bb
-          start = 6;
-          add += "b";
-          break;
-        case 11:
-          // B
-          start = 6;
-          break;
-        default:
-          start = 0;
-          break;
-      }
-      idx = (start + romanNumberInt - 1) % 7;
-      result = notes[idx];
+      idx = (romanNumberInt - 1) % 7;
+      result = scale[idx];
       result += add;
       result = MusicData.fixFlatSharp(result);
     }

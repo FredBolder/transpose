@@ -483,11 +483,6 @@ function drawKeyboard(idx, chordNotes) {
   const kb = keyboard.getContext("2d");
   kb.reset();
 
-  //console.log(notes);
-  // console.log(
-  //   `Width: ${keyboard.width}, Height: ${keyboard.height}, ClientWidth: ${keyboard.clientWidth}, ClientHeight: ${keyboard.clientHeight}`
-  // );
-
   ch = keyboard.height;
   cw = keyboard.width;
   dx1 = cw / 21;
@@ -641,7 +636,6 @@ function exportClicked() {
       data = Glob.settings.outputArea.innerHTML;
       data = data.split("</div><").join("</div>\n      <");
       dark = Glob.settings.theme.value === "DARK";
-      console.log(dark);
       data = header(filename, dark) + "    <main>\n" + "      " + data;
       data += `\n    </main>\n`;
       data += `  </body>\n`;
@@ -2113,7 +2107,6 @@ try {
   window.addEventListener("load", (e) => {
     if (Glob.settings === null) {
       Glob.settings = new Settings();
-      //console.log("Settings loaded");
       drawKeyboard(0, []);
       ChordDiagrams.drawUkulele(0, [], false, false);
       ChordDiagrams.drawGuitar(0, [], false, false);
