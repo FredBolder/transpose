@@ -1150,7 +1150,7 @@ function searchNotes(input) {
   for (let i = 0; i < keys.length; i++) {
     notes2 = MusicData.integerNotations[keys[i]];
     d = 0;
-    while (d < 11) {
+    while (d <= 11) {
       notes3 = notes2.map((current) => {
         return fixNoteIndex(Math.abs(current) + d);
       });
